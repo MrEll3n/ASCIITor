@@ -1,0 +1,22 @@
+Hra ASCIITyper
+
+1. Tvorba mapy
+
+2. Pohyb hráče
+
+3. přechod do místností
+
+4. Životy (Staty hráče)
+
+5. Enemies (soubojový systém)
+    -lze použít souboj pomocí klávesnice
+    -na zabití nepřítele je třeba napsat v co nejrychlejší době text na obrazovce
+    -bude problém při pohybu hráče během útoků => vyřešeno použitím šipek
+        -možný problém s inputem v konzoli a pohybem
+
+6. Inventář / Itemy
+    -Zvětšování DMG za attack(tj. napsání jednoho slova), HP, zpomalení rychlosti potřebný pro útok
+
+
+
+
