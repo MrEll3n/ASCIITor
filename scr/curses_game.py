@@ -2,7 +2,7 @@ import os
 import curses
 import random
 import time
-import bcolors
+
 from curses import wrapper
 from curses.textpad import Textbox, rectangle
 from perlin_noise import PerlinNoise
@@ -161,7 +161,7 @@ def main(stdscr):
     os.system("")
     for i in range(len(map)):
         for j in range(len(map[i])-1):
-            game_pad.addstr(i, j, f"{bcolors.OKGREEN}{map[i][j]}{bcolors.ENDC}")
+            game_pad.addstr(i, j, map[i][j])
 
 
     stdscr.nodelay(True)
