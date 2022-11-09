@@ -23,43 +23,44 @@ def main(stdscr):
         stdscr.addstr(i+5, 85, f.readline())
     f.close()
 
-    curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
-    curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_WHITE)
 
-
+    curses.init_pair(100, curses.COLOR_WHITE, curses.COLOR_BLACK)
+    curses.init_pair(101, curses.COLOR_BLACK, curses.COLOR_WHITE)
+    curses.init_pair(102, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    curses.init_pair(103, curses.COLOR_WHITE, curses.COLOR_GREEN)
 
 
     def createButton1(color):
         rectangle(stdscr, 20, 97, 23, 114)
-        stdscr.attroff(curses.color_pair(2))
+        stdscr.attroff(curses.color_pair(101))
         stdscr.addstr(21, 102, f"New Game")
     def createButton2(color):
         rectangle(stdscr, 24, 97, 27, 114)
-        stdscr.attroff(curses.color_pair(2))
+        stdscr.attroff(curses.color_pair(101))
         stdscr.addstr(25, 101, f"Load Game")
     def createButton3(color):
         rectangle(stdscr, 32, 97, 35, 114)
-        stdscr.attroff(curses.color_pair(2))
+        stdscr.attroff(curses.color_pair(101))
         stdscr.addstr(33, 104, f"Exit")
 
     select = 0
 
     def colorPick():
         if select == 0:
-            stdscr.attron(curses.color_pair(2))
-            createButton1(2)
-            createButton2(1)
-            createButton3(1)
+            stdscr.attron(curses.color_pair(101))
+            createButton1(101)
+            createButton2(100)
+            createButton3(100)
         elif select == 1:
-            createButton1(1)
-            stdscr.attron(curses.color_pair(2))
-            createButton2(2)
-            createButton3(1)
+            createButton1(100)
+            stdscr.attron(curses.color_pair(101))
+            createButton2(101)
+            createButton3(100)
         elif select == 2:
-            createButton1(1)
-            createButton2(1)
-            stdscr.attron(curses.color_pair(2))
-            createButton3(2)
+            createButton1(100)
+            createButton2(100)
+            stdscr.attron(curses.color_pair(101))
+            createButton3(101)
 
 
     while True:
@@ -105,7 +106,7 @@ def main(stdscr):
     CAM_WIDTH = 161
     CAM_HEIGHT = 35
     GAME_X = 400 + 1
-    GAME_Y = 400 
+    GAME_Y = 400
     CAM_X = GAME_X//2 - CAM_WIDTH//2 
     CAM_Y = GAME_Y//2 - CAM_HEIGHT//2 
 
@@ -160,8 +161,17 @@ def main(stdscr):
     os.system("")
     for i in range(len(map)):
         for j in range(len(map[i])-1):
-            game_pad.addstr(i, j, f"{map[i][j]}")
-
+            #game_pad.addstr(i, j, f"{map[i][j]}")
+            match map[i][j]:
+                case ".":
+                    game_pad.addstr(i, j, f"{map[i][j]}", curses.A_DIM)
+                case ":":
+                    game_pad.addstr(i, j, f"{map[i][j]}")
+                case "#":
+                    game_pad.addstr(i, j, f"{map[i][j]}", curses.A_PROTECT)
+                case _:
+                    game_pad.addstr(i, j, f"{map[i][j]}")
+       
 
     stdscr.nodelay(True)
     

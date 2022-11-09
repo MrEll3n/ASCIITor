@@ -30,7 +30,10 @@ class Player:
 
     def draw_floor(self, map_arr, offset_x, offset_y):
         map_arr[self.y+offset_y][self.x+offset_x] = self.floor
-        self.game_pad.addstr(self.y+offset_y, self.x+offset_x, f"{self.floor}")
+        if self.floor == ".":
+            self.game_pad.addstr(self.y+offset_y, self.x+offset_x, f"{self.floor}", curses.A_DIM)
+        else:
+            self.game_pad.addstr(self.y+offset_y, self.x+offset_x, f"{self.floor}")
 
     def move_left(self, map_arr):
         if not (self.x > 0 and self.get_floor(map_arr, -1, 0, 0) != "#"):
@@ -39,6 +42,7 @@ class Player:
         self.draw_floor(map_arr, 0, 0)
         self.get_floor(map_arr, -1, 0, 1)
         self.x -= 1
+        curses.beep()
         
         self.draw_player(map_arr, 0, 0)
         return True
@@ -50,6 +54,7 @@ class Player:
         self.draw_floor(map_arr, 0, 0)
         self.get_floor(map_arr, 1, 0, 1)
         self.x += 1
+        curses.beep()
         
         self.draw_player(map_arr, 0, 0)
         return True
@@ -61,6 +66,7 @@ class Player:
         self.draw_floor(map_arr, 0, 0)
         self.get_floor(map_arr, 0, -1, 1)
         self.y -= 1
+        curses.beep()
         
         self.draw_player(map_arr, 0, 0)
         return True
@@ -72,6 +78,7 @@ class Player:
         self.draw_floor(map_arr, 0, 0)
         self.get_floor(map_arr, 0, 1, 1)
         self.y += 1
+        curses.beep()
 
         self.draw_player(map_arr, 0, 0)
         return True
