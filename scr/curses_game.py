@@ -98,7 +98,8 @@ def main(stdscr):
         stdscr.addstr(50, 50, f"Select: {select}")
 
     stdscr.clear()
-    stdscr.addstr(29, 94, "Generating terrain...")
+    LOADING_LABEL = "Generating terrain..."
+    stdscr.addstr(curses.LINES//2, (curses.COLS//2)-10, LOADING_LABEL)
     stdscr.refresh()
 
 
@@ -188,8 +189,8 @@ def main(stdscr):
     p = Player(GAME_X//2, GAME_Y//2, 100, 100, 5, 10, game_pad, map)
     
     #inventory setup
-    i = Window(1, 162, 25, 46, "Inventory")
-    i.create_window()
+    inv = Window("inv", 1, 162, 25, 46, "Inventory")
+    inv.create_window()
 
         #i = Inventory(162, 1, 46, 25)
         #i.create_inventory_window(stdscr)
@@ -197,12 +198,22 @@ def main(stdscr):
     #stats setup
         #s = Stats(p, 162, 27, 46, 12)
         #s.create_stats_window(stdscr)
+    stats = Window("stats", 26, 162, 25, 46, "Stats", p)
+    stats.create_window()
+
+    #info-menu setup
+    infomenu = Window("info" , 36, 0, 15, 75, "", )
+    infomenu.create_window()
+
+
     #stdscr.addstr(40, 40, f"Floor: {p.floor}")
 
     
 
     #stdscr.addstr(42, 1, f"PX: {p.x}")
     #stdscr.addstr(42, 10, f"PY: {p.y}")
+
+    stats.print_data()
 
     while True:
         

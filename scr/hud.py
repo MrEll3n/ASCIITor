@@ -2,13 +2,23 @@ import curses
 from curses.textpad import Textbox, rectangle
 
 
+
 class Window():
-    def __init__(self, y, x, height, width, name):
+    def __init__(self, win_type, y, x, height, width, name="", p=None):
+        self.win_type = win_type
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.name = name
+
+        if self.win_type == "stats" and p is not None: 
+            self.hp = p.hp
+            self.maxhp = p.hp
+            self.mana = p.mana
+            self.maxmana = p.hp
+            self.strength = p.strength
+            self.defense = p.defense
 
     def create_window(self):
         
@@ -16,15 +26,25 @@ class Window():
         self.win.border()
         #rectangle(stdscr, self.y, self.x, self.y+self.height, self.x+self.width)
         #rectangle(self.win, 0, 0, 25, 44)
-        #self.win.addstr(self.y, self.x + 3, f" {self.name} ")
+        if self.name != "":
+            self.win.addstr(0, 3, f" {self.name} ")
         
        
         #invpad.refresh(self.y+1, self.x+1, 1, 1, self.y+self.height-1, self.x+self.width-1)
         #invwin.addstr(2, 2, "Item 1x")
         
         self.win.refresh()
-
-
+    
+    def print_data(self):
+        match self.win_type:
+            #case "inv":
+                #for item in self.inv_lst:
+                #    self.win.addstr(enumerate(item) + 1, 1, f"{item.name}")
+            case "stats":
+                self.win.addstr(2, 1, f"{self.hp}/{self.maxhp}")
+                self.win.addstr(3, 1, f"{self.mana}/{self.maxmana}")
+                self.win.addstr(4, 1, f"{self.strength}")
+                self.win.addstr(5, 1, f"{self.defense}")
 
 
 
