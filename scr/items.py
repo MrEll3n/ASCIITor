@@ -1,5 +1,5 @@
 class Item:
-    def print_item():
+    def generate_item(self):
         pass
 
 class Weapon(Item):
