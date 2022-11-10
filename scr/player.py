@@ -7,12 +7,15 @@ class Player:
         self.x = x
         self.y = y
         self.hp = hp
+        self.maxhp = self.hp
         self.mana = mana
+        self.maxmana = self.hp
         self.strength = strength
         self.defense = defense
         self.floor = ""
         self.game_pad = game_pad
         self.map = map
+        self.inv_lst = []
 
         self.floor = self.get_floor(self.map, 0, 0, 1)
         self.draw_player(self.map, 0, 0)
@@ -42,7 +45,7 @@ class Player:
         self.draw_floor(map_arr, 0, 0)
         self.get_floor(map_arr, -1, 0, 1)
         self.x -= 1
-        curses.beep()
+        
         
         self.draw_player(map_arr, 0, 0)
         return True
@@ -54,7 +57,7 @@ class Player:
         self.draw_floor(map_arr, 0, 0)
         self.get_floor(map_arr, 1, 0, 1)
         self.x += 1
-        curses.beep()
+        
         
         self.draw_player(map_arr, 0, 0)
         return True
@@ -66,7 +69,7 @@ class Player:
         self.draw_floor(map_arr, 0, 0)
         self.get_floor(map_arr, 0, -1, 1)
         self.y -= 1
-        curses.beep()
+        
         
         self.draw_player(map_arr, 0, 0)
         return True
@@ -78,26 +81,7 @@ class Player:
         self.draw_floor(map_arr, 0, 0)
         self.get_floor(map_arr, 0, 1, 1)
         self.y += 1
-        curses.beep()
+       
 
         self.draw_player(map_arr, 0, 0)
         return True
-
-class Inventory:
-    def __init__(self, x, y, width, height):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-
-    def create_inventory(self, stdscr):
-        #rectangle(stdscr, self.y, self.x, self.y+self.height, self.x+self.width)
-        rectangle(stdscr, self.y, self.x, self.y+self.height, self.x+self.width)
-        stdscr.addstr(self.y, self.x + 3, f" Inventory ")
-        
-        invwin = curses.newwin(self.height, self.width, self.y, self.x)
-        #invpad.refresh(self.y+1, self.x+1, 1, 1, self.y+self.height-1, self.x+self.width-1)
-        invwin.addstr(2, 2, "Item 1x")
-        
-        invwin.refresh()
-

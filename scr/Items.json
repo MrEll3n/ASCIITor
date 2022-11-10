@@ -1,0 +1,53 @@
+{
+    "weapons":
+    [
+        {
+            "name" : "Iron Sword",
+            "desc" : "The Iron Sword looks like the Wooden Sword but a dark grey color.",
+            "lvl" : 1,
+            "dmg" : 2
+        },
+        {
+            "name" : "Iron Axe",
+            "desc" : "Like all Axes, an Iron Axe is most useful for cutting trees and other wood objects. But for cutting heads is good aswell!",
+            "lvl" : 2,
+            "dmg" : 4
+        }
+    ],
+    
+    "armor":
+    [
+        {
+            "name" : "Iron Helmet",
+            "desc" : "Good for protection, but have you tried it as a bowl?",
+            "lvl" : 1,
+            "defense" : 2
+        },
+        {
+            "name" : "Iron Chestplate",
+            "desc" : "Many fashion designers were inspired by this model. Really good with Iron Leggins.",
+            "lvl" : 1,
+            "defense" : 4
+        },
+        {
+            "name" : "Iron Leggins",
+            "desc" : "Not very kind to your washing machine.",
+            "lvl" : 1,
+            "defense" : 3
+        },
+        {
+            "name" : "Iron Boots",
+            "desc" : "Orthopedists use these shoes as a last resort for flat feet.",
+            "lvl" : 1,
+            "defense" : 1
+        }
+    ],
+    "food":
+    [
+        {
+            "name" : "Beef Jerky",
+            "desc" : "Beef Jerky is created with lean cuts of beef cut into strips and dried to preserve the flavor in a convenient, hand-held snack.",
+            "reg" : 10
+        }
+    ]
+}

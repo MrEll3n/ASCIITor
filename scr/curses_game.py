@@ -5,7 +5,8 @@ import time
 from curses import wrapper
 from curses.textpad import Textbox, rectangle
 from perlin_noise import PerlinNoise
-from player import Player, Inventory
+from player import Player
+from hud import Window
 from camera import Camera
 
 
@@ -117,7 +118,7 @@ def main(stdscr):
 
     noise = PerlinNoise(octaves=OCTAVE, seed=random.randrange(0, 100000000)) # random.randrange(0, 100000)
 
-    map = [[noise([i/(GAME_X*0.5), j/(GAME_Y*1.7)]) for j in range(GAME_X)]for i in range(GAME_Y)]
+    map = [[noise([i/(GAME_X*0.2), j/(GAME_Y*1.7)]) for j in range(GAME_X)]for i in range(GAME_Y)]
 
 
     curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_YELLOW)
@@ -175,19 +176,35 @@ def main(stdscr):
 
     stdscr.nodelay(True)
     
+
+
+
+
+
+
+
+
     #player setup
     p = Player(GAME_X//2, GAME_Y//2, 100, 100, 5, 10, game_pad, map)
     
     #inventory setup
-    i = Inventory(162, 1, 46, 25)
-    i.create_inventory(stdscr)
+    i = Window(1, 162, 25, 46, "Inventory")
+    i.create_window()
 
+        #i = Inventory(162, 1, 46, 25)
+        #i.create_inventory_window(stdscr)
 
+    #stats setup
+        #s = Stats(p, 162, 27, 46, 12)
+        #s.create_stats_window(stdscr)
     #stdscr.addstr(40, 40, f"Floor: {p.floor}")
 
-    while True:
-        
+    
 
+    #stdscr.addstr(42, 1, f"PX: {p.x}")
+    #stdscr.addstr(42, 10, f"PY: {p.y}")
+
+    while True:
         
         try:
             key = stdscr.getkey()
@@ -201,7 +218,8 @@ def main(stdscr):
                 #    CAM_X -= 1
                 
                 #stdscr.clear()
-
+                
+                
             elif key == "KEY_RIGHT":
                 move_cam = p.move_right(map, GAME_X)
                 
@@ -256,12 +274,13 @@ def main(stdscr):
 
 
 
-        rectangle(stdscr, 27, 162, 49, 208)
-        stdscr.addstr(27, 165, f" Stats ")
+        #rectangle(stdscr, 27, 162, 49, 208)
+        #stdscr.addstr(27, 165, f" Stats ")
 
+        #s.print_all()
+        #s.update_stats(p)
         
-        stdscr.refresh()
-        
+        #stdscr.refresh()
     
 
 
