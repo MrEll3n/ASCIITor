@@ -19,30 +19,33 @@ class Window():
             self.maxmana = p.maxmana
             self.strength = p.strength
             self.defense = p.defense
+    
+    def update_stats(self, p):
+        self.hp = p.hp
+        self.maxhp = p.maxhp
+        self.mana = p.mana
+        self.maxmana = p.maxmana
+        self.strength = p.strength
+        self.defense = p.defense
 
-
-
-    def create_window(self):
-        
-        self.win = curses.newwin(self.height, self.width, self.y, self.x)
+    def clear_window(self):
+        self.win.clear()
         self.win.border()
-        #rectangle(stdscr, self.y, self.x, self.y+self.height, self.x+self.width)
-        #rectangle(self.win, 0, 0, 25, 44)
         if self.name != "":
             self.win.addstr(0, 3, f" {self.name} ")
-        
-       
-        #invpad.refresh(self.y+1, self.x+1, 1, 1, self.y+self.height-1, self.x+self.width-1)
-        #invwin.addstr(2, 2, "Item 1x")
-        
         self.win.refresh()
+
+    def create_window(self):
+        self.win = curses.newwin(self.height, self.width, self.y, self.x)
+        self.clear_window()        
     
-    def print_stats(self):
-        #if self.win_type == "stats":
+    def print_stats(self, p):
+        self.clear_window()
+        self.update_stats(p)
         self.win.addstr(2, 1, f"HP: {self.hp} / {self.maxhp}")
         self.win.addstr(3, 1, f"MP: {self.mana} / {self.maxmana}")
-        self.win.addstr(4, 1, f"STR: {self.strength}")
-        self.win.addstr(5, 1, f"DEF: {self.defense}")
+        self.win.addstr(5, 1, f"STR: {self.strength}")
+        self.win.addstr(6, 1, f"DEF: {self.defense}")
         self.win.refresh()
 
 

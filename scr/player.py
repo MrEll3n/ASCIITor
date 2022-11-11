@@ -86,5 +86,6 @@ class Player:
         self.draw_player(map_arr, 0, 0)
         return True
     
+
     def get_item(self, item):
         pass

@@ -8,6 +8,7 @@ from perlin_noise import PerlinNoise
 from player import Player
 from hud import Window
 from camera import Camera
+from tile import Tile
 
 
 
@@ -134,9 +135,10 @@ def main(stdscr):
 
     for i in range(len(map)):
         for j in range(len(map[i])):
+            x = ""
             #" .:-=+*#%@"
             if map[i][j] < -0.5:
-                map[i][j] = "W" # " "
+                map[i][j] =  # " "
             elif map[i][j] >= -0.5 and map[i][j] < -0.4:
                 map[i][j] = "." # .
             elif map[i][j] >= -0.4 and map[i][j] < -0.3:
@@ -202,7 +204,7 @@ def main(stdscr):
     stats.create_window()
 
     #HLine under game window
-    stdscr.hline(CAM_HEIGHT+1, 75, "-", (CAM_WIDTH//2)+7)
+    stdscr.hline(CAM_HEIGHT+1, 75, 45, (CAM_WIDTH//2)+7)
 
     #info-menu setup
     infomenu = Window("info" , 36, 0, 15, 75, "")
@@ -216,7 +218,7 @@ def main(stdscr):
     #stdscr.addstr(42, 1, f"PX: {p.x}")
     #stdscr.addstr(42, 10, f"PY: {p.y}")
 
-    stats.print_stats()
+    stats.print_stats(p)
 
     while True:
         
@@ -233,7 +235,7 @@ def main(stdscr):
                 
                 #stdscr.clear()
                 
-                
+
             elif key == "KEY_RIGHT":
                 move_cam = p.move_right(map, GAME_X)
                 
