@@ -198,14 +198,17 @@ def main(stdscr):
     #stats setup
         #s = Stats(p, 162, 27, 46, 12)
         #s.create_stats_window(stdscr)
-    stats = Window("stats", 26, 162, 25, 46, "Stats", p)
+    stats = Window("stats", 26, 162, 11, 46, "Stats", p)
     stats.create_window()
 
+    #HLine under game window
+    stdscr.hline(CAM_HEIGHT+1, 75, "-", (CAM_WIDTH//2)+7)
+
     #info-menu setup
-    infomenu = Window("info" , 36, 0, 15, 75, "", )
+    infomenu = Window("info" , 36, 0, 15, 75, "")
     infomenu.create_window()
 
-
+    
     #stdscr.addstr(40, 40, f"Floor: {p.floor}")
 
     
@@ -213,7 +216,7 @@ def main(stdscr):
     #stdscr.addstr(42, 1, f"PX: {p.x}")
     #stdscr.addstr(42, 10, f"PY: {p.y}")
 
-    stats.print_data()
+    stats.print_stats()
 
     while True:
         

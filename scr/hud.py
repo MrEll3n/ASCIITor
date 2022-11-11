@@ -4,7 +4,7 @@ from curses.textpad import Textbox, rectangle
 
 
 class Window():
-    def __init__(self, win_type, y, x, height, width, name="", p=None):
+    def __init__(self, win_type, y, x, height, width, name, p=None):
         self.win_type = win_type
         self.x = x
         self.y = y
@@ -12,13 +12,15 @@ class Window():
         self.height = height
         self.name = name
 
-        if self.win_type == "stats" and p is not None: 
+        if self.win_type == "stats" and p: 
             self.hp = p.hp
-            self.maxhp = p.hp
+            self.maxhp = p.maxhp
             self.mana = p.mana
-            self.maxmana = p.hp
+            self.maxmana = p.maxmana
             self.strength = p.strength
             self.defense = p.defense
+
+
 
     def create_window(self):
         
@@ -35,16 +37,13 @@ class Window():
         
         self.win.refresh()
     
-    def print_data(self):
-        match self.win_type:
-            #case "inv":
-                #for item in self.inv_lst:
-                #    self.win.addstr(enumerate(item) + 1, 1, f"{item.name}")
-            case "stats":
-                self.win.addstr(2, 1, f"{self.hp}/{self.maxhp}")
-                self.win.addstr(3, 1, f"{self.mana}/{self.maxmana}")
-                self.win.addstr(4, 1, f"{self.strength}")
-                self.win.addstr(5, 1, f"{self.defense}")
+    def print_stats(self):
+        #if self.win_type == "stats":
+        self.win.addstr(2, 1, f"HP: {self.hp} / {self.maxhp}")
+        self.win.addstr(3, 1, f"MP: {self.mana} / {self.maxmana}")
+        self.win.addstr(4, 1, f"STR: {self.strength}")
+        self.win.addstr(5, 1, f"DEF: {self.defense}")
+        self.win.refresh()
 
 
 
