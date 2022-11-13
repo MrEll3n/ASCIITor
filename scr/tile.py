@@ -11,7 +11,7 @@ tile_type = {
 }
 
 
-class Tile():
+class Tile:
     def __init__(self, type):
         self.type = type
         self.char = tile_type[type]

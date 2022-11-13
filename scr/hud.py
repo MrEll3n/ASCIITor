@@ -3,7 +3,7 @@ from curses.textpad import Textbox, rectangle
 
 
 
-class Window():
+class Window:
     def __init__(self, win_type, y, x, height, width, name, p=None):
         self.win_type = win_type
         self.x = x
@@ -19,7 +19,13 @@ class Window():
             self.maxmana = p.maxmana
             self.strength = p.strength
             self.defense = p.defense
-    
+
+        if self.win_type == "info":
+            self.info_array = []
+
+        self.win = curses.newwin(self.height, self.width, self.y, self.x)
+        self.clear_window()
+
     def update_stats(self, p):
         self.hp = p.hp
         self.maxhp = p.maxhp
@@ -35,9 +41,9 @@ class Window():
             self.win.addstr(0, 3, f" {self.name} ")
         self.win.refresh()
 
-    def create_window(self):
-        self.win = curses.newwin(self.height, self.width, self.y, self.x)
-        self.clear_window()        
+    #def create_window(self):
+    #    self.win = curses.newwin(self.height, self.width, self.y, self.x)
+    #    self.clear_window()
     
     def print_stats(self, p):
         self.clear_window()
@@ -46,6 +52,16 @@ class Window():
         self.win.addstr(3, 2, f"MP: {self.mana} / {self.maxmana}")
         self.win.addstr(5, 2, f"STR: {self.strength}")
         self.win.addstr(6, 2, f"DEF: {self.defense}")
+        self.win.refresh()
+
+    def print_info(self, string):
+        self.info_array.insert(0, string)
+        self.win.clear()
+        self.win.border()
+        if len(self.info_array) > self.height-2:
+            self.info_array.pop()
+        for index, item in enumerate(self.info_array):
+            self.win.addstr(index+1, 1, f">{item}")
         self.win.refresh()
 
 
@@ -61,9 +77,7 @@ class Window():
 
 
 
-
-
-
+'''
 class Inventory:
     def __init__(self, x, y, width, height):
         self.x = x
@@ -136,3 +150,4 @@ class Stats:
         self.print_strength()
         self.print_defense()
         self.statswin.refresh()
+'''

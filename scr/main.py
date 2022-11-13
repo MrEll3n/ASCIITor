@@ -113,8 +113,8 @@ def main(stdscr):
 
     map = [[noise([i / (GAME_X * 0.2), j / (GAME_Y * 1.7)]) for j in range(GAME_X)] for i in range(GAME_Y)]
 
-    #curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_YELLOW)
-    #BLUE_AND_YELLOW = curses.color_pair(1)
+    # curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_YELLOW)
+    # BLUE_AND_YELLOW = curses.color_pair(1)
 
     game_pad = curses.newpad(GAME_Y, GAME_X)
     # player_win = curses.newwin(CAM_HEIGHT, CAM_WIDTH, 1, 0)
@@ -173,7 +173,7 @@ def main(stdscr):
 
     # inventory setup
     inv = Window("inv", 1, 162, 25, 46, "Inventory")
-    inv.create_window()
+    # inv.create_window()
 
     # i = Inventory(162, 1, 46, 25)
     # i.create_inventory_window(stdscr)
@@ -182,14 +182,14 @@ def main(stdscr):
     # s = Stats(p, 162, 27, 46, 12)
     # s.create_stats_window(stdscr)
     stats = Window("stats", 26, 162, 11, 46, "Stats", p)
-    stats.create_window()
+    # stats.create_window()
 
     # HLine under game window
     stdscr.hline(CAM_HEIGHT + 1, 75, 45, (CAM_WIDTH // 2) + 7)
 
     # info-menu setup
     infomenu = Window("info", 36, 0, 15, 75, "")
-    infomenu.create_window()
+    # infomenu.create_window()
 
     # stdscr.addstr(40, 40, f"Floor: {p.floor}")
 
@@ -204,25 +204,51 @@ def main(stdscr):
             key = stdscr.getkey()
             if key == "KEY_LEFT":
                 move_cam = p.move_left(map)
+                if not p.can_left(map):
+                    infomenu.print_info("You hit the wall!")
+                # Debuging:
+                else:
+                    infomenu.print_info("You moved left.")
+                # end
                 if not p.x >= GAME_X - (CAM_WIDTH // 2) - 1 and CAM_X > 0 and move_cam:
                     CAM_X -= 1
 
+
             elif key == "KEY_RIGHT":
                 move_cam = p.move_right(map, GAME_X)
+                if not p.can_right(map, GAME_X):
+                    infomenu.print_info("You hit the wall!")
+                # Debuging:
+                else:
+                    infomenu.print_info("You moved right.")
+                # end
                 if p.x > CAM_WIDTH // 2 and move_cam and CAM_X <= GAME_X - CAM_WIDTH - 2:
                     CAM_X += 1
 
-                # stdscr.clear()
 
             elif key == "KEY_UP":
                 move_cam = p.move_up(map)
+                if not p.can_up(map):
+                    infomenu.print_info("You hit the wall!")
+                # Debuging:
+                else:
+                    infomenu.print_info("You moved up.")
+                # end
                 if not p.y >= GAME_Y - (CAM_HEIGHT // 2) - 1 and CAM_Y > 0 and move_cam:
                     CAM_Y -= 1
 
+
             elif key == "KEY_DOWN":
                 move_cam = p.move_down(map, GAME_Y)
+                if not p.can_down(map, GAME_Y):
+                    infomenu.print_info("You hit the wall!")
+                # Debuging:
+                else:
+                    infomenu.print_info("You moved down.")
+                # end
                 if p.y > CAM_HEIGHT // 2 and move_cam and CAM_Y <= GAME_Y - CAM_HEIGHT - 1:
                     CAM_Y += 1
+
 
             elif key == "q":
                 curses.endwin()
