@@ -40,6 +40,7 @@ class Player:
 
     def move_left(self, map_arr):
         if not (self.x > 0 and self.get_floor(map_arr, -1, 0, 0) != "#"):
+
             return False
 
         self.draw_floor(map_arr, 0, 0)

@@ -42,10 +42,10 @@ class Window():
     def print_stats(self, p):
         self.clear_window()
         self.update_stats(p)
-        self.win.addstr(2, 1, f"HP: {self.hp} / {self.maxhp}")
-        self.win.addstr(3, 1, f"MP: {self.mana} / {self.maxmana}")
-        self.win.addstr(5, 1, f"STR: {self.strength}")
-        self.win.addstr(6, 1, f"DEF: {self.defense}")
+        self.win.addstr(2, 2, f"HP: {self.hp} / {self.maxhp}")
+        self.win.addstr(3, 2, f"MP: {self.mana} / {self.maxmana}")
+        self.win.addstr(5, 2, f"STR: {self.strength}")
+        self.win.addstr(6, 2, f"DEF: {self.defense}")
         self.win.refresh()
 
 
