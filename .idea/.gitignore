@@ -1,4 +1,5 @@
 # Default ignored files
+/__pycache__
 /shelf/
 /workspace.xml
 # Editor-based HTTP Client requests
