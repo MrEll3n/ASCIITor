@@ -125,9 +125,6 @@ def main(stdscr):
 
     for i in range(len(map)):
         for j in range(len(map[i])):
-            # x = f"tileID#{i}{j}"
-            # x = Tile()
-            # " .:-=+*#%@"
             if map[i][j] < -0.5:
                 map[i][j] = [".", "b"]  # " "
             elif -0.5 <= map[i][j] < -0.4:
