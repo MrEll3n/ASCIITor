@@ -95,7 +95,7 @@ def main(stdscr):
 
     stdscr.clear()
     LOADING_LABEL = "Generating terrain..."
-    stdscr.addstr(curses.LINES // 2, (curses.COLS // 2) - 8, LOADING_LABEL)
+    stdscr.addstr(curses.LINES // 2, (curses.COLS // 2) - 9, LOADING_LABEL)
     stdscr.refresh()
 
     CAM_WIDTH = 161
@@ -129,42 +129,42 @@ def main(stdscr):
             # x = Tile()
             # " .:-=+*#%@"
             if map[i][j] < -0.5:
-                map[i][j] = "."  # " "
+                map[i][j] = [".", "b"]  # " "
             elif -0.5 <= map[i][j] < -0.4:
-                map[i][j] = "."  # .
+                map[i][j] = [".", "b"]  # .
             elif -0.4 <= map[i][j] < -0.3:
-                map[i][j] = " "  # .
+                map[i][j] = [" ", "b"]  # .
             elif -0.3 <= map[i][j] < -0.2:
-                map[i][j] = " "  # -
+                map[i][j] = [" ", "b"]  # -
             elif -0.2 <= map[i][j] < -0.1:
-                map[i][j] = " "  # -
+                map[i][j] = [" ", "b"]  # -
             elif -0.1 <= map[i][j] < 0:
-                map[i][j] = " "  # =
+                map[i][j] = [" ", "b"]  # =
             elif 0 <= map[i][j] < 0.1:
-                map[i][j] = "."  # +
+                map[i][j] = [".", "b"]  # +
             elif 0.1 <= map[i][j] < 0.2:
-                map[i][j] = ":"  # *
+                map[i][j] = [":", "b"]  # *
             elif 0.2 <= map[i][j] < 0.3:
-                map[i][j] = "#"  # #
+                map[i][j] = ["#", "b"]  # #
             elif 0.3 <= map[i][j] < 0.4:
-                map[i][j] = " "  # %
+                map[i][j] = [" ", "b"]  # %
             elif 0.4 <= map[i][j] < 0.5:
-                map[i][j] = " "  # @
+                map[i][j] = [" ", "b"]  # @
             elif map[i][j] > 0.5:
-                map[i][j] = " "  # @
+                map[i][j] = [" ", "b"]  # @
 
     os.system("")
     for i in range(len(map)):
         for j in range(len(map[i]) - 1):
-            match map[i][j]:
+            match map[i][j][0]:
                 case ".":
-                    game_pad.addstr(i, j, f"{map[i][j]}", curses.A_DIM)
+                    game_pad.addstr(i, j, f"{map[i][j][0]}", curses.A_DIM)
                 case ":":
-                    game_pad.addstr(i, j, f"{map[i][j]}")
+                    game_pad.addstr(i, j, f"{map[i][j][0]}")
                 case "#":
-                    game_pad.addstr(i, j, f"{map[i][j]}", curses.A_PROTECT)
+                    game_pad.addstr(i, j, f"{map[i][j][0]}", curses.A_PROTECT)
                 case _:
-                    game_pad.addstr(i, j, f"{map[i][j]}")
+                    game_pad.addstr(i, j, f"{map[i][j][0]}")
 
     stdscr.nodelay(True)
 
@@ -217,10 +217,10 @@ def main(stdscr):
             elif key == "KEY_RIGHT":
                 move_cam = p.move_right(map, GAME_X)
                 if not p.can_right(map, GAME_X):
-                    infomenu.print_info("You hit the wall!")
+                    infomenu.print_info(f"You hit the wall!")
                 # Debuging:
                 else:
-                    infomenu.print_info("You moved right.")
+                    infomenu.print_info(f"You moved right.")
                 # end
                 if p.x > CAM_WIDTH // 2 and move_cam and CAM_X <= GAME_X - CAM_WIDTH - 2:
                     CAM_X += 1
@@ -229,10 +229,10 @@ def main(stdscr):
             elif key == "KEY_UP":
                 move_cam = p.move_up(map)
                 if not p.can_up(map):
-                    infomenu.print_info("You hit the wall!")
+                    infomenu.print_info(f"You hit the wall!")
                 # Debuging:
                 else:
-                    infomenu.print_info("You moved up.")
+                    infomenu.print_info(f"You moved up.")
                 # end
                 if not p.y >= GAME_Y - (CAM_HEIGHT // 2) - 1 and CAM_Y > 0 and move_cam:
                     CAM_Y -= 1
@@ -241,10 +241,10 @@ def main(stdscr):
             elif key == "KEY_DOWN":
                 move_cam = p.move_down(map, GAME_Y)
                 if not p.can_down(map, GAME_Y):
-                    infomenu.print_info("You hit the wall!")
+                    infomenu.print_info(f"You hit the wall!")
                 # Debuging:
                 else:
-                    infomenu.print_info("You moved down.")
+                    infomenu.print_info(f"You moved down.")
                 # end
                 if p.y > CAM_HEIGHT // 2 and move_cam and CAM_Y <= GAME_Y - CAM_HEIGHT - 1:
                     CAM_Y += 1

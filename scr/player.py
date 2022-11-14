@@ -24,17 +24,17 @@ class Player:
 
     def get_floor(self, map_arr, offset_x, offset_y, remember_bool):
         if remember_bool == 1:
-            self.floor = str(map_arr[self.y + offset_y][self.x + offset_x])
+            self.floor = str(map_arr[self.y + offset_y][self.x + offset_x][0])
             return self.floor
         elif remember_bool == 0:
-            return str(map_arr[self.y + offset_y][self.x + offset_x])
+            return str(map_arr[self.y + offset_y][self.x + offset_x][0])
 
     def draw_player(self, map_arr, offset_x, offset_y):
-        map_arr[self.y + offset_y][self.x + offset_x] = "@"
+        map_arr[self.y + offset_y][self.x + offset_x][0] = "@"
         self.game_pad.addstr(self.y + offset_y, self.x + offset_x, "@")
 
     def draw_floor(self, map_arr, offset_x, offset_y):
-        map_arr[self.y + offset_y][self.x + offset_x] = self.floor
+        map_arr[self.y + offset_y][self.x + offset_x][0] = self.floor
         if self.floor == ".":
             self.game_pad.addstr(self.y + offset_y, self.x + offset_x, f"{self.floor}", curses.A_DIM)
         else:
