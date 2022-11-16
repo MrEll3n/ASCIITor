@@ -9,6 +9,7 @@ from perlin_noise import PerlinNoise
 from player import Player
 from hud import Window
 from camera import Camera
+import items
 from tile import Tile
 
 
@@ -162,6 +163,25 @@ def main(stdscr):
                     game_pad.addstr(i, j, f"{map[i][j][0]}", curses.A_PROTECT)
                 case _:
                     game_pad.addstr(i, j, f"{map[i][j][0]}")
+
+    # Random item generation
+    items_world = []
+    for i in range(len(map)):
+        for j in range(len(map[i]) - 1):
+            if random.randrange(0, 100) < 1:
+                match random.randrange(1, 3):
+                    case 1:
+                        items_world.append(items.Weapon())
+                    case 2:
+                        items_world.append(items.Armor())
+                    case 3:
+                        items_world.append(items.Weapon())
+
+
+
+
+
+
 
     stdscr.nodelay(True)
 

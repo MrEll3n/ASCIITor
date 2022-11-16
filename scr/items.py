@@ -1,21 +1,22 @@
-items = [
-    "Weapon",
-    "Armor",
-    "Food"
-]
+items = {
+    1: "Weapon",
+    2: "Armor",
+    3: "Food"
+}
 
 
-def generate_item_rand(x, y):
-
+def generate_random_item(items, x, y):
+    pass
 
 
 class Item:
-    def __init__(self, x, y):
+    def __init__(self, item_key, x, y):
+        self.item_key
         self.x = x
         self.y = y
 
 
-class Weapon(Item):
+class Weapon:
     def __init__(self, name, desc, lvl, dmg):
         self.name = name
         self.desc = desc
@@ -23,7 +24,7 @@ class Weapon(Item):
         self.dmg = dmg
 
 
-class Armor(Item):
+class Armor:
     def __init__(self, name, desc, lvl, defense):
         self.name = name
         self.desc = desc
@@ -31,7 +32,7 @@ class Armor(Item):
         self.defense = defense
 
 
-class Food(Item):
+class Food:
     def __init__(self, name, desc, reg):
         self.name = name
         self.desc = desc
