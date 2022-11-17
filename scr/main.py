@@ -1,6 +1,7 @@
 import os
 import curses
 import random
+import json
 import time
 from curses import wrapper
 from curses.textpad import Textbox, rectangle
@@ -145,11 +146,11 @@ def main(stdscr):
             elif 0.2 <= map[i][j] < 0.3:
                 map[i][j] = ["#", "b"]  # #
             elif 0.3 <= map[i][j] < 0.4:
-                map[i][j] = [" ", "b"]  # %
+                map[i][j] = ["░", "b"]  # %
             elif 0.4 <= map[i][j] < 0.5:
-                map[i][j] = [" ", "b"]  # @
+                map[i][j] = ["░", "b"]  # @
             elif map[i][j] > 0.5:
-                map[i][j] = [" ", "b"]  # @
+                map[i][j] = ["░", "b"]  # @
 
     os.system("")
     for i in range(len(map)):
@@ -161,23 +162,8 @@ def main(stdscr):
                     game_pad.addstr(i, j, f"{map[i][j][0]}")
                 case "#":
                     game_pad.addstr(i, j, f"{map[i][j][0]}", curses.A_PROTECT)
-                case _:
+                case other:
                     game_pad.addstr(i, j, f"{map[i][j][0]}")
-
-    # Random item generation
-    items_world = []
-    for i in range(len(map)):
-        for j in range(len(map[i]) - 1):
-            if random.randrange(0, 100) < 1:
-                match random.randrange(1, 3):
-                    case 1:
-                        items_world.append(items.Weapon())
-                    case 2:
-                        items_world.append(items.Armor())
-                    case 3:
-                        items_world.append(items.Weapon())
-
-
 
 
 
@@ -202,7 +188,7 @@ def main(stdscr):
     # stats.create_window()
 
     # HLine under game window
-    stdscr.hline(CAM_HEIGHT + 1, 75, 45, (CAM_WIDTH // 2) + 7)
+    stdscr.hline(CAM_HEIGHT + 1, 75, 9472, (CAM_WIDTH // 2) + 7)
 
     # info-menu setup
     infomenu = Window("info", 36, 0, 15, 75, "")
@@ -222,10 +208,10 @@ def main(stdscr):
             if key == "KEY_LEFT":
                 move_cam = p.move_left(map)
                 if not p.can_left(map):
-                    infomenu.print_info("You hit the wall!")
+                    infomenu.print_info("*You hit the wall*")
                 # Debuging:
                 else:
-                    infomenu.print_info("You moved left.")
+                    infomenu.print_info("*You moved left*")
                 # end
                 if not p.x >= GAME_X - (CAM_WIDTH // 2) - 1 and CAM_X > 0 and move_cam:
                     CAM_X -= 1
@@ -234,10 +220,10 @@ def main(stdscr):
             elif key == "KEY_RIGHT":
                 move_cam = p.move_right(map, GAME_X)
                 if not p.can_right(map, GAME_X):
-                    infomenu.print_info(f"You hit the wall!")
+                    infomenu.print_info(f"*You hit the wall*")
                 # Debuging:
                 else:
-                    infomenu.print_info(f"You moved right.")
+                    infomenu.print_info(f"*You moved right*")
                 # end
                 if p.x > CAM_WIDTH // 2 and move_cam and CAM_X <= GAME_X - CAM_WIDTH - 2:
                     CAM_X += 1
@@ -246,10 +232,10 @@ def main(stdscr):
             elif key == "KEY_UP":
                 move_cam = p.move_up(map)
                 if not p.can_up(map):
-                    infomenu.print_info(f"You hit the wall!")
+                    infomenu.print_info(f"*You hit the wall*")
                 # Debuging:
                 else:
-                    infomenu.print_info(f"You moved up.")
+                    infomenu.print_info(f"*You moved up*")
                 # end
                 if not p.y >= GAME_Y - (CAM_HEIGHT // 2) - 1 and CAM_Y > 0 and move_cam:
                     CAM_Y -= 1
@@ -258,10 +244,10 @@ def main(stdscr):
             elif key == "KEY_DOWN":
                 move_cam = p.move_down(map, GAME_Y)
                 if not p.can_down(map, GAME_Y):
-                    infomenu.print_info(f"You hit the wall!")
+                    infomenu.print_info(f"*You hit the wall*")
                 # Debuging:
                 else:
-                    infomenu.print_info(f"You moved down.")
+                    infomenu.print_info(f"*You moved down*")
                 # end
                 if p.y > CAM_HEIGHT // 2 and move_cam and CAM_Y <= GAME_Y - CAM_HEIGHT - 1:
                     CAM_Y += 1
