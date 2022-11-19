@@ -108,5 +108,5 @@ class Player:
         else:
             return True
 
-    def get_item(self, item):
+    def pickup_item(self):
         pass

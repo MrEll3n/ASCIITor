@@ -165,6 +165,35 @@ def main(stdscr):
                 case other:
                     game_pad.addstr(i, j, f"{map[i][j][0]}")
 
+    # Item Generation
+    with open('Items.json', 'r') as f:
+        item_list = json.load(f)
+
+    items_world = []
+    for i in range(len(map)):
+        for j in range(len(map[i]) - 1):
+            if map[i][j][1] == "b":
+                if map[i][j][0] == " " or map[i][j][0] == "." or map[i][j][0] == ":" or map[i][j][0] == "W":
+                    if random.randrange(0, 5000) < 1:
+                        match random.randrange(0, 3):
+                            # Weapon creation
+                            case 0:
+                                print(f"#{i + 1} - Weapon\n")
+                                weapon_arr = [item for item in item_list["weapons"][random.randrange(len(item_list["weapons"]))].values()]
+                                items_world.append(items.Weapon(map, game_pad, i, j, weapon_arr[0], weapon_arr[1], weapon_arr[2], weapon_arr[3]))
+
+                            # Armor creation
+                            case 1:
+                                print(f"#{i + 1} - Armor\n")
+                                armor_arr = [item for item in item_list["armor"][random.randrange(len(item_list["armor"]))].values()]
+                                items_world.append(items.Armor(map, game_pad, i, j, armor_arr[0], armor_arr[1], armor_arr[2], armor_arr[3]))
+
+                            # Food creation
+                            case 2:
+                                print(f"#{i + 1} - Food\n")
+                                food_arr = [item for item in item_list["food"][random.randrange(len(item_list["food"]))].values()]
+                                items_world.append(items.Food(map, game_pad, i, j, food_arr[0], food_arr[1], food_arr[2]))
+
 
 
 
