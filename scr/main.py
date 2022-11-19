@@ -146,11 +146,11 @@ def main(stdscr):
             elif 0.2 <= map[i][j] < 0.3:
                 map[i][j] = ["#", "b"]  # #
             elif 0.3 <= map[i][j] < 0.4:
-                map[i][j] = ["░", "b"]  # %
+                map[i][j] = [" ", "b"]  # %
             elif 0.4 <= map[i][j] < 0.5:
-                map[i][j] = ["░", "b"]  # @
+                map[i][j] = [" ", "b"]  # @
             elif map[i][j] > 0.5:
-                map[i][j] = ["░", "b"]  # @
+                map[i][j] = [" ", "b"]  # @
 
     os.system("")
     for i in range(len(map)):
