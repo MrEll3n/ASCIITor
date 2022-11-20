@@ -29,6 +29,13 @@ class Player:
         elif remember_bool == 0:
             return str(map_arr[self.y + offset_y][self.x + offset_x][0])
 
+    def get_floor_type(self, map_arr, offset_x, offset_y, remember_bool):
+        if remember_bool == 1:
+            self.floor = str(map_arr[self.y + offset_y][self.x + offset_x][1])
+            return self.floor
+        elif remember_bool == 0:
+            return str(map_arr[self.y + offset_y][self.x + offset_x][1])
+
     def draw_player(self, map_arr, offset_x, offset_y):
         map_arr[self.y + offset_y][self.x + offset_x][0] = "@"
         self.game_pad.addstr(self.y + offset_y, self.x + offset_x, "@")
@@ -108,5 +115,8 @@ class Player:
         else:
             return True
 
-    def pickup_item(self):
-        pass
+    def pickup_item(self, map_arr, items_world, offset_x, offset_y):
+        if self.get_floor_type(self, map_arr, offset_x, offset_y, 0) == "i":
+            
+            self.inv_lst.append(items_world)
+

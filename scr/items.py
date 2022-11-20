@@ -12,11 +12,11 @@ class Item:
             return str(map_arr[self.y + offset_y][self.x + offset_x][0])
 
     def draw_item(self, map_arr, offset_x, offset_y):
-        map_arr[self.y + offset_y][self.x + offset_x][0] = self.char
+        map_arr[self.y + offset_y][self.x + offset_x][0] = [self.char, "i"]
         self.game_pad.addstr(self.y + offset_y, self.x + offset_x, f"{self.char}")
 
     def draw_floor(self, map_arr, offset_x, offset_y):
-        map_arr[self.y + offset_y][self.x + offset_x][0] = self.floor
+        map_arr[self.y + offset_y][self.x + offset_x][0] = [self.floor, "b"]
         if self.floor == ".":
             self.game_pad.addstr(self.y + offset_y, self.x + offset_x, f"{self.floor}", curses.A_DIM)
         else:
@@ -123,7 +123,8 @@ if __name__ == "__main__":
                 # Food creation
                 case 2:
                     print(f"#{i + 1} - Food\n")
-                    food_arr = [item for item in item_list["food"][random.randrange(len(item_list["food"]))].values()]
+                    food_arr = [item for item in
+                                item_list["food"][random.randrange(len(item_list["food"]))].values()]
                     items_world.append(Food(i, 0, food_arr[0], food_arr[1], food_arr[2]))
                 # items_world.append(items.Weapon())
 
