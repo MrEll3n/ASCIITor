@@ -1,4 +1,5 @@
 import curses
+import items
 from hud import Window as win
 from curses.textpad import Textbox, rectangle
 import time
@@ -29,12 +30,8 @@ class Player:
         elif remember_bool == 0:
             return str(map_arr[self.y + offset_y][self.x + offset_x][0])
 
-    def get_floor_type(self, map_arr, offset_x, offset_y, remember_bool):
-        if remember_bool == 1:
-            self.floor = str(map_arr[self.y + offset_y][self.x + offset_x][1])
-            return self.floor
-        elif remember_bool == 0:
-            return str(map_arr[self.y + offset_y][self.x + offset_x][1])
+    def get_floor_type(self, map_arr, offset_x, offset_y):
+        return str(map_arr[self.y + offset_y][self.x + offset_x][1])
 
     def draw_player(self, map_arr, offset_x, offset_y):
         map_arr[self.y + offset_y][self.x + offset_x][0] = "@"
@@ -116,7 +113,9 @@ class Player:
             return True
 
     def pickup_item(self, map_arr, items_world, offset_x, offset_y):
-        if self.get_floor_type(self, map_arr, offset_x, offset_y, 0) == "i":
-            
-            self.inv_lst.append(items_world)
-
+        if self.get_floor_type(self, map_arr, offset_x, offset_y) == "i":
+            if items_world:
+                for item in items_world:
+                    if item.x == self.x and item.y == self.y:
+                        self.inv_lst.append(item)
+                        map_arr[self.y + offset_y][self.x + offset_x][0] = [item.floor, "b"][0]

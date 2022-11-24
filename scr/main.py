@@ -178,25 +178,29 @@ def main(stdscr):
                         match random.randrange(0, 3):
                             # Weapon creation
                             case 0:
-                                print(f"#{i + 1} - Weapon\n")
-                                weapon_arr = [item for item in item_list["weapons"][random.randrange(len(item_list["weapons"]))].values()]
-                                items_world.append(items.Weapon(map, game_pad, i, j, weapon_arr[0], weapon_arr[1], weapon_arr[2], weapon_arr[3]))
+                                # print(f"#{i + 1} - Weapon\n")
+                                weapon_arr = [item for item in item_list["weapons"][
+                                    random.randrange(len(item_list["weapons"]))].values()]
+                                items_world.append(
+                                    items.Weapon(map, game_pad, i, j, weapon_arr[0], weapon_arr[1], weapon_arr[2],
+                                                 weapon_arr[3]))
 
                             # Armor creation
                             case 1:
-                                print(f"#{i + 1} - Armor\n")
-                                armor_arr = [item for item in item_list["armor"][random.randrange(len(item_list["armor"]))].values()]
-                                items_world.append(items.Armor(map, game_pad, i, j, armor_arr[0], armor_arr[1], armor_arr[2], armor_arr[3]))
+                                # print(f"#{i + 1} - Armor\n")
+                                armor_arr = [item for item in
+                                             item_list["armor"][random.randrange(len(item_list["armor"]))].values()]
+                                items_world.append(
+                                    items.Armor(map, game_pad, i, j, armor_arr[0], armor_arr[1], armor_arr[2],
+                                                armor_arr[3]))
 
                             # Food creation
                             case 2:
-                                print(f"#{i + 1} - Food\n")
-                                food_arr = [item for item in item_list["food"][random.randrange(len(item_list["food"]))].values()]
-                                items_world.append(items.Food(map, game_pad, i, j, food_arr[0], food_arr[1], food_arr[2]))
-
-
-
-
+                                # print(f"#{i + 1} - Food\n")
+                                food_arr = [item for item in
+                                            item_list["food"][random.randrange(len(item_list["food"]))].values()]
+                                items_world.append(
+                                    items.Food(map, game_pad, i, j, food_arr[0], food_arr[1], food_arr[2]))
 
     stdscr.nodelay(True)
 
@@ -281,10 +285,19 @@ def main(stdscr):
                 if p.y > CAM_HEIGHT // 2 and move_cam and CAM_Y <= GAME_Y - CAM_HEIGHT - 1:
                     CAM_Y += 1
 
+            elif key == "g":
+                infomenu.print_info(f"{p.get_floor_type(map, 0, 0, )}")
+                # infomenu.print_info(f"{items_world}")
+                if p.pickup_item(map, items_world, 0, 0):
+                    infomenu.print_info(f"Works")
+
+
 
             elif key == "q":
                 curses.endwin()
                 exit()
+            else:
+                infomenu.print_info(f"{key}")
         except:
             pass
 

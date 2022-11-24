@@ -12,7 +12,7 @@ class Item:
             return str(map_arr[self.y + offset_y][self.x + offset_x][0])
 
     def draw_item(self, map_arr, offset_x, offset_y):
-        map_arr[self.y + offset_y][self.x + offset_x][0] = [self.char, "i"]
+        map_arr[self.y + offset_y][self.x + offset_x] = [self.char, "i"]
         self.game_pad.addstr(self.y + offset_y, self.x + offset_x, f"{self.char}")
 
     def draw_floor(self, map_arr, offset_x, offset_y):
