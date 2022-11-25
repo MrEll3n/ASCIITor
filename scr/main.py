@@ -10,7 +10,7 @@ from perlin_noise import PerlinNoise
 from player import Player
 from hud import Window
 from camera import Camera
-import items
+from items import Weapon, Armor, Food
 from tile import Tile
 
 
@@ -182,7 +182,7 @@ def main(stdscr):
                                 weapon_arr = [item for item in item_list["weapons"][
                                     random.randrange(len(item_list["weapons"]))].values()]
                                 items_world.append(
-                                    items.Weapon(map, game_pad, i, j, weapon_arr[0], weapon_arr[1], weapon_arr[2],
+                                    Weapon(map, game_pad, i, j, weapon_arr[0], weapon_arr[1], weapon_arr[2],
                                                  weapon_arr[3]))
 
                             # Armor creation
@@ -191,7 +191,7 @@ def main(stdscr):
                                 armor_arr = [item for item in
                                              item_list["armor"][random.randrange(len(item_list["armor"]))].values()]
                                 items_world.append(
-                                    items.Armor(map, game_pad, i, j, armor_arr[0], armor_arr[1], armor_arr[2],
+                                    Armor(map, game_pad, i, j, armor_arr[0], armor_arr[1], armor_arr[2],
                                                 armor_arr[3]))
 
                             # Food creation
@@ -200,7 +200,7 @@ def main(stdscr):
                                 food_arr = [item for item in
                                             item_list["food"][random.randrange(len(item_list["food"]))].values()]
                                 items_world.append(
-                                    items.Food(map, game_pad, i, j, food_arr[0], food_arr[1], food_arr[2]))
+                                    Food(map, game_pad, i, j, food_arr[0], food_arr[1], food_arr[2]))
 
     stdscr.nodelay(True)
 
@@ -286,16 +286,19 @@ def main(stdscr):
                     CAM_Y += 1
 
             elif key == "g":
-                infomenu.print_info(f"{p.get_floor_type(map, 0, 0, )}")
+                #infomenu.print_info(f"{p.get_floor_type(map, 0, 0)}")
                 # infomenu.print_info(f"{items_world}")
-                if p.pickup_item(map, items_world, 0, 0):
-                    infomenu.print_info(f"Works")
+                if p.get_floor_type(map, 0, 0) == "i":
+                    infomenu.print_info(f"1st works!")
+                infomenu.print_info(f"{p.pickup_item(map, items_world, 0, 0)}")
+                # if p.pickup_item(map,items_world, 0, 0):
+                #     infomenu.print_info(f"2nd Works!")
 
 
 
             elif key == "q":
-                curses.endwin()
-                exit()
+                # os.system("")
+                pass
             else:
                 infomenu.print_info(f"{key}")
         except:

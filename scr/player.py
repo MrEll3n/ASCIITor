@@ -113,9 +113,10 @@ class Player:
             return True
 
     def pickup_item(self, map_arr, items_world, offset_x, offset_y):
-        if self.get_floor_type(self, map_arr, offset_x, offset_y) == "i":
-            if items_world:
-                for item in items_world:
-                    if item.x == self.x and item.y == self.y:
-                        self.inv_lst.append(item)
-                        map_arr[self.y + offset_y][self.x + offset_x][0] = [item.floor, "b"][0]
+        a = (self.get_floor_type(map_arr, 0, 0))
+        return self.get_floor_type(map_arr, 0, 0)
+            #for item in items_world:
+            #    if item.x == self.x and item.y == self.y:
+            #        self.inv_lst.append(item)
+            #        map_arr[self.y + offset_y][self.x + offset_x][0] = [item.floor, "b"][0]
+
