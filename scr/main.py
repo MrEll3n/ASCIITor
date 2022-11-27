@@ -286,19 +286,11 @@ def main(stdscr):
                     CAM_Y += 1
 
             elif key == "g":
-                #infomenu.print_info(f"{p.get_floor_type(map, 0, 0)}")
-                # infomenu.print_info(f"{items_world}")
-                if p.get_floor_type(map, 0, 0) == "i":
-                    infomenu.print_info(f"1st works!")
+                # infomenu.print_info(f"{p.get_floor_type(map, 0, 0)}")
                 infomenu.print_info(f"{p.pickup_item(map, items_world, 0, 0)}")
-                # if p.pickup_item(map,items_world, 0, 0):
-                #     infomenu.print_info(f"2nd Works!")
-
-
 
             elif key == "q":
-                # os.system("")
-                pass
+                break
             else:
                 infomenu.print_info(f"{key}")
         except:
@@ -324,7 +316,8 @@ def main(stdscr):
         # s.update_stats(p)
 
         # stdscr.refresh()
-
-
+    
+    curses.endwin()
+    exit()
 if __name__ == '__main__':
     wrapper(main)

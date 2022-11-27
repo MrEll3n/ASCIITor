@@ -1,5 +1,5 @@
 import curses
-import items
+from items import Item
 from hud import Window as win
 from curses.textpad import Textbox, rectangle
 import time
@@ -113,10 +113,9 @@ class Player:
             return True
 
     def pickup_item(self, map_arr, items_world, offset_x, offset_y):
-        a = (self.get_floor_type(map_arr, 0, 0))
-        return self.get_floor_type(map_arr, 0, 0)
-            #for item in items_world:
-            #    if item.x == self.x and item.y == self.y:
-            #        self.inv_lst.append(item)
-            #        map_arr[self.y + offset_y][self.x + offset_x][0] = [item.floor, "b"][0]
-
+        if self.get_floor_type(map_arr, offset_x, offset_y) == "i":
+            for item in items_world:
+                if item.x == self.x and item.y == self.y:
+                    self.inv_lst.append(item)
+                    map_arr[self.y + offset_y][self.x + offset_x][0] = [Item.floor, "b"][0]
+        return len(self.inv_lst)
