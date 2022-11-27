@@ -117,5 +117,5 @@ class Player:
             for item in items_world:
                 if item.x == self.x and item.y == self.y:
                     self.inv_lst.append(item)
-                    map_arr[self.y + offset_y][self.x + offset_x][0] = [Item.floor, "b"][0]
-        return len(self.inv_lst)
+                    self.floor = [item.floor, "b"][0]
+        return f"{len(self.inv_lst)} - {self.inv_lst}"
