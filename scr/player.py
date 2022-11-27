@@ -118,4 +118,6 @@ class Player:
                 if item.x == self.x and item.y == self.y:
                     self.inv_lst.append(item)
                     self.floor = [item.floor, "b"][0]
-        return f"{len(self.inv_lst)} - {self.inv_lst}"
+                    return True
+        else:
+            return False

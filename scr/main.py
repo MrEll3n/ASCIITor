@@ -287,7 +287,11 @@ def main(stdscr):
 
             elif key == "g":
                 # infomenu.print_info(f"{p.get_floor_type(map, 0, 0)}")
-                infomenu.print_info(f"{p.pickup_item(map, items_world, 0, 0)}")
+                if p.pickup_item(map, items_world, 0, 0):
+                    inv.print_inv(p)
+                    infomenu.print_info(f"You picked up {p.inv_lst[-1].name}")
+                else:
+                    infomenu.print_info(f"There is no item under you!")
 
             elif key == "q":
                 break
