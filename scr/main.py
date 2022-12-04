@@ -244,7 +244,8 @@ def main(stdscr):
                     infomenu.print_info("*You hit the wall*")
                 # Debuging:
                 else:
-                    infomenu.print_info("*You moved left*")
+                    pass
+                    # infomenu.print_info("*You moved left*")
                 # end
                 if not p.x >= GAME_X - (CAM_WIDTH // 2) - 1 and CAM_X > 0 and move_cam:
                     CAM_X -= 1
@@ -256,7 +257,8 @@ def main(stdscr):
                     infomenu.print_info(f"*You hit the wall*")
                 # Debuging:
                 else:
-                    infomenu.print_info(f"*You moved right*")
+                    pass
+                    # infomenu.print_info(f"*You moved right*")
                 # end
                 if p.x > CAM_WIDTH // 2 and move_cam and CAM_X <= GAME_X - CAM_WIDTH - 2:
                     CAM_X += 1
@@ -268,7 +270,8 @@ def main(stdscr):
                     infomenu.print_info(f"*You hit the wall*")
                 # Debuging:
                 else:
-                    infomenu.print_info(f"*You moved up*")
+                    pass
+                    # infomenu.print_info(f"*You moved up*")
                 # end
                 if not p.y >= GAME_Y - (CAM_HEIGHT // 2) - 1 and CAM_Y > 0 and move_cam:
                     CAM_Y -= 1
@@ -280,7 +283,8 @@ def main(stdscr):
                     infomenu.print_info(f"*You hit the wall*")
                 # Debuging:
                 else:
-                    infomenu.print_info(f"*You moved down*")
+                    pass
+                    # infomenu.print_info(f"*You moved down*")
                 # end
                 if p.y > CAM_HEIGHT // 2 and move_cam and CAM_Y <= GAME_Y - CAM_HEIGHT - 1:
                     CAM_Y += 1
