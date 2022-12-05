@@ -3,6 +3,7 @@ import random
 import os
 
 
+
 class Item:
     def get_floor(self, map_arr, offset_x, offset_y, remember_bool):
         if remember_bool == 1:
@@ -24,13 +25,14 @@ class Item:
 
 
 class Weapon(Item):
-    def __init__(self, map_arr, game_pad, x, y, name, desc, lvl, dmg):
+    def __init__(self, map_arr, game_pad, x, y, name, desc, lvl, dmg, weight):
         self.x = x
         self.y = y
         self.name = name
         self.desc = desc
         self.lvl = lvl
         self.dmg = dmg
+        self.weight = weight
         self.char = "("
         self.map = map_arr
         self.game_pad = game_pad
@@ -48,13 +50,14 @@ class Weapon(Item):
 
 
 class Armor(Item):
-    def __init__(self, map_arr, game_pad, x, y, name, desc, lvl, defense):
+    def __init__(self, map_arr, game_pad, x, y, name, desc, lvl, defense, weight):
         self.x = x
         self.y = y
         self.name = name
         self.desc = desc
         self.lvl = lvl
         self.defense = defense
+        self.weight = weight
         self.char = "T"
         self.map = map_arr
         self.game_pad = game_pad
@@ -72,12 +75,13 @@ class Armor(Item):
 
 
 class Food(Item):
-    def __init__(self, map_arr, game_pad, x, y, name, desc, reg):
+    def __init__(self, map_arr, game_pad, x, y, name, desc, reg, weight):
         self.x = x
         self.y = y
         self.name = name
         self.desc = desc
         self.reg = reg
+        self.weight = weight
         self.char = "F"
         self.map = map_arr
         self.game_pad = game_pad

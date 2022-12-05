@@ -6,7 +6,7 @@ import time
 
 
 class Player:
-    def __init__(self, x, y, hp, mana, strength, defense, game_pad, map):
+    def __init__(self, x, y, hp, mana, strength, defense, carry, game_pad, map):
         self.x = x
         self.y = y
         self.hp = hp
@@ -15,6 +15,7 @@ class Player:
         self.maxmana = self.hp
         self.strength = strength
         self.defense = defense
+        self.carry = carry
         self.floor = ""
         self.game_pad = game_pad
         self.map = map
@@ -112,12 +113,16 @@ class Player:
         else:
             return True
 
-    def pickup_item(self, map_arr, items_world, offset_x, offset_y):
+    def pickup_item(self, p, map_arr, items_world, offset_x, offset_y):
         if self.get_floor_type(map_arr, offset_x, offset_y) == "i":
-            for item in items_world:
-                if item.x == self.x and item.y == self.y:
-                    self.inv_lst.append(item)
-                    self.floor = [item.floor, "b"][0]
-                    return True
+            # TODO: fix not pickuping while overcarried
+            if <= p.carry:
+                for item in items_world:
+                    if item.x == self.x and item.y == self.y:
+                        self.inv_lst.append(item)
+                        self.floor = [item.floor, "b"][0]
+                        return True
+            else:
+                return "full_bag"
         else:
             return False

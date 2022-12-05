@@ -22,6 +22,9 @@ class Window:
         if self.win_type == "info":
             self.info_array = []
 
+        if self.win_type == "inv":
+            pass
+
         self.win = curses.newwin(self.height, self.width, self.y, self.x)
         self.clear_window()
 
@@ -75,6 +78,15 @@ class Window:
 
     def print_inv(self, p):
         self.clear_window()
-        for index, item in enumerate(p.inv_lst):
-            self.win.addstr(index + 1, 2, f"{index+1}. - {item.name}")
+        self.total_weight = 0.0
+
+        for index, item in enumerate(p.inv_lst, start=1):
+            maxyx = self.win.getmaxyx()
+            self.win.addstr(index + 2, 2, f"{index}. - {item.name}")
+            self.win.addstr(index + 2, maxyx[1] - 8, f"{item.weight} kg")
+
+        for item in p.inv_lst:
+            self.total_weight += item.weight
+
+        self.win.addstr(1, maxyx[1] - 11, f"{round(self.total_weight, 1)}/{p.carry} kg")
         self.win.refresh()

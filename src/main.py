@@ -183,7 +183,7 @@ def main(stdscr):
                                     random.randrange(len(item_list["weapons"]))].values()]
                                 items_world.append(
                                     Weapon(map, game_pad, i, j, weapon_arr[0], weapon_arr[1], weapon_arr[2],
-                                                 weapon_arr[3]))
+                                           weapon_arr[3], weapon_arr[4]))
 
                             # Armor creation
                             case 1:
@@ -192,7 +192,7 @@ def main(stdscr):
                                              item_list["armor"][random.randrange(len(item_list["armor"]))].values()]
                                 items_world.append(
                                     Armor(map, game_pad, i, j, armor_arr[0], armor_arr[1], armor_arr[2],
-                                                armor_arr[3]))
+                                          armor_arr[3], armor_arr[4]))
 
                             # Food creation
                             case 2:
@@ -200,15 +200,16 @@ def main(stdscr):
                                 food_arr = [item for item in
                                             item_list["food"][random.randrange(len(item_list["food"]))].values()]
                                 items_world.append(
-                                    Food(map, game_pad, i, j, food_arr[0], food_arr[1], food_arr[2]))
+                                    Food(map, game_pad, i, j, food_arr[0], food_arr[1], food_arr[2], food_arr[3]))
 
     stdscr.nodelay(True)
 
     # player setup
-    p = Player(GAME_X // 2, GAME_Y // 2, 100, 100, 5, 10, game_pad, map)
+    p = Player(GAME_X // 2, GAME_Y // 2, 100, 100, 5, 10, 20, game_pad, map)
 
     # inventory setup
     inv = Window("inv", 1, 162, 25, 46, "Inventory")
+    #inv.print_inv(p)
     # inv.create_window()
 
     # i = Inventory(162, 1, 46, 25)
@@ -235,7 +236,6 @@ def main(stdscr):
     stats.print_stats(p)
 
     while True:
-
         try:
             key = stdscr.getkey()
             if key == "KEY_LEFT":
@@ -291,9 +291,11 @@ def main(stdscr):
 
             elif key == "g":
                 # infomenu.print_info(f"{p.get_floor_type(map, 0, 0)}")
-                if p.pickup_item(map, items_world, 0, 0):
+                if p.pickup_item(p, map, items_world, 0, 0):
                     inv.print_inv(p)
                     infomenu.print_info(f"You picked up {p.inv_lst[-1].name}")
+                elif p.pickup_item(p, map, items_world, 0, 0) == "full_bag":
+                    infomenu.print_info(f"You can't carry more items!")
                 else:
                     infomenu.print_info(f"There is no item under you!")
 
@@ -324,8 +326,10 @@ def main(stdscr):
         # s.update_stats(p)
 
         # stdscr.refresh()
-    
+
     curses.endwin()
     exit()
+
+
 if __name__ == '__main__':
     wrapper(main)
