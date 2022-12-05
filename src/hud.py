@@ -82,13 +82,14 @@ class Window:
         self.clear_window()
 
         for index, item in enumerate(p.inv_lst, start=1):
-            self.win.addstr(index + 2, 2, f"{index}. - {item.name}")
-            self.win.addstr(index + 2, self.max_y_x[1] - 8, f"{item.weight} kg")
+            self.win.addstr(index + 2, 2, f"{index}. | {item.name}")
+            self.win.addstr(index + 2, self.max_y_x[1] - 9, f"{item.weight} kg")
 
         if len(p.inv_lst) > 0:
             p.inv_weight += p.inv_lst[0].weight
 
         # Generating labels
         self.win.addstr(1, self.max_y_x[1] - 12, f"{round(p.inv_weight, 1)}/{p.carry} kg")
-        self.win.addstr(1, 2, f"ID |  Name")
+        self.win.addstr(1, 2, f"ID | Name")
+        self.win.hline(2, 2, "-", self.max_y_x[1] - 4)
         self.win.refresh()
