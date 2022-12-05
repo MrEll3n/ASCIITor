@@ -209,7 +209,7 @@ def main(stdscr):
 
     # inventory setup
     inv = Window("inv", 1, 162, 25, 46, "Inventory")
-    #inv.print_inv(p)
+    inv.print_inv(p)
     # inv.create_window()
 
     # i = Inventory(162, 1, 46, 25)
@@ -291,13 +291,14 @@ def main(stdscr):
 
             elif key == "g":
                 # infomenu.print_info(f"{p.get_floor_type(map, 0, 0)}")
-                if p.pickup_item(p, map, items_world, 0, 0):
-                    inv.print_inv(p)
-                    infomenu.print_info(f"You picked up {p.inv_lst[-1].name}")
-                elif p.pickup_item(p, map, items_world, 0, 0) == "full_bag":
-                    infomenu.print_info(f"You can't carry more items!")
-                else:
-                    infomenu.print_info(f"There is no item under you!")
+                match p.pickup_item(map, items_world, 0, 0):
+                    case "yes":
+                        inv.print_inv(p)
+                        infomenu.print_info(f"You picked up {p.inv_lst[0].name}")
+                    case "overcarried":
+                        infomenu.print_info(f"You're overloaded!")
+                    case "no_item":
+                        infomenu.print_info(f"There is no item under you!")
 
             elif key == "q":
                 break

@@ -20,6 +20,7 @@ class Player:
         self.game_pad = game_pad
         self.map = map
         self.inv_lst = []
+        self.inv_weight = 0.0
 
         self.floor = self.get_floor(self.map, 0, 0, 1)
         self.draw_player(self.map, 0, 0)
@@ -113,16 +114,18 @@ class Player:
         else:
             return True
 
-    def pickup_item(self, p, map_arr, items_world, offset_x, offset_y):
+    def pickup_item(self, map_arr, items_world, offset_x, offset_y):
         if self.get_floor_type(map_arr, offset_x, offset_y) == "i":
-            # TODO: fix not pickuping while overcarried
-            if <= p.carry:
+            if self.inv_weight <= self.carry:
                 for item in items_world:
                     if item.x == self.x and item.y == self.y:
-                        self.inv_lst.append(item)
-                        self.floor = [item.floor, "b"][0]
-                        return True
+                        if (item.weight + self.inv_weight) < self.carry:
+                            self.inv_lst.insert(0, item)
+                            self.floor = [item.floor, "b"][0]
+                            return "yes"
+                        else:
+                            return "overcarried"
             else:
-                return "full_bag"
+                return "overcarried"
         else:
-            return False
+            return "no_item"

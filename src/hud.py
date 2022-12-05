@@ -26,6 +26,8 @@ class Window:
             pass
 
         self.win = curses.newwin(self.height, self.width, self.y, self.x)
+        self.max_y_x = self.win.getmaxyx()
+
         self.clear_window()
 
     def update_stats(self, p):
@@ -37,7 +39,7 @@ class Window:
         self.defense = p.defense
 
     def clear_window(self):
-        #self.win.clear()
+        self.win.clear()
         # self.win.border()
         if self.win_type == "info":
             self.win.border(0, 0, 0, 0, 0, 9516, 0, 0)
@@ -78,15 +80,15 @@ class Window:
 
     def print_inv(self, p):
         self.clear_window()
-        self.total_weight = 0.0
 
         for index, item in enumerate(p.inv_lst, start=1):
-            maxyx = self.win.getmaxyx()
             self.win.addstr(index + 2, 2, f"{index}. - {item.name}")
-            self.win.addstr(index + 2, maxyx[1] - 8, f"{item.weight} kg")
+            self.win.addstr(index + 2, self.max_y_x[1] - 8, f"{item.weight} kg")
 
-        for item in p.inv_lst:
-            self.total_weight += item.weight
+        if len(p.inv_lst) > 0:
+            p.inv_weight += p.inv_lst[0].weight
 
-        self.win.addstr(1, maxyx[1] - 11, f"{round(self.total_weight, 1)}/{p.carry} kg")
+        # Generating labels
+        self.win.addstr(1, self.max_y_x[1] - 12, f"{round(p.inv_weight, 1)}/{p.carry} kg")
+        self.win.addstr(1, 2, f"ID |  Name")
         self.win.refresh()
