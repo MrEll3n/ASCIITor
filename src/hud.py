@@ -82,11 +82,10 @@ class Window:
         self.clear_window()
 
         for index, item in enumerate(p.inv_lst, start=1):
-            self.win.addstr(index + 2, 2, f"{index}. | {item.name}")
-            self.win.addstr(index + 2, self.max_y_x[1] - 9, f"{item.weight} kg")
+            self.win.addstr(index + 2, 2, f"{index}. | {item[0].name} {item[1]}x")
+            self.win.addstr(index + 2, self.max_y_x[1] - 9, f"{item[0].weight*item[1]} kg")  # Generating item's weight
 
-        if len(p.inv_lst) > 0:
-            p.inv_weight += p.inv_lst[0].weight
+        p.add_inv_weight()  # Player function that calculates inventory weight
 
         # Generating labels
         self.win.addstr(1, self.max_y_x[1] - 12, f"{round(p.inv_weight, 1)}/{p.carry} kg")

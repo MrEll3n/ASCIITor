@@ -299,6 +299,13 @@ def main(stdscr):
                         infomenu.print_info(f"You're overloaded!")
                     case "no_item":
                         infomenu.print_info(f"There is no item under you!")
+                    case "working":
+                        infomenu.print_info(f"Working!!")
+                    case "error":
+                        infomenu.print_info(f"Error!!")
+
+            elif key == "i":
+                infomenu.print_info(p.inv_lst)
 
             elif key == "q":
                 break
