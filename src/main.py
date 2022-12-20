@@ -235,10 +235,36 @@ def main(stdscr):
 
     stats.print_stats(p)
 
-    while True:
+    # creating and filling NUMBER constant for selector
+    NUMBERS = []
+    NUMBERS.extend(range(1, 21))
+
+
+    in_game = True
+    describing = False
+
+    while in_game:
         try:
             key = stdscr.getkey()
-            if key == "KEY_LEFT":
+
+            if describing:
+                if int(key) in NUMBERS:
+                    for index, item in enumerate(p.inv_lst, start=1):
+                        if index == int(key):
+                            describing = False
+                            infomenu.restore_info()
+                            infomenu.clear_buffer()
+                            infomenu.print_info(f'„{item[0].desc}“')
+                            infomenu.print_info(f'„{item[0].name}“')
+
+                else:
+                    describing = False
+                    infomenu.restore_info()
+                    infomenu.clear_buffer()
+                    infomenu.print_info("That is not a number")
+
+
+            elif key == "KEY_LEFT":
                 move_cam = p.move_left(map)
                 if not p.can_left(map):
                     infomenu.print_info("*You hit the wall*")
@@ -290,11 +316,10 @@ def main(stdscr):
                     CAM_Y += 1
 
             elif key == "g":
-                # infomenu.print_info(f"{p.get_floor_type(map, 0, 0)}")
                 match p.pickup_item(map, items_world, 0, 0):
                     case "yes":
                         inv.print_inv(p)
-                        infomenu.print_info(f"You picked up {p.inv_lst[0].name}")
+                        infomenu.print_info(f"You picked up {p.inv_lst[0][0].name}")
                     case "overcarried":
                         infomenu.print_info(f"You're overloaded!")
                     case "no_item":
@@ -305,10 +330,22 @@ def main(stdscr):
                         infomenu.print_info(f"Error!!")
 
             elif key == "i":
-                infomenu.print_info(p.inv_lst)
+                if len(p.inv_lst) > 0:
+                    describing = True
+
+                    infomenu.clear_window()
+
+                    infomenu.fill_buffer()
+                    infomenu.delete_info()
+                    infomenu.print_info(f"Choose 1) - {len(p.inv_lst)}) for describing:")
+
+                    # infomenu.print_info(f"Ahoj {p.inv_lst[select - 1][0].desc}")
+                else:
+                    infomenu.print_info(f"You have no items to describe!")
+                    # infomenu.info_array = info_array_buffer.copy()
 
             elif key == "q":
-                break
+                in_game = False
             else:
                 infomenu.print_info(f"{key}")
         except:

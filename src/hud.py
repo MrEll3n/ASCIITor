@@ -2,6 +2,7 @@ import curses
 from curses.textpad import Textbox, rectangle
 
 
+
 class Window:
     def __init__(self, win_type, y, x, height, width, name, p=None):
         self.win_type = win_type
@@ -21,6 +22,7 @@ class Window:
 
         if self.win_type == "info":
             self.info_array = []
+            self.buffer = []
 
         if self.win_type == "inv":
             pass
@@ -76,6 +78,7 @@ class Window:
         for index, item in enumerate(self.info_array):
             self.win.addstr(index + 1, 1, f"> {item}")
 
+        self.win.border(0, 0, 0, 0, 0, 9516, 0, 0)
         self.win.refresh()
 
     def print_inv(self, p):
@@ -83,7 +86,7 @@ class Window:
 
         for index, item in enumerate(p.inv_lst, start=1):
             self.win.addstr(index + 2, 2, f"{index}. | {item[0].name} {item[1]}x")
-            self.win.addstr(index + 2, self.max_y_x[1] - 9, f"{item[0].weight*item[1]} kg")  # Generating item's weight
+            self.win.addstr(index + 2, self.max_y_x[1] - 9, f"{round(item[0].weight*item[1], 1)} kg")  # Generating item's weight
 
         p.add_inv_weight()  # Player function that calculates inventory weight
 
@@ -92,3 +95,24 @@ class Window:
         self.win.addstr(1, 2, f"ID | Name")
         self.win.hline(2, 2, "-", self.max_y_x[1] - 4)
         self.win.refresh()
+
+    def delete_info(self):
+        self.info_array = []
+
+    def fill_buffer(self):
+        self.buffer = self.info_array.copy()
+
+    def clear_buffer(self):
+        self.buffer = []
+
+    def restore_info(self):
+        self.info_array = self.buffer.copy()
+
+        if len(self.info_array) > self.height - 2:
+            self.info_array.pop()
+        for index, item in enumerate(self.info_array):
+            self.win.addstr(index + 1, 1, f"> {item}")
+
+        self.win.border(0, 0, 0, 0, 0, 9516, 0, 0)
+        self.win.refresh()
+
