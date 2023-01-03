@@ -239,30 +239,70 @@ def main(stdscr):
     NUMBERS = []
     NUMBERS.extend(range(1, 21))
 
-
+    # game loop variables
     in_game = True
     describing = False
+    item_deletion = False
+
 
     while in_game:
         try:
             key = stdscr.getkey()
 
             if describing:
-                if int(key) in NUMBERS:
-                    for index, item in enumerate(p.inv_lst, start=1):
-                        if index == int(key):
+                if int(key) in NUMBERS:  # If the pressed key is a number
+                    for index, item in enumerate(p.inv_lst, start=1):  # list through items in inventory
+                        if index == int(key):  # if index of item is equal to the pressed key
                             describing = False
                             infomenu.restore_info()
                             infomenu.clear_buffer()
-                            infomenu.print_info(f'„{item[0].desc}“')
-                            infomenu.print_info(f'„{item[0].name}“')
+                            if infomenu.info_array[0] != '-----------------------------------------------------------------------':
+                                infomenu.print_info(
+                                    f'-----------------------------------------------------------------------')
+                            match item[0].__class__.__name__:  # getting class name of the object
+                                case "Armor":
+                                    infomenu.print_info(f'„{item[0].desc}“')
+                                    infomenu.print_info(f'Def: {item[0].defense}')
+                                    infomenu.print_info(f'{item[0].name} ({item[0].lvl})')
+                                    infomenu.print_info(
+                                        f'-----------------------------------------------------------------------')
+                                case "Weapon":
+                                    infomenu.print_info(f'„{item[0].desc}“')
+                                    infomenu.print_info(f'Dmg: {item[0].dmg}')
+                                    infomenu.print_info(f'{item[0].name} ({item[0].lvl})')
+                                    infomenu.print_info(
+                                        f'-----------------------------------------------------------------------')
+                                case "Food":
+                                    infomenu.print_info(f'„{item[0].desc}“')
+                                    infomenu.print_info(f'Reg: {item[0].reg}')
+                                    infomenu.print_info(f'{item[0].name}')
+                                    infomenu.print_info(
+                                        f'-----------------------------------------------------------------------')
 
-                else:
-                    describing = False
-                    infomenu.restore_info()
-                    infomenu.clear_buffer()
-                    infomenu.print_info("That is not a number")
+                        else:
+                            describing = False
+                            infomenu.restore_info()
+                            infomenu.clear_buffer()
+                            infomenu.print_info("That is not a number")
 
+            elif item_deletion:
+                if int(key) in NUMBERS:  # If the pressed key is a number
+                    for index, item in enumerate(p.inv_lst, start=1):  # list through items in inventory
+                        if index == int(key):  # if index of item is equal to the pressed key
+                            infomenu.delete_info()
+                            infomenu.print_info("y/n")
+                            infomenu.print_info(f'Do you want to delete {item[0].name}?')
+
+
+                            infomenu.restore_info()
+                            infomenu.clear_buffer()
+
+
+                        else:
+                            describing = False
+                            infomenu.restore_info()
+                            infomenu.clear_buffer()
+                            infomenu.print_info("That is not a number")
 
             elif key == "KEY_LEFT":
                 move_cam = p.move_left(map)
@@ -343,6 +383,22 @@ def main(stdscr):
                 else:
                     infomenu.print_info(f"You have no items to describe!")
                     # infomenu.info_array = info_array_buffer.copy()
+
+            elif key == "d":
+                if len(p.inv_lst) > 0:
+                    item_deletion = True
+
+                    infomenu.clear_window()
+
+                    infomenu.fill_buffer()
+                    infomenu.delete_info()
+                    infomenu.print_info(f"Choose 1) - {len(p.inv_lst)}) to delete an item:")
+
+                    # infomenu.print_info(f"Ahoj {p.inv_lst[select - 1][0].desc}")
+                else:
+                    infomenu.print_info(f"You have no items to delete!")
+                    # infomenu.info_array = info_array_buffer.copy()
+
 
             elif key == "q":
                 in_game = False
