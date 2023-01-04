@@ -249,7 +249,8 @@ def main(stdscr):
         try:
             key = stdscr.getkey()
 
-            if describing:
+            while describing:
+                if int(key): pass
                 if int(key) in NUMBERS:  # If the pressed key is a number
                     for index, item in enumerate(p.inv_lst, start=1):  # list through items in inventory
                         if index == int(key):  # if index of item is equal to the pressed key
@@ -285,7 +286,7 @@ def main(stdscr):
                             infomenu.clear_buffer()
                             infomenu.print_info("That is not a number")
 
-            elif item_deletion:
+            if item_deletion:
                 if int(key) in NUMBERS:  # If the pressed key is a number
                     for index, item in enumerate(p.inv_lst, start=1):  # list through items in inventory
                         if index == int(key):  # if index of item is equal to the pressed key
@@ -299,7 +300,7 @@ def main(stdscr):
 
 
                         else:
-                            describing = False
+                            item_deletion = False
                             infomenu.restore_info()
                             infomenu.clear_buffer()
                             infomenu.print_info("That is not a number")

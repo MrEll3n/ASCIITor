@@ -134,24 +134,20 @@ class Player:
             self.inv_weight += item[0].weight * item[1]
 
     def pickup_item(self, map_arr, items_world, offset_x, offset_y):
-        if self.get_floor_type(map_arr, offset_x, offset_y) == "i":
-            if self.inv_weight <= self.carry:
-                for picked_item in items_world:
-                    if picked_item.x == self.x and picked_item.y == self.y:
-                        if (picked_item.weight + self.inv_weight) < self.carry:
-                            if self.is_item_in_inventory(picked_item):
-                                self.add_to_quantity(picked_item)
-                                self.floor = [picked_item.floor][0]
-                                map_arr[self.y][self.x][1] = "b"
-                                return "yes"
-                            else:
-                                self.inv_lst.insert(0, [picked_item, 1])
-                                self.floor = [picked_item.floor][0]
-                                map_arr[self.y][self.x][1] = "b"
-                                return "yes"
-                        else:
-                            return "overcarried"
-            else:
-                return "overcarried"
-        else:
+        if not self.get_floor_type(map_arr, offset_x, offset_y) == "i":
             return "no_item"
+        if self.inv_weight <= self.carry:
+            return "overcarried"
+        for picked_item in items_world:
+            if picked_item.x == self.x and picked_item.y == self.y:
+                if not (picked_item.weight + self.inv_weight) < self.carry:
+                    return "overcarried"
+                if self.is_item_in_inventory(picked_item):
+                    self.add_to_quantity(picked_item)
+
+                else:
+                    self.inv_lst.insert(0, [picked_item, 1])
+
+                self.floor = [picked_item.floor][0]
+                map_arr[self.y][self.x][1] = "b"
+                return "yes"
