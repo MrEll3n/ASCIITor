@@ -11,6 +11,9 @@ class Window:
         self.width = width
         self.height = height
         self.name = name
+        # creating and filling NUMBER constant for selector
+        self.ABC = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+               'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
         if self.win_type == "stats" and p:
             self.hp = p.hp
@@ -85,7 +88,7 @@ class Window:
         self.clear_window()
 
         for index, item in enumerate(p.inv_lst, start=1):
-            self.win.addstr(index + 2, 2, f"{index}. | {item[0].name} {item[1]}x")
+            self.win.addstr(index + 2, 2, f"{self.ABC[index-1]}. | {item[0].name} {item[1]}x")
             self.win.addstr(index + 2, self.max_y_x[1] - 9, f"{round(item[0].weight*item[1], 1)} kg")  # Generating item's weight
 
         p.add_inv_weight()  # Player function that calculates inventory weight
@@ -115,4 +118,11 @@ class Window:
 
         self.win.border(0, 0, 0, 0, 0, 9516, 0, 0)
         self.win.refresh()
+
+    def description(self, ABC):
+        describing = True
+        while describing:
+            pass
+
+
 

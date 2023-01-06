@@ -136,7 +136,7 @@ class Player:
     def pickup_item(self, map_arr, items_world, offset_x, offset_y):
         if not self.get_floor_type(map_arr, offset_x, offset_y) == "i":
             return "no_item"
-        if self.inv_weight <= self.carry:
+        if not self.inv_weight <= self.carry:
             return "overcarried"
         for picked_item in items_world:
             if picked_item.x == self.x and picked_item.y == self.y:
