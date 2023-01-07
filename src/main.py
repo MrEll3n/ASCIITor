@@ -11,6 +11,7 @@ from player import Player
 from hud import Window
 from camera import Camera
 from items import Weapon, Armor, Food
+import gameLogic as gl
 from tile import Tile
 
 
@@ -235,7 +236,74 @@ def main(stdscr):
 
     stats.print_stats(p)
 
+    def description():
+        describing = True
+        inv.highlight = 1
 
+        inv.print_inv(p, describing)
+        while describing:
+            try:
+
+                key = stdscr.getkey()
+
+                match key:
+                    case "KEY_UP" | "KEY_LEFT":
+                        if inv.highlight <= 1:
+                            inv.highlight = len(p.inv_lst)
+                        else:
+                            inv.highlight -= 1
+                        inv.print_inv(p, describing)
+
+                    case "KEY_DOWN" | "KEY_RIGHT":
+                        if inv.highlight >= len(p.inv_lst):
+                            inv.highlight = 1
+                        else:
+                            inv.highlight += 1
+                        inv.print_inv(p, describing)
+
+                    case "KEY_RETURN" | "z":
+                        describing = False
+                        infomenu.restore_info()
+                        infomenu.clear_buffer()
+
+                        if infomenu.info_array[0] != '-----------------------------------------------------------------------':
+                            infomenu.print_info(
+                                f'-----------------------------------------------------------------------')
+                        match p.inv_lst[inv.highlight-1][0].__class__.__name__:  # getting class name of the object
+                            case "Armor":
+                                infomenu.print_info(f'„{p.inv_lst[inv.highlight-1][0].desc}“')
+                                infomenu.print_info(f'Def: {p.inv_lst[inv.highlight-1][0].defense}')
+                                infomenu.print_info(f'{p.inv_lst[inv.highlight-1][0].name} ({p.inv_lst[inv.highlight-1][0].lvl})')
+                                infomenu.print_info(
+                                    f'-----------------------------------------------------------------------')
+                                inv.print_inv(p)
+                            case "Weapon":
+                                infomenu.print_info(f'„{p.inv_lst[inv.highlight-1][0].desc}“')
+                                infomenu.print_info(f'Dmg: {p.inv_lst[inv.highlight-1][0].dmg}')
+                                infomenu.print_info(f'{p.inv_lst[inv.highlight-1][0].name} ({p.inv_lst[inv.highlight-1][0].lvl})')
+                                infomenu.print_info(
+                                    f'-----------------------------------------------------------------------')
+                                inv.print_inv(p)
+                            case "Food":
+                                infomenu.print_info(f'„{p.inv_lst[inv.highlight-1][0].desc}“')
+                                infomenu.print_info(f'Reg: {p.inv_lst[inv.highlight-1][0].reg}')
+                                infomenu.print_info(f'{p.inv_lst[inv.highlight-1][0].name}')
+                                infomenu.print_info(
+                                    f'-----------------------------------------------------------------------')
+                                inv.print_inv(p)
+
+
+                    case "c" | "^[":
+                        describing = False
+                        inv.print_inv(p)
+                        infomenu.restore_info()
+                        infomenu.clear_buffer()
+                        break
+
+
+
+            except:
+                pass
 
     # game loop variables
     in_game = True
@@ -246,7 +314,8 @@ def main(stdscr):
             key = stdscr.getkey()
 
             match key:
-            #  ---------------------------- MOVEMENT ---------------------------------------------------
+                #  ---------------------------- MOVEMENT ---------------------------------------------------
+
                 case "KEY_LEFT":
                     move_cam = p.move_left(map)
                     if not p.can_left(map):
@@ -282,7 +351,7 @@ def main(stdscr):
                         # end
                     if not p.y >= GAME_Y - (CAM_HEIGHT // 2) - 1 and CAM_Y > 0 and move_cam:
                         CAM_Y -= 1
-                    
+
                 case "KEY_DOWN":
                     move_cam = p.move_down(map, GAME_Y)
                     if not p.can_down(map, GAME_Y):
@@ -295,7 +364,8 @@ def main(stdscr):
                     if p.y > CAM_HEIGHT // 2 and move_cam and CAM_Y <= GAME_Y - CAM_HEIGHT - 1:
                         CAM_Y += 1
 
-            #  ---------------------------- ACTION ------------------------------------------------------
+                #  ---------------------------- ACTION ------------------------------------------------------
+
                 case "g":
                     match p.pickup_item(map, items_world, 0, 0):
                         case "yes":
@@ -309,11 +379,25 @@ def main(stdscr):
                             infomenu.print_info(f"Working!!")
                         case "error":
                             infomenu.print_info(f"Error!!")
-            #  ---------------------------- ACTION ------------------------------------------------------
+                case "i":
+                    if len(p.inv_lst) > 0:
+                        infomenu.clear_window()
+                        infomenu.fill_buffer()
+                        infomenu.delete_info()
+                        infomenu.print_info(f"[Up / Down] - Select | [Enter / z] - Confirm | [c] - Cancel")
+                        infomenu.print_info(f"-----------------------------------------------------------")
+                        infomenu.print_info(f"Choose for description:")
+
+                        description()
+                    else:
+                        infomenu.print_info(f"You have no items to describe!")
+
+                #  ---------------------------- SPECIAL -----------------------------------------------------
+
                 case "q":
                     in_game = False
 
-                case _: 
+                case _:
                     infomenu.print_info(f"{key}")
 
         except:
@@ -346,5 +430,3 @@ def main(stdscr):
 
 if __name__ == '__main__':
     wrapper(main)
-
-

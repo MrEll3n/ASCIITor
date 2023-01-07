@@ -28,7 +28,7 @@ class Window:
             self.buffer = []
 
         if self.win_type == "inv":
-            pass
+            self.highlight = 1
 
         self.win = curses.newwin(self.height, self.width, self.y, self.x)
         self.max_y_x = self.win.getmaxyx()
@@ -71,25 +71,29 @@ class Window:
         self.win.addstr(6, 2, f"DEF: {self.defense}")
         self.win.refresh()
 
-    def print_info(self, string):
+    def print_info(self, string, prefix=False):
         self.win.clear()
         self.info_array.insert(0, string)
         self.clear_window()
 
         if len(self.info_array) > self.height - 2:
             self.info_array.pop()
+
         for index, item in enumerate(self.info_array):
             self.win.addstr(index + 1, 1, f"> {item}")
 
         self.win.border(0, 0, 0, 0, 0, 9516, 0, 0)
         self.win.refresh()
 
-    def print_inv(self, p):
+    def print_inv(self, p, describing=False):
         self.clear_window()
 
         for index, item in enumerate(p.inv_lst, start=1):
+            if index == self.highlight and describing:
+                self.win.attron(curses.A_REVERSE)
             self.win.addstr(index + 2, 2, f"{self.ABC[index-1]}. | {item[0].name} {item[1]}x")
             self.win.addstr(index + 2, self.max_y_x[1] - 9, f"{round(item[0].weight*item[1], 1)} kg")  # Generating item's weight
+            self.win.attroff(curses.A_REVERSE)
 
         p.add_inv_weight()  # Player function that calculates inventory weight
 
@@ -118,11 +122,4 @@ class Window:
 
         self.win.border(0, 0, 0, 0, 0, 9516, 0, 0)
         self.win.refresh()
-
-    def description(self, ABC):
-        describing = True
-        while describing:
-            pass
-
-
 
