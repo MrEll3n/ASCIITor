@@ -236,6 +236,22 @@ def main(stdscr):
 
     stats.print_stats(p)
 
+    def return_item_letter():
+        for index, item in enumerate(p.inv_lst, start=1):
+            if index == inv.highlight:
+                return inv.ABC[index-1]
+
+    def description_infomenu():
+        infomenu.clear_window()
+        infomenu.delete_info()
+        infomenu.print_info(f"[Up / Down] - Select | [z] - Confirm | [c] - Cancel", False)
+        for _ in range(11):
+            infomenu.print_info(f"", False)
+
+
+
+        infomenu.print_info(f"Choose for description: {return_item_letter()}) {p.inv_lst[inv.highlight-1][0].name}", False)
+
     def description():
         describing = True
         inv.highlight = 1
@@ -253,6 +269,7 @@ def main(stdscr):
                         else:
                             inv.highlight -= 1
                         inv.print_inv(p, describing)
+                        description_infomenu()
 
                     case "KEY_DOWN" | "KEY_RIGHT":
                         if inv.highlight >= len(p.inv_lst):
@@ -260,8 +277,9 @@ def main(stdscr):
                         else:
                             inv.highlight += 1
                         inv.print_inv(p, describing)
+                        description_infomenu()
 
-                    case "KEY_RETURN" | "z":
+                    case "z":
                         describing = False
                         infomenu.restore_info()
                         infomenu.clear_buffer()
@@ -293,9 +311,10 @@ def main(stdscr):
                                 inv.print_inv(p)
 
 
-                    case "c" | "^[":
+                    case "c":
                         describing = False
                         inv.print_inv(p)
+                        infomenu.clear_window()
                         infomenu.restore_info()
                         infomenu.clear_buffer()
                         break
@@ -384,9 +403,10 @@ def main(stdscr):
                         infomenu.clear_window()
                         infomenu.fill_buffer()
                         infomenu.delete_info()
-                        infomenu.print_info(f"[Up / Down] - Select | [Enter / z] - Confirm | [c] - Cancel")
-                        infomenu.print_info(f"-----------------------------------------------------------")
-                        infomenu.print_info(f"Choose for description:")
+                        infomenu.print_info(f"[Up / Down] - Select | [z] - Confirm | [c] - Cancel", False)
+                        for _ in range(11):
+                            infomenu.print_info(f"", False)
+                        infomenu.print_info(f"Choose for description: {return_item_letter()}) {p.inv_lst[inv.highlight-1][0].name}", False)
 
                         description()
                     else:
