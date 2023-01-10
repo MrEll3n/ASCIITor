@@ -284,30 +284,30 @@ def main(stdscr):
                         infomenu.restore_info()
                         infomenu.clear_buffer()
 
-                        if infomenu.info_array[0] != '-----------------------------------------------------------------------':
+                        if infomenu.info_array[0] != '----------------------------------------------------------------------':
                             infomenu.print_info(
-                                f'-----------------------------------------------------------------------')
+                            f'----------------------------------------------------------------------')
                         match p.inv_lst[inv.highlight-1][0].__class__.__name__:  # getting class name of the object
                             case "Armor":
                                 infomenu.print_info(f'„{p.inv_lst[inv.highlight-1][0].desc}“')
                                 infomenu.print_info(f'Def: {p.inv_lst[inv.highlight-1][0].defense}')
                                 infomenu.print_info(f'{p.inv_lst[inv.highlight-1][0].name} ({p.inv_lst[inv.highlight-1][0].lvl})')
                                 infomenu.print_info(
-                                    f'-----------------------------------------------------------------------')
+                                    f'----------------------------------------------------------------------')
                                 inv.print_inv(p)
                             case "Weapon":
                                 infomenu.print_info(f'„{p.inv_lst[inv.highlight-1][0].desc}“')
                                 infomenu.print_info(f'Dmg: {p.inv_lst[inv.highlight-1][0].dmg}')
                                 infomenu.print_info(f'{p.inv_lst[inv.highlight-1][0].name} ({p.inv_lst[inv.highlight-1][0].lvl})')
                                 infomenu.print_info(
-                                    f'-----------------------------------------------------------------------')
+                                    f'----------------------------------------------------------------------')
                                 inv.print_inv(p)
                             case "Food":
                                 infomenu.print_info(f'„{p.inv_lst[inv.highlight-1][0].desc}“')
                                 infomenu.print_info(f'Reg: {p.inv_lst[inv.highlight-1][0].reg}')
                                 infomenu.print_info(f'{p.inv_lst[inv.highlight-1][0].name}')
                                 infomenu.print_info(
-                                    f'-----------------------------------------------------------------------')
+                                    f'----------------------------------------------------------------------')
                                 inv.print_inv(p)
 
 
@@ -416,6 +416,9 @@ def main(stdscr):
 
                 case "q":
                     in_game = False
+
+                case "o":
+                    infomenu.print_info(len(infomenu.info_array))
 
                 case _:
                     infomenu.print_info(f"{key}")
