@@ -11,7 +11,6 @@ from player import Player
 from hud import Window
 from camera import Camera
 from items import Weapon, Armor, Food
-import gameLogic as gl
 from tile import Tile
 
 
@@ -256,6 +255,10 @@ def main(stdscr):
         describing = True
         inv.highlight = 1
 
+        infomenu.fill_buffer()
+
+        description_infomenu()
+
         inv.print_inv(p, describing)
         while describing:
             try:
@@ -400,13 +403,6 @@ def main(stdscr):
                             infomenu.print_info(f"Error!!")
                 case "i":
                     if len(p.inv_lst) > 0:
-                        infomenu.clear_window()
-                        infomenu.fill_buffer()
-                        infomenu.delete_info()
-                        infomenu.print_info(f"[Up / Down] - Select | [z] - Confirm | [c] - Cancel", False)
-                        for _ in range(11):
-                            infomenu.print_info(f"", False)
-                        infomenu.print_info(f"Choose for description: {return_item_letter()}) {p.inv_lst[inv.highlight-1][0].name}", False)
 
                         description()
                     else:
