@@ -238,18 +238,33 @@ def main(stdscr):
     def return_item_letter():
         for index, item in enumerate(p.inv_lst, start=1):
             if index == inv.highlight:
-                return inv.ABC[index-1]
+                return inv.ABC[index - 1]
 
-    def description_infomenu():
+    def print_description_infomenu():
         infomenu.clear_window()
         infomenu.delete_info()
         infomenu.print_info(f"[Up / Down] - Select | [z] - Confirm | [c] - Cancel", False)
         for _ in range(11):
             infomenu.print_info(f"", False)
+        infomenu.print_info(f"Choose for description: {return_item_letter()}) {p.inv_lst[inv.highlight - 1][0].name}",
+                            False)
 
+    def print_deletion_infomenu():
+        infomenu.clear_window()
+        infomenu.delete_info()
+        infomenu.print_info(f"[Up / Down] - Select | [z] - Confirm | [c] - Cancel", False)
+        for _ in range(11):
+            infomenu.print_info(f"", False)
+        infomenu.print_info(f"Delete: {return_item_letter()}) {p.inv_lst[inv.highlight - 1][0].name}?", False)
 
-
-        infomenu.print_info(f"Choose for description: {return_item_letter()}) {p.inv_lst[inv.highlight-1][0].name}", False)
+    def print_deletion_infomenu_final():
+        infomenu.clear_window()
+        infomenu.delete_info()
+        infomenu.print_info(f"[y] - Yes | [n] - No", False)
+        for _ in range(11):
+            infomenu.print_info(f"", False)
+        infomenu.print_info(
+            f"Are you sure, you want to delete {return_item_letter()}) {p.inv_lst[inv.highlight - 1][0].name}?", False)
 
     def description():
         describing = True
@@ -257,7 +272,7 @@ def main(stdscr):
 
         infomenu.fill_buffer()
 
-        description_infomenu()
+        print_description_infomenu()
 
         inv.print_inv(p, describing)
         while describing:
@@ -272,7 +287,7 @@ def main(stdscr):
                         else:
                             inv.highlight -= 1
                         inv.print_inv(p, describing)
-                        description_infomenu()
+                        print_description_infomenu()
 
                     case "KEY_DOWN" | "KEY_RIGHT":
                         if inv.highlight >= len(p.inv_lst):
@@ -280,39 +295,41 @@ def main(stdscr):
                         else:
                             inv.highlight += 1
                         inv.print_inv(p, describing)
-                        description_infomenu()
+                        print_description_infomenu()
 
                     case "z":
                         describing = False
                         infomenu.restore_info()
                         infomenu.clear_buffer()
 
-                        if infomenu.info_array[0] != '----------------------------------------------------------------------':
+                        if infomenu.info_array[
+                            0] != '----------------------------------------------------------------------':
                             infomenu.print_info(
-                            f'----------------------------------------------------------------------')
-                        match p.inv_lst[inv.highlight-1][0].__class__.__name__:  # getting class name of the object
+                                f'----------------------------------------------------------------------')
+                        match p.inv_lst[inv.highlight - 1][0].__class__.__name__:  # getting class name of the object
                             case "Armor":
-                                infomenu.print_info(f'„{p.inv_lst[inv.highlight-1][0].desc}“')
-                                infomenu.print_info(f'Def: {p.inv_lst[inv.highlight-1][0].defense}')
-                                infomenu.print_info(f'{p.inv_lst[inv.highlight-1][0].name} ({p.inv_lst[inv.highlight-1][0].lvl})')
+                                infomenu.print_info(f'„{p.inv_lst[inv.highlight - 1][0].desc}“')
+                                infomenu.print_info(f'Def: {p.inv_lst[inv.highlight - 1][0].defense}')
+                                infomenu.print_info(
+                                    f'{p.inv_lst[inv.highlight - 1][0].name} ({p.inv_lst[inv.highlight - 1][0].lvl})')
                                 infomenu.print_info(
                                     f'----------------------------------------------------------------------')
                                 inv.print_inv(p)
                             case "Weapon":
-                                infomenu.print_info(f'„{p.inv_lst[inv.highlight-1][0].desc}“')
-                                infomenu.print_info(f'Dmg: {p.inv_lst[inv.highlight-1][0].dmg}')
-                                infomenu.print_info(f'{p.inv_lst[inv.highlight-1][0].name} ({p.inv_lst[inv.highlight-1][0].lvl})')
+                                infomenu.print_info(f'„{p.inv_lst[inv.highlight - 1][0].desc}“')
+                                infomenu.print_info(f'Dmg: {p.inv_lst[inv.highlight - 1][0].dmg}')
+                                infomenu.print_info(
+                                    f'{p.inv_lst[inv.highlight - 1][0].name} ({p.inv_lst[inv.highlight - 1][0].lvl})')
                                 infomenu.print_info(
                                     f'----------------------------------------------------------------------')
                                 inv.print_inv(p)
                             case "Food":
-                                infomenu.print_info(f'„{p.inv_lst[inv.highlight-1][0].desc}“')
-                                infomenu.print_info(f'Reg: {p.inv_lst[inv.highlight-1][0].reg}')
-                                infomenu.print_info(f'{p.inv_lst[inv.highlight-1][0].name}')
+                                infomenu.print_info(f'„{p.inv_lst[inv.highlight - 1][0].desc}“')
+                                infomenu.print_info(f'Reg: {p.inv_lst[inv.highlight - 1][0].reg}')
+                                infomenu.print_info(f'{p.inv_lst[inv.highlight - 1][0].name}')
                                 infomenu.print_info(
                                     f'----------------------------------------------------------------------')
                                 inv.print_inv(p)
-
 
                     case "c":
                         describing = False
@@ -327,9 +344,107 @@ def main(stdscr):
             except:
                 pass
 
+    def final_item_deletion():
+        query = True
+
+        while query:
+            try:
+                key = stdscr.getkey()
+                match key:
+                    case "y":
+                        del p.inv_lst[inv.highlight - 1]
+                        query = False
+                        item_deletion = False
+                        inv.print_inv(p)
+                        infomenu.print_info(f"You successfully deleted {p.inv_lst[inv.highlight - 1][0].name}")
+                        return "yes"
+
+                    case "n":
+                        query = False
+                        inv.print_inv(p)
+                        print_deletion_infomenu()
+                        return "no"
+
+            except:
+                pass
+
+    def item_deletion():
+        item_deletion = True
+
+        inv.highlight = 1
+
+        infomenu.fill_buffer()
+
+        print_deletion_infomenu()
+
+        inv.print_inv(p, item_deletion)
+        while item_deletion:
+            try:
+
+                key = stdscr.getkey()
+
+                match key:
+                    case "KEY_UP" | "KEY_LEFT":
+                        if inv.highlight <= 1:
+                            inv.highlight = len(p.inv_lst)
+                        else:
+                            inv.highlight -= 1
+                        inv.print_inv(p, item_deletion)
+                        print_deletion_infomenu()
+
+                    case "KEY_DOWN" | "KEY_RIGHT":
+                        if inv.highlight >= len(p.inv_lst):
+                            inv.highlight = 1
+                        else:
+                            inv.highlight += 1
+                        inv.print_inv(p, item_deletion)
+                        print_deletion_infomenu()
+
+                    case "z":
+                        # infomenu.restore_info()
+                        # infomenu.clear_buffer()
+                        infomenu.delete_info()
+                        print_deletion_infomenu_final()
+                        query = True
+
+                        while query:
+                            try:
+                                key = stdscr.getkey()
+                                match key:
+                                    case "y":
+                                        infomenu.clear_window()
+                                        infomenu.restore_info()
+                                        infomenu.clear_buffer()
+                                        infomenu.print_info(f"You successfully deleted {p.inv_lst[inv.highlight - 1][0].name}")
+
+                                        del p.inv_lst[inv.highlight - 1]
+                                        query = False
+                                        item_deletion = False
+                                        inv.print_inv(p)
+
+
+                                    case "n":
+                                        query = False
+                                        inv.print_inv(p)
+                                        print_deletion_infomenu()
+                            except:
+                                pass
+
+                    case "c":
+                        item_deletion = False
+                        inv.print_inv(p)
+                        infomenu.clear_window()
+                        infomenu.restore_info()
+                        infomenu.clear_buffer()
+                        break
+
+            except:
+                pass
+
     # game loop variables
     in_game = True
-    item_deletion = False
+    # description = False
+    # item_deletion = False
 
     while in_game:
         try:
@@ -401,12 +516,20 @@ def main(stdscr):
                             infomenu.print_info(f"Working!!")
                         case "error":
                             infomenu.print_info(f"Error!!")
+
                 case "i":
                     if len(p.inv_lst) > 0:
 
                         description()
                     else:
                         infomenu.print_info(f"You have no items to describe!")
+
+                case "d":
+                    if len(p.inv_lst) > 0:
+
+                        item_deletion()
+                    else:
+                        infomenu.print_info(f"You have no items to delete!")
 
                 #  ---------------------------- SPECIAL -----------------------------------------------------
 
