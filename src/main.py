@@ -11,6 +11,7 @@ from player import Player
 from hud import Window
 from camera import Camera
 from items import Weapon, Armor, Food
+import gameLogic as gl
 from tile import Tile
 
 
@@ -235,119 +236,193 @@ def main(stdscr):
 
     stats.print_stats(p)
 
-    # creating and filling NUMBER constant for selector
-    NUMBERS = []
-    NUMBERS.extend(range(1, 21))
+    def return_item_letter():
+        for index, item in enumerate(p.inv_lst, start=1):
+            if index == inv.highlight:
+                return inv.ABC[index-1]
+
+    def description_infomenu():
+        infomenu.clear_window()
+        infomenu.delete_info()
+        infomenu.print_info(f"[Up / Down] - Select | [z] - Confirm | [c] - Cancel", False)
+        for _ in range(11):
+            infomenu.print_info(f"", False)
 
 
+
+        infomenu.print_info(f"Choose for description: {return_item_letter()}) {p.inv_lst[inv.highlight-1][0].name}", False)
+
+    def description():
+        describing = True
+        inv.highlight = 1
+
+        inv.print_inv(p, describing)
+        while describing:
+            try:
+
+                key = stdscr.getkey()
+
+                match key:
+                    case "KEY_UP" | "KEY_LEFT":
+                        if inv.highlight <= 1:
+                            inv.highlight = len(p.inv_lst)
+                        else:
+                            inv.highlight -= 1
+                        inv.print_inv(p, describing)
+                        description_infomenu()
+
+                    case "KEY_DOWN" | "KEY_RIGHT":
+                        if inv.highlight >= len(p.inv_lst):
+                            inv.highlight = 1
+                        else:
+                            inv.highlight += 1
+                        inv.print_inv(p, describing)
+                        description_infomenu()
+
+                    case "z":
+                        describing = False
+                        infomenu.restore_info()
+                        infomenu.clear_buffer()
+
+                        if infomenu.info_array[0] != '----------------------------------------------------------------------':
+                            infomenu.print_info(
+                            f'----------------------------------------------------------------------')
+                        match p.inv_lst[inv.highlight-1][0].__class__.__name__:  # getting class name of the object
+                            case "Armor":
+                                infomenu.print_info(f'„{p.inv_lst[inv.highlight-1][0].desc}“')
+                                infomenu.print_info(f'Def: {p.inv_lst[inv.highlight-1][0].defense}')
+                                infomenu.print_info(f'{p.inv_lst[inv.highlight-1][0].name} ({p.inv_lst[inv.highlight-1][0].lvl})')
+                                infomenu.print_info(
+                                    f'----------------------------------------------------------------------')
+                                inv.print_inv(p)
+                            case "Weapon":
+                                infomenu.print_info(f'„{p.inv_lst[inv.highlight-1][0].desc}“')
+                                infomenu.print_info(f'Dmg: {p.inv_lst[inv.highlight-1][0].dmg}')
+                                infomenu.print_info(f'{p.inv_lst[inv.highlight-1][0].name} ({p.inv_lst[inv.highlight-1][0].lvl})')
+                                infomenu.print_info(
+                                    f'----------------------------------------------------------------------')
+                                inv.print_inv(p)
+                            case "Food":
+                                infomenu.print_info(f'„{p.inv_lst[inv.highlight-1][0].desc}“')
+                                infomenu.print_info(f'Reg: {p.inv_lst[inv.highlight-1][0].reg}')
+                                infomenu.print_info(f'{p.inv_lst[inv.highlight-1][0].name}')
+                                infomenu.print_info(
+                                    f'----------------------------------------------------------------------')
+                                inv.print_inv(p)
+
+
+                    case "c":
+                        describing = False
+                        inv.print_inv(p)
+                        infomenu.clear_window()
+                        infomenu.restore_info()
+                        infomenu.clear_buffer()
+                        break
+
+
+
+            except:
+                pass
+
+    # game loop variables
     in_game = True
-    describing = False
+    item_deletion = False
 
     while in_game:
         try:
             key = stdscr.getkey()
 
-            if describing:
-                if int(key) in NUMBERS:
-                    for index, item in enumerate(p.inv_lst, start=1):
-                        if index == int(key):
-                            describing = False
-                            infomenu.restore_info()
-                            infomenu.clear_buffer()
-                            infomenu.print_info(f'„{item[0].desc}“')
-                            infomenu.print_info(f'„{item[0].name}“')
+            match key:
+                #  ---------------------------- MOVEMENT ---------------------------------------------------
 
-                else:
-                    describing = False
-                    infomenu.restore_info()
-                    infomenu.clear_buffer()
-                    infomenu.print_info("That is not a number")
+                case "KEY_LEFT":
+                    move_cam = p.move_left(map)
+                    if not p.can_left(map):
+                        infomenu.print_info("*You hit the wall*")
+                    # Debuging:
+                    else:
+                        pass
+                        # infomenu.print_info("*You moved left*")
+                        # end
+                    if not p.x >= GAME_X - (CAM_WIDTH // 2) - 1 and CAM_X > 0 and move_cam:
+                        CAM_X -= 1
 
+                case "KEY_RIGHT":
+                    move_cam = p.move_right(map, GAME_X)
+                    if not p.can_right(map, GAME_X):
+                        infomenu.print_info(f"*You hit the wall*")
+                    # Debuging:
+                    else:
+                        pass
+                        # infomenu.print_info(f"*You moved right*")
+                        # end
+                    if p.x > CAM_WIDTH // 2 and move_cam and CAM_X <= GAME_X - CAM_WIDTH - 2:
+                        CAM_X += 1
 
-            elif key == "KEY_LEFT":
-                move_cam = p.move_left(map)
-                if not p.can_left(map):
-                    infomenu.print_info("*You hit the wall*")
-                # Debuging:
-                else:
-                    pass
-                    # infomenu.print_info("*You moved left*")
-                # end
-                if not p.x >= GAME_X - (CAM_WIDTH // 2) - 1 and CAM_X > 0 and move_cam:
-                    CAM_X -= 1
+                case "KEY_UP":
+                    move_cam = p.move_up(map)
+                    if not p.can_up(map):
+                        infomenu.print_info(f"*You hit the wall*")
+                    # Debuging:
+                    else:
+                        pass
+                        # infomenu.print_info(f"*You moved up*")
+                        # end
+                    if not p.y >= GAME_Y - (CAM_HEIGHT // 2) - 1 and CAM_Y > 0 and move_cam:
+                        CAM_Y -= 1
 
+                case "KEY_DOWN":
+                    move_cam = p.move_down(map, GAME_Y)
+                    if not p.can_down(map, GAME_Y):
+                        infomenu.print_info(f"*You hit the wall*")
+                    # Debuging:
+                    else:
+                        pass
+                        # infomenu.print_info(f"*You moved down*")
+                    # end
+                    if p.y > CAM_HEIGHT // 2 and move_cam and CAM_Y <= GAME_Y - CAM_HEIGHT - 1:
+                        CAM_Y += 1
 
-            elif key == "KEY_RIGHT":
-                move_cam = p.move_right(map, GAME_X)
-                if not p.can_right(map, GAME_X):
-                    infomenu.print_info(f"*You hit the wall*")
-                # Debuging:
-                else:
-                    pass
-                    # infomenu.print_info(f"*You moved right*")
-                # end
-                if p.x > CAM_WIDTH // 2 and move_cam and CAM_X <= GAME_X - CAM_WIDTH - 2:
-                    CAM_X += 1
+                #  ---------------------------- ACTION ------------------------------------------------------
 
+                case "g":
+                    match p.pickup_item(map, items_world, 0, 0):
+                        case "yes":
+                            inv.print_inv(p)
+                            infomenu.print_info(f"You picked up {p.inv_lst[0][0].name}")
+                        case "overcarried":
+                            infomenu.print_info(f"You're overloaded!")
+                        case "no_item":
+                            infomenu.print_info(f"There is no item under you!")
+                        case "working":
+                            infomenu.print_info(f"Working!!")
+                        case "error":
+                            infomenu.print_info(f"Error!!")
+                case "i":
+                    if len(p.inv_lst) > 0:
+                        infomenu.clear_window()
+                        infomenu.fill_buffer()
+                        infomenu.delete_info()
+                        infomenu.print_info(f"[Up / Down] - Select | [z] - Confirm | [c] - Cancel", False)
+                        for _ in range(11):
+                            infomenu.print_info(f"", False)
+                        infomenu.print_info(f"Choose for description: {return_item_letter()}) {p.inv_lst[inv.highlight-1][0].name}", False)
 
-            elif key == "KEY_UP":
-                move_cam = p.move_up(map)
-                if not p.can_up(map):
-                    infomenu.print_info(f"*You hit the wall*")
-                # Debuging:
-                else:
-                    pass
-                    # infomenu.print_info(f"*You moved up*")
-                # end
-                if not p.y >= GAME_Y - (CAM_HEIGHT // 2) - 1 and CAM_Y > 0 and move_cam:
-                    CAM_Y -= 1
+                        description()
+                    else:
+                        infomenu.print_info(f"You have no items to describe!")
 
+                #  ---------------------------- SPECIAL -----------------------------------------------------
 
-            elif key == "KEY_DOWN":
-                move_cam = p.move_down(map, GAME_Y)
-                if not p.can_down(map, GAME_Y):
-                    infomenu.print_info(f"*You hit the wall*")
-                # Debuging:
-                else:
-                    pass
-                    # infomenu.print_info(f"*You moved down*")
-                # end
-                if p.y > CAM_HEIGHT // 2 and move_cam and CAM_Y <= GAME_Y - CAM_HEIGHT - 1:
-                    CAM_Y += 1
+                case "q":
+                    in_game = False
 
-            elif key == "g":
-                match p.pickup_item(map, items_world, 0, 0):
-                    case "yes":
-                        inv.print_inv(p)
-                        infomenu.print_info(f"You picked up {p.inv_lst[0][0].name}")
-                    case "overcarried":
-                        infomenu.print_info(f"You're overloaded!")
-                    case "no_item":
-                        infomenu.print_info(f"There is no item under you!")
-                    case "working":
-                        infomenu.print_info(f"Working!!")
-                    case "error":
-                        infomenu.print_info(f"Error!!")
+                case "o":
+                    infomenu.print_info(len(infomenu.info_array))
 
-            elif key == "i":
-                if len(p.inv_lst) > 0:
-                    describing = True
+                case _:
+                    infomenu.print_info(f"{key}")
 
-                    infomenu.clear_window()
-
-                    infomenu.fill_buffer()
-                    infomenu.delete_info()
-                    infomenu.print_info(f"Choose 1) - {len(p.inv_lst)}) for describing:")
-
-                    # infomenu.print_info(f"Ahoj {p.inv_lst[select - 1][0].desc}")
-                else:
-                    infomenu.print_info(f"You have no items to describe!")
-                    # infomenu.info_array = info_array_buffer.copy()
-
-            elif key == "q":
-                in_game = False
-            else:
-                infomenu.print_info(f"{key}")
         except:
             pass
 
