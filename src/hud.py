@@ -108,11 +108,11 @@ class Window:
         self.win.border(0, 0, 0, 0, 0, 9516, 0, 0)
         self.win.refresh()
 
-    def print_inv(self, p, describing=False):
+    def print_inv(self, p, while_true=False):
         self.clear_window()
 
         for index, item in enumerate(p.inv_lst, start=1):
-            if index == self.highlight and describing:
+            if index == self.highlight and while_true:  # Highlight will appear when come to these condition
                 self.win.attron(curses.A_REVERSE)
             self.win.addstr(index + 2, 2, f"{self.ABC[index - 1]}) | {item[0].name} {item[1]}x")
             self.win.addstr(index + 2, self.max_y_x[1] - 9,
