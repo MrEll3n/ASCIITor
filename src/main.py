@@ -344,30 +344,6 @@ def main(stdscr):
             except:
                 pass
 
-    def final_item_deletion():
-        query = True
-
-        while query:
-            try:
-                key = stdscr.getkey()
-                match key:
-                    case "y":
-                        del p.inv_lst[inv.highlight - 1]
-                        query = False
-                        item_deletion = False
-                        inv.print_inv(p)
-                        infomenu.print_info(f"You successfully deleted {p.inv_lst[inv.highlight - 1][0].name}")
-                        return "yes"
-
-                    case "n":
-                        query = False
-                        inv.print_inv(p)
-                        print_deletion_infomenu()
-                        return "no"
-
-            except:
-                pass
-
     def item_deletion():
         item_deletion = True
 
