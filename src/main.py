@@ -235,6 +235,12 @@ def main(stdscr):
 
     stats.print_stats(p)
 
+    # setting up global variables for game loops
+    in_game_bool = True
+    description_bool = False
+    item_deletion_bool = False
+    quantity_bool = False
+
     def return_item_letter():
         for index, item in enumerate(p.inv_lst, start=1):
             if index == inv.highlight:
@@ -246,8 +252,7 @@ def main(stdscr):
         infomenu.print_info(f"[Up / Down] - Select | [z] - Confirm | [c] - Cancel", False)
         for _ in range(11):
             infomenu.print_info(f"", False)
-        infomenu.print_info(f"Choose for description: {return_item_letter()}) {p.inv_lst[inv.highlight - 1][0].name}",
-                            False)
+        infomenu.print_info(f"Choose for description: {return_item_letter()}) {p.inv_lst[inv.highlight - 1][0].name}", False)
 
     def print_deletion_infomenu():
         infomenu.clear_window()
@@ -257,7 +262,7 @@ def main(stdscr):
             infomenu.print_info(f"", False)
         infomenu.print_info(f"Delete: {return_item_letter()}) {p.inv_lst[inv.highlight - 1][0].name}?", False)
 
-    def print_deletion_infomenu_final():
+    def print_deletion_infomenu_confirmation():
         infomenu.clear_window()
         infomenu.delete_info()
         infomenu.print_info(f"[y] - Yes | [n] - No", False)
@@ -265,6 +270,88 @@ def main(stdscr):
             infomenu.print_info(f"", False)
         infomenu.print_info(
             f"Are you sure, you want to delete {return_item_letter()}) {p.inv_lst[inv.highlight - 1][0].name}?", False)
+
+    def print_deletion_infomenu_quantity():
+        infomenu.clear_window()
+        infomenu.delete_info()
+        infomenu.print_info(f"[Up / Down] - Increment / Decrement | [z] - Confirm | [c] - Cancel", False)
+        for _ in range(11):
+            infomenu.print_info(f"", False)
+        infomenu.print_info(
+            f"Quantity of {return_item_letter()}) {p.inv_lst[inv.highlight - 1][0].name}: {inv.quantity_index}x", False)
+
+    def item_deletion_quantity():
+        infomenu.delete_info()
+        print_deletion_infomenu_quantity()
+        quantity_bool = True
+        inv.item_quantity_load(p)
+
+        while quantity_bool:
+            try:
+                key = stdscr.getkey()
+                match key:
+                    case "KEY_UP" | "KEY_Right":
+                        if inv.quantity_index >= inv.max_quantity:
+                            inv.quantity_index = inv.min_quantity
+                        else:
+                            inv.quantity_index += 1
+                        print_deletion_infomenu_quantity()
+
+                    case "KEY_DOWN" | "KEY_RIGHT":
+                        if inv.quantity_index <= inv.min_quantity:
+                            inv.quantity_index = inv.max_quantity
+                        else:
+                            inv.quantity_index -= 1
+                        print_deletion_infomenu_quantity()
+
+                    case "z":
+                        quantity_bool = False
+                        item_deletion_bool = False
+
+                        item_deletion_confirmation()
+                        return True
+
+                    case "c":
+                        quantity_bool = False
+                        inv.print_inv(p)
+                        infomenu.clear_window()
+                        infomenu.restore_info()
+                        infomenu.clear_buffer()
+                        #break
+
+            except:
+                pass
+
+
+    def item_deletion_confirmation():
+        infomenu.delete_info()
+        print_deletion_infomenu_confirmation()
+        del_confirmation = True
+
+        while del_confirmation:
+            try:
+                key = stdscr.getkey()
+                match key:
+                    case "y":
+                        infomenu.clear_window()
+                        infomenu.restore_info()
+                        infomenu.clear_buffer()
+                        infomenu.print_info(f"You successfully deleted {p.inv_lst[inv.highlight - 1][0].name}")
+
+                        if p.inv_lst[inv.highlight - 1][1] > inv.quantity_index:
+                            p.inv_lst[inv.highlight - 1][1] -= inv.quantity_index
+                        else:
+                            del p.inv_lst[inv.highlight - 1]
+                        del_confirmation = False
+                        inv.print_inv(p)
+                        return True
+                    case "n":
+                        del_confirmation = False
+                        inv.print_inv(p)
+                        print_deletion_infomenu()
+                        return False
+            except:
+                pass
 
     def description():
         describing = True
@@ -337,10 +424,7 @@ def main(stdscr):
                         infomenu.clear_window()
                         infomenu.restore_info()
                         infomenu.clear_buffer()
-                        break
-
-
-
+                        #break
             except:
                 pass
 
@@ -377,34 +461,12 @@ def main(stdscr):
                         print_deletion_infomenu()
 
                     case "z":
-                        # infomenu.restore_info()
-                        # infomenu.clear_buffer()
-                        infomenu.delete_info()
-                        print_deletion_infomenu_final()
-                        query = True
-
-                        while query:
-                            try:
-                                key = stdscr.getkey()
-                                match key:
-                                    case "y":
-                                        infomenu.clear_window()
-                                        infomenu.restore_info()
-                                        infomenu.clear_buffer()
-                                        infomenu.print_info(f"You successfully deleted {p.inv_lst[inv.highlight - 1][0].name}")
-
-                                        del p.inv_lst[inv.highlight - 1]
-                                        query = False
-                                        item_deletion = False
-                                        inv.print_inv(p)
-
-
-                                    case "n":
-                                        query = False
-                                        inv.print_inv(p)
-                                        print_deletion_infomenu()
-                            except:
-                                pass
+                        if p.inv_lst[inv.highlight - 1][1] == 1:
+                            if item_deletion_confirmation():
+                                item_deletion = False
+                        else:
+                            if item_deletion_quantity():
+                                item_deletion = False
 
                     case "c":
                         item_deletion = False
@@ -418,11 +480,11 @@ def main(stdscr):
                 pass
 
     # game loop variables
-    in_game = True
+    # in_game_bool = True
     # description = False
     # item_deletion = False
 
-    while in_game:
+    while in_game_bool:
         try:
             key = stdscr.getkey()
 
@@ -510,7 +572,7 @@ def main(stdscr):
                 #  ---------------------------- SPECIAL -----------------------------------------------------
 
                 case "q":
-                    in_game = False
+                    in_game_bool = False
 
                 case "o":
                     infomenu.print_info(len(infomenu.info_array))

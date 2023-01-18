@@ -29,6 +29,9 @@ class Window:
 
         if self.win_type == "inv":
             self.highlight = 1
+            self.quantity_index = 1
+            self.max_quantity = 1
+            self.min_quantity = 1
 
         self.win = curses.newwin(self.height, self.width, self.y, self.x)
         self.max_y_x = self.win.getmaxyx()
@@ -146,3 +149,8 @@ class Window:
 
         self.win.border(0, 0, 0, 0, 0, 9516, 0, 0)
         self.win.refresh()
+
+    def item_quantity_load(self, p):
+        self.quantity_index = 1
+        self.max_quantity = p.inv_lst[self.highlight - 1][1]
+        self.min_quantity = 1
