@@ -140,7 +140,7 @@ def main(stdscr):
             elif -0.1 <= map[i][j] < 0:
                 map[i][j] = [" ", "b"]  # =
             elif 0 <= map[i][j] < 0.1:
-                map[i][j] = [".", "b"]  # +
+                map[i][j] = ["ˏ", "b"]  # +
             elif 0.1 <= map[i][j] < 0.2:
                 map[i][j] = [":", "b"]  # *
             elif 0.2 <= map[i][j] < 0.3:
@@ -192,7 +192,7 @@ def main(stdscr):
                                              item_list["armor"][random.randrange(len(item_list["armor"]))].values()]
                                 items_world.append(
                                     Armor(map, game_pad, i, j, armor_arr[0], armor_arr[1], armor_arr[2],
-                                          armor_arr[3], armor_arr[4]))
+                                          armor_arr[3], armor_arr[4], armor_arr[5]))
 
                             # Food creation
                             case 2:
@@ -205,19 +205,14 @@ def main(stdscr):
     stdscr.nodelay(True)
 
     # player setup
-    p = Player(GAME_X // 2, GAME_Y // 2, 100, 100, 5, 10, 20, game_pad, map)
+    player_name = "Player"
+    p = Player(GAME_X // 2, GAME_Y // 2, player_name, 1, 100, 100, 5, 10, 20, game_pad, map)
 
     # inventory setup
     inv = Window("inv", 1, 162, 25, 46, "Inventory")
     inv.print_inv(p)
-    # inv.create_window()
-
-    # i = Inventory(162, 1, 46, 25)
-    # i.create_inventory_window(stdscr)
 
     # stats setup
-    # s = Stats(p, 162, 27, 46, 12)
-    # s.create_stats_window(stdscr)
     stats = Window("stats", 26, 162, 11, 46, "Stats", p)
     # stats.create_window()
 
@@ -226,12 +221,6 @@ def main(stdscr):
 
     # info-menu setup
     infomenu = Window("info", 36, 0, 15, 75, "")
-    # infomenu.create_window()
-
-    # stdscr.addstr(40, 40, f"Floor: {p.floor}")
-
-    # stdscr.addstr(42, 1, f"PX: {p.x}")
-    # stdscr.addstr(42, 10, f"PY: {p.y}")
 
     stats.print_stats(p)
 
@@ -584,25 +573,6 @@ def main(stdscr):
             pass
 
         game_pad.refresh(CAM_Y, CAM_X, 1, 1, CAM_HEIGHT, CAM_WIDTH)
-
-        # Debuging:
-        # stdscr.addstr(40, 1, f"X: {CAM_X}")
-        # stdscr.addstr(40, 10, f"Y: {CAM_Y}")
-        # stdscr.addstr(40, 20, f"Octave: {OCTAVE}")
-        # stdscr.addstr(40, 40, f"Floor: {p.floor}")
-        # stdscr.addstr(42, 1, f"PX: {p.x}")
-        # stdscr.addstr(42, 10, f"PY: {p.y}")
-
-        # rectangle(stdscr, 1, 162, 26, 208)
-        # stdscr.addstr(1, 165, f" Inventory ")
-
-        # rectangle(stdscr, 27, 162, 49, 208)
-        # stdscr.addstr(27, 165, f" Stats ")
-
-        # s.print_all()
-        # s.update_stats(p)
-
-        # stdscr.refresh()
 
     curses.endwin()
     exit()

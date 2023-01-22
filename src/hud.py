@@ -39,6 +39,7 @@ class Window:
         self.clear_window()
 
     def update_stats(self, p):
+        self.player_lvl = p.player_lvl
         self.hp = p.hp
         self.maxhp = p.maxhp
         self.mana = p.mana
@@ -68,10 +69,11 @@ class Window:
         self.win.clear()
         self.clear_window()
         self.update_stats(p)
-        self.win.addstr(2, 2, f"HP: {self.hp} / {self.maxhp}")
-        self.win.addstr(3, 2, f"MP: {self.mana} / {self.maxmana}")
-        self.win.addstr(5, 2, f"STR: {self.strength}")
-        self.win.addstr(6, 2, f"DEF: {self.defense}")
+        self.win.addstr(2, 2, f"{p.name} [{self.player_lvl}]")
+        self.win.addstr(4, 2, f"HP: {self.hp} / {self.maxhp}")
+        self.win.addstr(6, 2, f"MP: {self.mana} / {self.maxmana}")
+        self.win.addstr(7, 2, f"STR: {self.strength}")
+        self.win.addstr(8, 2, f"DEF: {self.defense}")
         self.win.refresh()
 
     def string_slice(self, string):

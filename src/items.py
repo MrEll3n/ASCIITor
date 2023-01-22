@@ -50,7 +50,7 @@ class Weapon(Item):
 
 
 class Armor(Item):
-    def __init__(self, map_arr, game_pad, x, y, name, desc, lvl, defense, weight):
+    def __init__(self, map_arr, game_pad, x, y, name, desc, lvl, defense, weight, type):
         self.x = x
         self.y = y
         self.name = name
@@ -59,6 +59,7 @@ class Armor(Item):
         self.defense = defense
         self.weight = weight
         self.char = "T"
+        self.type = type
         self.map = map_arr
         self.game_pad = game_pad
 
