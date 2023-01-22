@@ -3,10 +3,11 @@ from curses.textpad import Textbox, rectangle
 
 
 class Player:
-    def __init__(self, x, y, name, player_lvl, hp, mana, strength, defense, carry, game_pad, map):
+    def __init__(self, x, y, name, player_class, player_lvl, hp, mana, strength, defense, carry, game_pad, map):
         self.x = x
         self.y = y
         self.name = name
+        self.player_class = player_class
         self.player_lvl = player_lvl
         self.hp = hp
         self.maxhp = self.hp
@@ -148,7 +149,7 @@ class Player:
                     self.add_to_quantity(picked_item)
 
                 else:
-                    self.inv_lst.insert(0, [picked_item, 1])
+                    self.inv_lst.insert(0, [picked_item, 1, "n"])
 
                 self.floor = [picked_item.floor][0]
                 map_arr[self.y][self.x][1] = "b"

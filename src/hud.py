@@ -3,6 +3,19 @@ import curses
 from curses.textpad import Textbox, rectangle
 
 
+class Button:
+    def __init__(self, win, ul_y, ul_x, lr_y, lr_x, text):
+        self.win = win
+        self.ul_y = ul_y
+        self.ul_x = ul_x
+        self.lr_y = lr_y
+        self.lr_x = lr_x
+        self.text = text
+        self.highlight = 0
+
+        rectangle(self.win, self.ul_y, self.ul_x, self.lr_y, self.lr_x)
+        self.win.addstr(25, 101, text)
+
 class Window:
     def __init__(self, win_type, y, x, height, width, name, p=None):
         self.win_type = win_type

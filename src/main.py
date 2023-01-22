@@ -206,7 +206,8 @@ def main(stdscr):
 
     # player setup
     player_name = "Player"
-    p = Player(GAME_X // 2, GAME_Y // 2, player_name, 1, 100, 100, 5, 10, 20, game_pad, map)
+    player_class = "Warrior"  # Warrior, Hunter, Assassin
+    p = Player(GAME_X // 2, GAME_Y // 2, player_name, player_class, 1, 100, 100, 5, 10, 20, game_pad, map)
 
     # inventory setup
     inv = Window("inv", 1, 162, 25, 46, "Inventory")
