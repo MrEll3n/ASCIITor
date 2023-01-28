@@ -16,6 +16,7 @@ class Button:
         rectangle(self.win, self.ul_y, self.ul_x, self.lr_y, self.lr_x)
         self.win.addstr(25, 101, text)
 
+
 class Window:
     def __init__(self, win_type, y, x, height, width, name, p=None):
         self.win_type = win_type
@@ -46,10 +47,19 @@ class Window:
             self.max_quantity = 1
             self.min_quantity = 1
 
+        if self.win_type == "menu":
+            self.enable_border = False
+
         self.win = curses.newwin(self.height, self.width, self.y, self.x)
         self.max_y_x = self.win.getmaxyx()
 
         self.clear_window()
+
+    def updateWindow(self):
+        pass
+
+    def addText(self, y, x, text):
+        self.win.addstr(y, x, text)
 
     def update_stats(self, p):
         self.player_lvl = p.player_lvl
@@ -67,6 +77,8 @@ class Window:
             self.win.border(0, 0, 0, 0, 0, 9516, 0, 0)
         elif self.win_type == "stats":
             self.win.border(0, 0, 0, 0, 0, 0, 9524, 0)
+        elif self.win_type == "menu":
+            self.win.border(0, 0, 0, 0, 0, 0, 0, 0)
         else:
             self.win.border()
 
@@ -78,8 +90,13 @@ class Window:
     #    self.win = curses.newwin(self.height, self.width, self.y, self.x)
     #    self.clear_window()
 
-    def print_stats(self, p):
+    def draw_border(self):
         self.win.clear()
+        self.win.border()
+        self.win.refresh()
+
+    def print_stats(self, p):
+        # self.win.clear()
         self.clear_window()
         self.update_stats(p)
         self.win.addstr(2, 2, f"{p.name} [{self.player_lvl}]")
@@ -169,3 +186,20 @@ class Window:
         self.quantity_index = 1
         self.max_quantity = p.inv_lst[self.highlight - 1][1]
         self.min_quantity = 1
+
+
+class Menu:
+    def __init__(self, win, ul_y, ul_x, lr_y, lr_x):
+        self.win = win
+        self.ul_y = ul_y
+        self.ul_x = ul_x
+        self.lr_y = lr_y
+        self.lr_x = lr_x
+        self.highlight = 0
+
+        self.win = curses.newwin(self.height
+                                 , self.width, self.y, self.x)
+        self.max_y_x = self.win.getmaxyx()
+
+    def addMenuLabel(self, y, x, text):
+        self.win.addstr(y, x, text)
