@@ -24,7 +24,11 @@ def main(stdscr):
     stdscr.clear()
     curses.curs_set(False)
 
-    def game(player_name):
+    global player_name
+    global player_race
+    global player_class
+
+    def game(player_name, player_race, player_class):
         stdscr.clear()
         LOADING_LABEL = "Generating terrain..."
         stdscr.addstr(rows // 2, (cols // 2) - 9, LOADING_LABEL)
@@ -137,7 +141,7 @@ def main(stdscr):
         # player setup
         #player_name = "Player"
         player_class = "Warrior"  # Warrior, Hunter, Assassin
-        p = Player(GAME_X // 2, GAME_Y // 2, player_name, player_class, 1, 100, 100, 5, 10, 52, 20, game_pad, map)
+        p = Player(GAME_X // 2, GAME_Y // 2, player_name, player_race, player_class, 1, 100, 100, 5, 10, 52, 20, game_pad, map)
 
         # inventory setup
         inv = Window("inv", 1, 162, 25, 46, "Inventory")
@@ -512,38 +516,39 @@ def main(stdscr):
 
             game_pad.refresh(CAM_Y, CAM_X, 1, 1, CAM_HEIGHT, CAM_WIDTH)
 
+    player_name = ""
+    player_race = ""
+
     def character_race_scene():
         # Clear window
         stdscr.clear()
         stdscr.refresh()
         # Create character panels and making their borders
-        label = "Choose your race:"
+        label = "What race are you?"
         stdscr.addstr(hrows - 16, hcols - (len(label) // 2), label)
-        rectangle(stdscr, hrows - 14, hcols - 11, hrows - 12, hcols + 11)
-        stdscr.refresh()
-        name_prompt = Window("char", hrows - 13, hcols - 9, 1, 20, "")
-        name_prompt.win.clear()
+        # Window creation for race select
+        race_select = Menu(10, 20, hrows - 5, hcols - 20)
+        # adding races to select
+        race_select.add_menu_label("Human", "Elf", "Org")
+        # printing select on the screen
+        race_select.print_menu(1, 1, 0, 0, 1)
+        # stdscr.refresh()
 
-        query = curses.textpad.Textbox(name_prompt.win)
-        # character_win = Window("char", hrows-10, hcols-40, 20, 40, "Character")
-        # character_img_win = Window("char_img", hrows-10, hcols + 20, 20, 40, "")
-        # character_win.clear_window()
-        # character_img_win.clear_window()
 
-        char_naming = True
-        while char_naming:
+
+        char_race = True
+        while char_race:
             try:
-                query.edit()
-                if query.gather() != "":
-                    name = query.gather()
-                    stdscr.clear()
-                    stdscr.refresh()
-                    # game(name)
-                else:
-                    continue
+                key = stdscr.getkey()
+
+                if key == "z":
+                    game(player_name, "Human", "Warrior")
 
             except:
                 pass
+
+
+
 
     def character_name_scene():
         # Clear window
@@ -568,12 +573,40 @@ def main(stdscr):
             try:
                 query.edit()
                 if query.gather() != "":
-                    name = query.gather()
-                    stdscr.clear()
-                    stdscr.refresh()
-                    # game(name)
+
+                    player_name = query.gather()
+                    #character_race_scene()
+                    char_naming = False
+
+
+                # game(name)
                 else:
                     continue
+
+            except:
+                pass
+
+        # Clear window
+        stdscr.clear()
+        stdscr.refresh()
+        # Create character panels and making their borders
+        label = "What race are you?"
+        stdscr.addstr(hrows - 16, hcols - (len(label) // 2), label)
+        # Window creation for race select
+        race_select = Menu(10, 20, hrows - 5, hcols - 20)
+        # adding races to select
+        race_select.add_menu_label("Human", "Elf", "Org")
+        # printing select on the screen
+        race_select.print_menu(1, 1, 0, 0, 1)
+        # stdscr.refresh()
+
+        char_race = True
+        while char_race:
+            try:
+                key = stdscr.getkey()
+
+                if key == "z":
+                    game(player_name, "Human", "Warrior")
 
             except:
                 pass

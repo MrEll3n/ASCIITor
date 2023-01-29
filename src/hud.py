@@ -58,6 +58,10 @@ class Window:
     def updateWindow(self):
         pass
 
+    def delete(self):
+        self.win.erase()
+        del self
+
     def addText(self, y, x, text):
         self.win.addstr(y, x, text)
 
@@ -189,17 +193,29 @@ class Window:
 
 
 class Menu:
-    def __init__(self, win, ul_y, ul_x, lr_y, lr_x):
-        self.win = win
-        self.ul_y = ul_y
-        self.ul_x = ul_x
-        self.lr_y = lr_y
-        self.lr_x = lr_x
+    def __init__(self, height, width, y, x):
+        self.height = height
+        self.width = width
+        self.y = y
+        self.x = x
         self.highlight = 0
+        self.menu_arr = []
 
-        self.win = curses.newwin(self.height
-                                 , self.width, self.y, self.x)
+        self.win = curses.newwin(self.height, self.width, self.y, self.x)
+
         self.max_y_x = self.win.getmaxyx()
 
-    def addMenuLabel(self, y, x, text):
-        self.win.addstr(y, x, text)
+        self.max_y = self.max_y_x[0]
+        self.max_x = self.max_y_x[1]
+
+        self.hmax_y = self.max_y_x[0]//2
+        self.hmax_x = self.max_y_x[1]//2
+
+    def print_menu(self, y, x, y_off=0, x_off=0, spacing=0):
+        if len(self.menu_arr) > 0:
+            for index, item in enumerate(self.menu_arr):
+                self.win.addstr((index+spacing) + y+y_off, x+x_off, item)
+
+    def add_menu_label(self, *argv):
+        for arg in argv:
+            self.menu_arr += arg
