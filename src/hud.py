@@ -1,7 +1,10 @@
 import math
 import curses
+import logging
 from curses.textpad import Textbox, rectangle
 
+
+logging.basicConfig(filename='debug.log', encoding='utf-8', level=logging.DEBUG)
 
 class Button:
     def __init__(self, win, ul_y, ul_x, lr_y, lr_x, text):
@@ -160,7 +163,8 @@ class Window:
 
         p.add_inv_weight()  # Player function that calculates inventory weight
 
-        # Generating labels
+        # Generating labelself.win.addstr("Debug")
+        self.win.refresh()
         self.win.addstr(1, self.max_y_x[1] - 12, f"{round(p.inv_weight, 1)}/{p.carry} kg")
         self.win.addstr(1, 2, f"ID | Name")
         self.win.hline(2, 2, "-", self.max_y_x[1] - 4)
@@ -203,13 +207,15 @@ class Menu:
 
         self.win = curses.newwin(self.height, self.width, self.y, self.x)
 
-        self.max_y_x = self.win.getmaxyx()
+        #self.max_y_x = self.win.getmaxyx()
 
-        self.max_y = self.max_y_x[0]
-        self.max_x = self.max_y_x[1]
+        #self.max_y = self.max_y_x[0]
+        #self.max_x = self.max_y_x[1]
 
-        self.hmax_y = self.max_y_x[0]//2
-        self.hmax_x = self.max_y_x[1]//2
+        #self.hmax_y = self.max_y_x[0]//2
+        #self.hmax_x = self.max_y_x[1]//2
+
+        logging.debug(f"Menu was created.")
 
     def print_menu(self, y, x, y_off=0, x_off=0, spacing=0):
         if len(self.menu_arr) > 0:

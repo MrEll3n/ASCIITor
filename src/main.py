@@ -2,6 +2,7 @@ import os
 import curses
 import random
 import json
+import logging
 import math
 import time
 
@@ -522,17 +523,17 @@ def main(stdscr):
     def character_race_scene():
         # Clear window
         stdscr.clear()
-        stdscr.refresh()
         # Create character panels and making their borders
         label = "What race are you?"
         stdscr.addstr(hrows - 16, hcols - (len(label) // 2), label)
         # Window creation for race select
-        race_select = Menu(10, 20, hrows - 5, hcols - 20)
+        race_select = Menu(10, 20, 5, 20)
+        race_select.win.addstr("Hello")
         # adding races to select
-        race_select.add_menu_label("Human", "Elf", "Org")
+        #race_select.add_menu_label("Human", "Elf", "Org")
         # printing select on the screen
-        race_select.print_menu(1, 1, 0, 0, 1)
-        # stdscr.refresh()
+        #race_select.print_menu(1, 1, 0, 0, 1)
+        stdscr.refresh()
 
 
 
@@ -572,44 +573,17 @@ def main(stdscr):
         while char_naming:
             try:
                 query.edit()
-                if query.gather() != "":
-
-                    player_name = query.gather()
-                    #character_race_scene()
+                gather = query.gather()
+                if gather != "":
+                    player_name = gather
+                    #char_naming = False
+                    #game(player_name, "Goblin", "Warrior")
                     char_naming = False
 
-
-                # game(name)
-                else:
-                    continue
-
             except:
-                pass
+                stdscr.addstr("neco je spatne")
 
-        # Clear window
-        stdscr.clear()
-        stdscr.refresh()
-        # Create character panels and making their borders
-        label = "What race are you?"
-        stdscr.addstr(hrows - 16, hcols - (len(label) // 2), label)
-        # Window creation for race select
-        race_select = Menu(10, 20, hrows - 5, hcols - 20)
-        # adding races to select
-        race_select.add_menu_label("Human", "Elf", "Org")
-        # printing select on the screen
-        race_select.print_menu(1, 1, 0, 0, 1)
-        # stdscr.refresh()
-
-        char_race = True
-        while char_race:
-            try:
-                key = stdscr.getkey()
-
-                if key == "z":
-                    game(player_name, "Human", "Warrior")
-
-            except:
-                pass
+        character_race_scene()
 
 
 
