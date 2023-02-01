@@ -78,7 +78,7 @@ class Window:
         self.defense = p.defense
 
     def clear_window(self):
-        self.win.clear()
+        self.win.erase()
         # self.win.border()
         if self.win_type == "info":
             self.win.border(0, 0, 0, 0, 0, 9516, 0, 0)
@@ -98,7 +98,7 @@ class Window:
     #    self.clear_window()
 
     def draw_border(self):
-        self.win.clear()
+        self.win.erase()
         self.win.border()
         self.win.refresh()
 
@@ -128,7 +128,7 @@ class Window:
         return result  # final sliced string
 
     def print_info(self, string, prefix=True):
-        self.win.clear()
+        #      self.win.erase()
         result = self.string_slice(string)
         if not result:
             self.info_array.insert(0, string)

@@ -25,9 +25,9 @@ def main(stdscr):
     stdscr.clear()
     curses.curs_set(False)
 
-    global player_name
-    global player_race
-    global player_class
+    #player_name = ""
+    #player_race = ""
+    #player_class = ""
 
     def game(player_name, player_race, player_class):
         stdscr.clear()
@@ -517,10 +517,7 @@ def main(stdscr):
 
             game_pad.refresh(CAM_Y, CAM_X, 1, 1, CAM_HEIGHT, CAM_WIDTH)
 
-    player_name = ""
-    player_race = ""
-
-    def character_race_scene():
+    def character_race_scene(player_name):
         # Clear window
         stdscr.clear()
         # Create character panels and making their borders
@@ -583,7 +580,7 @@ def main(stdscr):
             except:
                 stdscr.addstr("neco je spatne")
 
-        character_race_scene()
+        character_race_scene(player_name)
 
 
 
