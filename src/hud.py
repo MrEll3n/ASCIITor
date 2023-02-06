@@ -217,11 +217,15 @@ class Menu:
 
         logging.debug(f"Menu was created.")
 
+    def add_menu_label(self, *argv):
+        for arg in argv:
+            self.menu_arr.append(arg)
+
     def print_menu(self, y, x, y_off=0, x_off=0, spacing=0):
         if len(self.menu_arr) > 0:
             for index, item in enumerate(self.menu_arr):
+                if index == self.highlight:
+                    self.win.attron(curses.A_REVERSE)
                 self.win.addstr((index+spacing) + y+y_off, x+x_off, item)
+                self.win.attroff(curses.A_REVERSE)
 
-    def add_menu_label(self, *argv):
-        for arg in argv:
-            self.menu_arr += arg

@@ -505,6 +505,7 @@ def main(stdscr):
                     case "q":
                         in_game_bool = False
                         main_loop = False
+                        break
 
                     case "o":
                         infomenu.print_info(len(infomenu.info_array))
@@ -519,19 +520,19 @@ def main(stdscr):
 
     def character_race_scene(player_name):
         # Clear window
-        stdscr.clear()
+        stdscr.erase()
         # Create character panels and making their borders
         label = "What race are you?"
         stdscr.addstr(hrows - 16, hcols - (len(label) // 2), label)
         # Window creation for race select
-        race_select = Menu(10, 20, 5, 20)
-        race_select.win.addstr("Hello")
-        # adding races to select
-        #race_select.add_menu_label("Human", "Elf", "Org")
-        # printing select on the screen
-        #race_select.print_menu(1, 1, 0, 0, 1)
         stdscr.refresh()
-
+        race_select = Menu(7, 10, hrows-10, hcols-5)
+        race_select.win.border()
+        # adding races to select
+        race_select.add_menu_label("Human", "Elf", "Org")
+        # printing select on the screen
+        race_select.print_menu(1, 1, 0, 1, 1)
+        race_select.win.refresh()
 
 
         char_race = True
@@ -550,7 +551,7 @@ def main(stdscr):
 
     def character_name_scene():
         # Clear window
-        stdscr.clear()
+        stdscr.erase()
         stdscr.refresh()
         # Create character panels and making their borders
         label = "What is your name, hero?"
@@ -558,7 +559,7 @@ def main(stdscr):
         rectangle(stdscr, hrows - 14, hcols - 11, hrows - 12, hcols + 11)
         stdscr.refresh()
         name_prompt = Window("char", hrows - 13, hcols - 9, 1, 20, "")
-        name_prompt.win.clear()
+        name_prompt.win.erase()
 
         query = curses.textpad.Textbox(name_prompt.win)
         # character_win = Window("char", hrows-10, hcols-40, 20, 40, "Character")
@@ -642,7 +643,7 @@ def main(stdscr):
     main_loop = True
     while main_loop:
         try:
-            stdscr.clear()
+            stdscr.erase()
             print_logo()
 
 
