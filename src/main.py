@@ -141,8 +141,16 @@ def main(stdscr):
 
         # player setup
         #player_name = "Player"
-        player_class = "Warrior"  # Warrior, Hunter, Assassin
-        p = Player(GAME_X // 2, GAME_Y // 2, player_name, player_race, player_class, 1, 100, 100, 5, 10, 52, 20, game_pad, map)
+        #player_class = "Warrior"  # Warrior, Hunter, Assassin
+        player_lvl = 1
+        player_stamina = 20
+        player_intelligence = 1
+        player_strength = 5
+        player_dexterity = 1
+        player_defense = 5
+        player_carry = 20
+
+        p = Player(GAME_X // 2, GAME_Y // 2, player_name, player_race, player_class, player_lvl, player_stamina, player_intelligence, player_strength, player_dexterity, player_defense, player_carry, game_pad, map)
 
         # inventory setup
         inv = Window("inv", 1, 162, 25, 46, "Inventory")
@@ -524,15 +532,20 @@ def main(stdscr):
         # Create character panels and making their borders
         label = "What race are you?"
         stdscr.addstr(hrows - 16, hcols - (len(label) // 2), label)
-        # Window creation for race select
         stdscr.refresh()
-        race_select = Menu(7, 10, hrows-10, hcols-5)
+        # Window creation for race select
+        race_select = Menu(7, 10, hrows-13, hcols-10-5)
         race_select.win.border()
+
+        stats_menu = Window("menu_stats", hrows-13, hcols+5, 20, 40, "Character stats")
+        stats_menu.win.border()
         # adding races to select
         race_select.add_menu_label("Human", "Elf", "Org")
         # printing select on the screen
         race_select.print_menu(1, 1, 0, 1, 1)
         race_select.win.refresh()
+
+        stats_menu.clear_window()
 
 
         char_race = True
@@ -540,8 +553,26 @@ def main(stdscr):
             try:
                 key = stdscr.getkey()
 
-                if key == "z":
-                    game(player_name, "Human", "Warrior")
+                match key:
+                    case "z":
+
+                        game(player_name, "Human", "Warrior")
+
+                    case "KEY_UP":
+                        if race_select.highlight <= 0:
+                            race_select.highlight = len(race_select.menu_arr)-1
+                        else:
+                            race_select.highlight -= 1
+                        race_select.print_menu(1, 1, 0, 1, 1)
+                        race_select.win.refresh()
+
+                    case "KEY_DOWN":
+                        if race_select.highlight >= len(race_select.menu_arr)-1:
+                            race_select.highlight = 0
+                        else:
+                            race_select.highlight += 1
+                        race_select.print_menu(1, 1, 0, 1, 1)
+                        race_select.win.refresh()
 
             except:
                 pass

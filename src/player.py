@@ -3,18 +3,22 @@ from curses.textpad import Textbox, rectangle
 
 
 class Player:
-    def __init__(self, x, y, name, race, player_class, player_lvl, hp, mana, strength, defense, dexterity, carry, game_pad, map):
+    def __init__(self, x, y, name, player_race, player_class, player_lvl, stamina, intelligence, strength, dexterity, defense, carry, game_pad, map):
         self.x = x
         self.y = y
         self.name = name
         self.player_class = player_class
         self.player_lvl = player_lvl
-        self.hp = hp
-        self.maxhp = self.hp
-        self.mana = mana
-        self.maxmana = self.hp
+        self.player_race = player_race
+
+        self.stamina = stamina
+        self.maxstamina = self.stamina
+
         self.strength = strength
+        self.dexterity = dexterity
+        self.intelligence = intelligence
         self.defense = defense
+
         self.carry = carry
         self.floor = ""
         self.game_pad = game_pad

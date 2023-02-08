@@ -33,11 +33,12 @@ class Window:
                     'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
         if self.win_type == "stats" and p:
-            self.hp = p.hp
-            self.maxhp = p.maxhp
-            self.mana = p.mana
-            self.maxmana = p.maxmana
+            self.stamina = p.stamina
+            self.maxstamina = p.maxstamina
+            self.player_lvl = p.player_lvl
             self.strength = p.strength
+            self.intelligence = p.intelligence
+            self.dexterity = p.dexterity
             self.defense = p.defense
 
         if self.win_type == "info":
@@ -52,6 +53,9 @@ class Window:
 
         if self.win_type == "menu":
             self.enable_border = False
+
+        if self.win_type == "menu_stats":
+            pass
 
         self.win = curses.newwin(self.height, self.width, self.y, self.x)
         self.max_y_x = self.win.getmaxyx()
@@ -69,12 +73,12 @@ class Window:
         self.win.addstr(y, x, text)
 
     def update_stats(self, p):
-        self.player_lvl = p.player_lvl
-        self.hp = p.hp
-        self.maxhp = p.maxhp
-        self.mana = p.mana
-        self.maxmana = p.maxmana
+        self.stamina = p.stamina
+        self.maxstamina = p.maxstamina
+        # self.maxmana = p.maxmana
         self.strength = p.strength
+        self.intelligence = p.intelligence
+        self.dexterity = p.dexterity
         self.defense = p.defense
 
     def clear_window(self):
@@ -107,10 +111,12 @@ class Window:
         self.clear_window()
         self.update_stats(p)
         self.win.addstr(2, 2, f"{p.name} [{self.player_lvl}]")
-        self.win.addstr(4, 2, f"HP: {self.hp} / {self.maxhp}")
-        self.win.addstr(6, 2, f"MP: {self.mana} / {self.maxmana}")
-        self.win.addstr(7, 2, f"STR: {self.strength}")
-        self.win.addstr(8, 2, f"DEF: {self.defense}")
+        self.win.addstr(4, 2, f"HP: 100")
+        self.win.addstr(6, 2, f"STR: {self.strength}")
+        self.win.addstr(7, 2, f"DEX: {self.dexterity}")
+        self.win.addstr(8, 2, f"STA: {self.stamina}")
+        self.win.addstr(6, 12, f"INT: {self.intelligence}")
+        self.win.addstr(7, 12, f"DEF: {self.defense}")
         self.win.refresh()
 
     def string_slice(self, string):
