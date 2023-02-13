@@ -14,6 +14,7 @@ from player import Player
 from hud import Window, Menu
 from camera import Camera
 from items import Weapon, Armor, Food
+from race import Race
 from tile import Tile
 
 
@@ -148,9 +149,10 @@ def main(stdscr):
         player_strength = 5
         player_dexterity = 1
         player_defense = 5
+        player_luck = 5
         player_carry = 20
 
-        p = Player(GAME_X // 2, GAME_Y // 2, player_name, player_race, player_class, player_lvl, player_stamina, player_intelligence, player_strength, player_dexterity, player_defense, player_carry, game_pad, map)
+        p = Player(GAME_X // 2, GAME_Y // 2, player_name, player_race, player_class, player_lvl, player_stamina, player_intelligence, player_strength, player_dexterity, player_defense, player_luck, player_carry, game_pad, map)
 
         # inventory setup
         inv = Window("inv", 1, 162, 25, 46, "Inventory")
@@ -526,26 +528,72 @@ def main(stdscr):
 
             game_pad.refresh(CAM_Y, CAM_X, 1, 1, CAM_HEIGHT, CAM_WIDTH)
 
+    def character_role_scene(race_select, stats_menu, player_name, player_race):
+        #stdscr.clear()
+        label = "What is your profession?"
+        stdscr.addstr(hrows - 16, hcols - (len(label) // 2), label)
+        stdscr.refresh()
+
+        role_select = Menu(7, 10, hrows-6, hcols-10-5)
+        role_select.win.border()
+        role_select.win.refresh()
+
+        char_role = True
+        while char_role:
+            try:
+                key = stdscr.getkey()
+
+                match key:
+                    case "z":
+                        pass
+                    case "KEY_UP":
+                        pass
+
+                    case "KEY_DOWN":
+                        pass
+
+            except:
+                pass
+
+        #game(player_name, player_race, "Warrior")
+
     def character_race_scene(player_name):
         # Clear window
         stdscr.erase()
+
+        # Load from RRaces.json
+        with open('races.json', 'r') as f:
+            races_json = json.load(f)
+
+        # creating lists for races
+        races_instances = []
+        races_names = []
+
+        # filling lists with race data
+        for item in races_json['races']:
+            races_instances.append(Race(item['name'], item['stamina'], item['strength'], item['dexterity'], item['intelligence'], item['defense'], item['luck']))
+            races_names.append(item['name'])
+
         # Create character panels and making their borders
         label = "What race are you?"
         stdscr.addstr(hrows - 16, hcols - (len(label) // 2), label)
         stdscr.refresh()
+
         # Window creation for race select
         race_select = Menu(7, 10, hrows-13, hcols-10-5)
         race_select.win.border()
-
-        stats_menu = Window("menu_stats", hrows-13, hcols+5, 20, 40, "Character stats")
+        stats_menu = Window("menu_stats", hrows-13, hcols+5, 14, 22, "Character stats")
         stats_menu.win.border()
-        # adding races to select
-        race_select.add_menu_label("Human", "Elf", "Org")
-        # printing select on the screen
-        race_select.print_menu(1, 1, 0, 1, 1)
-        race_select.win.refresh()
 
+        # adding races to select
+        race_select.add_menu_label(*races_names)
+
+        # printing select on the screen
+        race_select.print_menu(1, 1, 0, 1)
+        race_select.win.refresh()
         stats_menu.clear_window()
+        stats_menu.print_race_stats(race_select, races_instances)
+
 
 
         char_race = True
@@ -555,24 +603,26 @@ def main(stdscr):
 
                 match key:
                     case "z":
-
-                        game(player_name, "Human", "Warrior")
+                        player_race = races_names[race_select.highlight]
+                        character_role_scene(race_select, stats_menu, player_name, player_race)
 
                     case "KEY_UP":
                         if race_select.highlight <= 0:
                             race_select.highlight = len(race_select.menu_arr)-1
                         else:
                             race_select.highlight -= 1
-                        race_select.print_menu(1, 1, 0, 1, 1)
+                        race_select.print_menu(1, 1, 0, 1)
                         race_select.win.refresh()
+                        stats_menu.print_race_stats(race_select, races_instances)
 
                     case "KEY_DOWN":
                         if race_select.highlight >= len(race_select.menu_arr)-1:
                             race_select.highlight = 0
                         else:
                             race_select.highlight += 1
-                        race_select.print_menu(1, 1, 0, 1, 1)
+                        race_select.print_menu(1, 1, 0, 1)
                         race_select.win.refresh()
+                        stats_menu.print_race_stats(race_select, races_instances)
 
             except:
                 pass

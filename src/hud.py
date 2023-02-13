@@ -34,12 +34,14 @@ class Window:
 
         if self.win_type == "stats" and p:
             self.stamina = p.stamina
-            self.maxstamina = p.maxstamina
-            self.player_lvl = p.player_lvl
+            self.maxhp = p.maxhp
+            self.hp = p.hp
             self.strength = p.strength
             self.intelligence = p.intelligence
             self.dexterity = p.dexterity
             self.defense = p.defense
+            self.luck = p.luck
+            self.player_lvl = p.player_lvl
 
         if self.win_type == "info":
             self.info_array = []
@@ -74,12 +76,14 @@ class Window:
 
     def update_stats(self, p):
         self.stamina = p.stamina
-        self.maxstamina = p.maxstamina
-        # self.maxmana = p.maxmana
+        self.maxhp = p.maxhp
+        self.hp = p.hp
         self.strength = p.strength
         self.intelligence = p.intelligence
         self.dexterity = p.dexterity
         self.defense = p.defense
+        self.luck = p.luck
+        self.player_lvl = p.player_lvl
 
     def clear_window(self):
         self.win.erase()
@@ -109,14 +113,15 @@ class Window:
     def print_stats(self, p):
         # self.win.clear()
         self.clear_window()
-        self.update_stats(p)
-        self.win.addstr(2, 2, f"{p.name} [{self.player_lvl}]")
-        self.win.addstr(4, 2, f"HP: 100")
-        self.win.addstr(6, 2, f"STR: {self.strength}")
-        self.win.addstr(7, 2, f"DEX: {self.dexterity}")
-        self.win.addstr(8, 2, f"STA: {self.stamina}")
-        self.win.addstr(6, 12, f"INT: {self.intelligence}")
-        self.win.addstr(7, 12, f"DEF: {self.defense}")
+        #self.update_stats(p)
+        self.win.addstr(2, 2, f"{p.name} [{p.player_lvl}] - {p.player_race}")
+        self.win.addstr(4, 2, f"HP: {p.hp} / {p.maxhp}")
+        self.win.addstr(6, 2, f"STR: {p.strength}")
+        self.win.addstr(7, 2, f"DEX: {p.dexterity}")
+        self.win.addstr(8, 2, f"INT: {p.intelligence}")
+        self.win.addstr(6, 12, f"STA: {p.stamina}")
+        self.win.addstr(7, 12, f"DEF: {p.defense}")
+        self.win.addstr(8, 12, f"LUC: {p.luck}")
         self.win.refresh()
 
     def string_slice(self, string):
@@ -201,6 +206,16 @@ class Window:
         self.max_quantity = p.inv_lst[self.highlight - 1][1]
         self.min_quantity = 1
 
+    def print_race_stats(self, select_menu, race_instances):
+        self.clear_window()
+        self.win.addstr(2, 3, "STR: {:2d}".format(race_instances[select_menu.highlight].strength))
+        self.win.addstr(3, 3, "INT: {:2d}".format(race_instances[select_menu.highlight].intelligence))
+        self.win.addstr(4, 3, "DEX: {:2d}".format(race_instances[select_menu.highlight].dexterity))
+        self.win.addstr(5, 3, "STA: {:2d}".format(race_instances[select_menu.highlight].stamina))
+        self.win.addstr(6, 3, "DEF: {:2d}".format(race_instances[select_menu.highlight].defense))
+        self.win.addstr(7, 3, "LUC: {:2d}".format(race_instances[select_menu.highlight].luck))
+        self.win.refresh()
+
 
 class Menu:
     def __init__(self, height, width, y, x):
@@ -227,11 +242,10 @@ class Menu:
         for arg in argv:
             self.menu_arr.append(arg)
 
-    def print_menu(self, y, x, y_off=0, x_off=0, spacing=0):
+    def print_menu(self, y, x, y_off=0, x_off=0):
         if len(self.menu_arr) > 0:
             for index, item in enumerate(self.menu_arr):
                 if index == self.highlight:
                     self.win.attron(curses.A_REVERSE)
-                self.win.addstr((index+spacing) + y+y_off, x+x_off, item)
+                self.win.addstr(index + y+y_off, x+x_off, item)
                 self.win.attroff(curses.A_REVERSE)
-
