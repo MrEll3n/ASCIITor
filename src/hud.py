@@ -1,10 +1,10 @@
 import math
 import curses
 import logging
-from curses.textpad import Textbox, rectangle
 
 
 logging.basicConfig(filename='debug.log', encoding='utf-8', level=logging.DEBUG)
+
 
 class Button:
     def __init__(self, win, ul_y, ul_x, lr_y, lr_x, text):
@@ -16,7 +16,7 @@ class Button:
         self.text = text
         self.highlight = 0
 
-        rectangle(self.win, self.ul_y, self.ul_x, self.lr_y, self.lr_x)
+        # rectangle(self.win, self.ul_y, self.ul_x, self.lr_y, self.lr_x)
         self.win.addstr(25, 101, text)
 
 
@@ -54,7 +54,7 @@ class Window:
             self.min_quantity = 1
 
         if self.win_type == "menu":
-            self.enable_border = False
+            self.highlight = 1
 
         if self.win_type == "menu_stats":
             pass
@@ -63,9 +63,6 @@ class Window:
         self.max_y_x = self.win.getmaxyx()
 
         self.clear_window()
-
-    def updateWindow(self):
-        pass
 
     def delete(self):
         self.win.erase()
@@ -113,19 +110,18 @@ class Window:
     def print_stats(self, p):
         # self.win.clear()
         self.clear_window()
-        #self.update_stats(p)
-        self.win.addstr(2, 2, f"{p.name} [{p.player_lvl}] - {p.player_race}")
+        # self.update_stats(p)
+        self.win.addstr(2, 2, f"{p.name} [{p.player_lvl}] - {p.player_race} - {p.player_class}")
         self.win.addstr(4, 2, f"HP: {p.hp} / {p.maxhp}")
-        self.win.addstr(6, 2, f"STR: {p.strength}")
-        self.win.addstr(7, 2, f"DEX: {p.dexterity}")
-        self.win.addstr(8, 2, f"INT: {p.intelligence}")
-        self.win.addstr(6, 12, f"STA: {p.stamina}")
-        self.win.addstr(7, 12, f"DEF: {p.defense}")
-        self.win.addstr(8, 12, f"LUC: {p.luck}")
+        self.win.addstr(6, 2, f"STR: {p.strength+p.item_stats['strength']}")
+        self.win.addstr(7, 2, f"DEX: {p.dexterity+p.item_stats['dexterity']}")
+        self.win.addstr(8, 2, f"INT: {p.intelligence+p.item_stats['intelligence']}")
+        self.win.addstr(6, 12, f"STA: {p.stamina+p.item_stats['stamina']}")
+        self.win.addstr(7, 12, f"DEF: {p.defense+p.item_stats['defense']}")
+        self.win.addstr(8, 12, f"LUC: {p.luck+p.item_stats['luck']}")
         self.win.refresh()
 
     def string_slice(self, string):
-        str = []  # variable for sliced string
         str_range = 70  # range of slicing
         result = []
 
@@ -167,9 +163,20 @@ class Window:
         for index, item in enumerate(p.inv_lst, start=1):
             if index == self.highlight and while_true:  # Highlight will appear when come to these condition
                 self.win.attron(curses.A_REVERSE)
-            self.win.addstr(index + 2, 2, f"{self.ABC[index - 1]}) | {item[0].name} {item[1]}x")
-            self.win.addstr(index + 2, self.max_y_x[1] - 9,
-                            f"{round(item[0].weight * item[1], 1)} kg")  # Generating item's weight
+
+            if item[1] == 1:
+                self.win.addstr(index + 2, 2, f"{self.ABC[index - 1]}) | {item[0].name}")
+                self.win.addstr(index + 2, self.max_y_x[1] - 9,
+                                f"{round(item[0].weight * item[1], 1)} kg")  # Generating item's weight
+            else:
+                self.win.addstr(index + 2, 2, f"{self.ABC[index - 1]}) | {item[0].name} {item[1]}x")
+                self.win.addstr(index + 2, self.max_y_x[1] - 9,
+                                f"{round(item[0].weight * item[1], 1)} kg")  # Generating item's weight
+
+            if item[0].__class__.__name__ == "Weapon" or item[0].__class__.__name__ == "Armor":
+                if item[0].is_equiped:
+                    self.win.addstr(index + 2, 32, "E")
+
             self.win.attroff(curses.A_REVERSE)
 
         p.add_inv_weight()  # Player function that calculates inventory weight
@@ -177,7 +184,7 @@ class Window:
         # Generating labelself.win.addstr("Debug")
         self.win.refresh()
         self.win.addstr(1, self.max_y_x[1] - 12, f"{round(p.inv_weight, 1)}/{p.carry} kg")
-        self.win.addstr(1, 2, f"ID | Name")
+        self.win.addstr(1, 2, "ID | Name")
         self.win.hline(2, 2, "-", self.max_y_x[1] - 4)
         self.win.refresh()
 
@@ -206,14 +213,59 @@ class Window:
         self.max_quantity = p.inv_lst[self.highlight - 1][1]
         self.min_quantity = 1
 
-    def print_race_stats(self, select_menu, race_instances):
-        self.clear_window()
-        self.win.addstr(2, 3, "STR: {:2d}".format(race_instances[select_menu.highlight].strength))
-        self.win.addstr(3, 3, "INT: {:2d}".format(race_instances[select_menu.highlight].intelligence))
-        self.win.addstr(4, 3, "DEX: {:2d}".format(race_instances[select_menu.highlight].dexterity))
-        self.win.addstr(5, 3, "STA: {:2d}".format(race_instances[select_menu.highlight].stamina))
-        self.win.addstr(6, 3, "DEF: {:2d}".format(race_instances[select_menu.highlight].defense))
-        self.win.addstr(7, 3, "LUC: {:2d}".format(race_instances[select_menu.highlight].luck))
+    def del_stats_values(self, y, x):
+        self.win.addstr(y, x, "  ")
+        self.win.addstr(y+1, x, "  ")
+        self.win.addstr(y+2, x, "  ")
+        self.win.addstr(y+3, x, "  ")
+        self.win.addstr(y+4, x, "  ")
+        self.win.addstr(y+5, x, "  ")
+        self.win.refresh()
+
+    def print_stats_label(self, y, x):
+        self.win.addstr(y, x, "STR")
+        self.win.addstr(y+1, x, "INT")
+        self.win.addstr(y+2, x, "DEX")
+        self.win.addstr(y+3, x, "STA")
+        self.win.addstr(y+4, x, "DEF")
+        self.win.addstr(y+5, x, "LUC")
+        self.win.refresh()
+
+    def print_race_stats(self, y, x, highlight, races_instances):
+        self.win.addstr(y, x, "{:2d}".format(races_instances[highlight].strength))
+        self.win.addstr(y+1, x, "{:2d}".format(races_instances[highlight].intelligence))
+        self.win.addstr(y+2, x, "{:2d}".format(races_instances[highlight].dexterity))
+        self.win.addstr(y+3, x, "{:2d}".format(races_instances[highlight].stamina))
+        self.win.addstr(y+4, x, "{:2d}".format(races_instances[highlight].defense))
+        self.win.addstr(y+5, x, "{:2d}".format(races_instances[highlight].luck))
+        self.win.refresh()
+
+    def print_role_stats(self, y, x, highlight, roles_instances):
+        self.win.addstr(y, x, "{:2d}".format(roles_instances[highlight].strength))
+        self.win.addstr(y+1, x, "{:2d}".format(roles_instances[highlight].intelligence))
+        self.win.addstr(y+2, x, "{:2d}".format(roles_instances[highlight].dexterity))
+        self.win.addstr(y+3, x, "{:2d}".format(roles_instances[highlight].stamina))
+        self.win.addstr(y+4, x, "{:2d}".format(roles_instances[highlight].defense))
+        self.win.addstr(y+5, x, "{:2d}".format(roles_instances[highlight].luck))
+        self.win.refresh()
+
+    def stats_sum(self, race_values, role_values, race_highlight, role_highlight):
+        stats_sum = []
+        stats_sum.append(10+race_values[race_highlight].strength+role_values[role_highlight].strength)
+        stats_sum.append(10+race_values[race_highlight].intelligence+role_values[role_highlight].intelligence)
+        stats_sum.append(10+race_values[race_highlight].dexterity+role_values[role_highlight].dexterity)
+        stats_sum.append(10+race_values[race_highlight].stamina+role_values[role_highlight].stamina)
+        stats_sum.append(10+race_values[race_highlight].defense+role_values[role_highlight].defense)
+        stats_sum.append(10+race_values[race_highlight].luck+role_values[role_highlight].luck)
+        return stats_sum
+
+    def print_summer_stats(self, y, x, stats_sum):
+        self.win.addstr(y, x, "{:2d}".format(stats_sum[0]))
+        self.win.addstr(y+1, x, "{:2d}".format(stats_sum[1]))
+        self.win.addstr(y+2, x, "{:2d}".format(stats_sum[2]))
+        self.win.addstr(y+3, x, "{:2d}".format(stats_sum[3]))
+        self.win.addstr(y+4, x, "{:2d}".format(stats_sum[4]))
+        self.win.addstr(y+5, x, "{:2d}".format(stats_sum[5]))
         self.win.refresh()
 
 
@@ -228,15 +280,15 @@ class Menu:
 
         self.win = curses.newwin(self.height, self.width, self.y, self.x)
 
-        #self.max_y_x = self.win.getmaxyx()
+        # self.max_y_x = self.win.getmaxyx()
 
-        #self.max_y = self.max_y_x[0]
-        #self.max_x = self.max_y_x[1]
+        # self.max_y = self.max_y_x[0]
+        # self.max_x = self.max_y_x[1]
 
-        #self.hmax_y = self.max_y_x[0]//2
-        #self.hmax_x = self.max_y_x[1]//2
+        # self.hmax_y = self.max_y_x[0]//2
+        # self.hmax_x = self.max_y_x[1]//2
 
-        logging.debug(f"Menu was created.")
+        # logging.debug(f"Menu was created.")
 
     def add_menu_label(self, *argv):
         for arg in argv:
@@ -249,3 +301,21 @@ class Menu:
                     self.win.attron(curses.A_REVERSE)
                 self.win.addstr(index + y+y_off, x+x_off, item)
                 self.win.attroff(curses.A_REVERSE)
+
+    def print_menu_adv(self):
+        label1 = "Save Game"
+        label2 = "Help"
+        label3 = "Exit"
+
+        def print_label(y, label):
+            self.win.addstr(y, (self.width//2)-(len(label)//2), f"{label}")
+
+        def highlight(highlight, y, label):
+            if self.highlight == highlight:
+                self.win.attron(curses.A_REVERSE)
+            print_label(y, label)
+            self.win.attroff(curses.A_REVERSE)
+
+        highlight(1, 2, label1)
+        highlight(2, 4, label2)
+        highlight(3, 7, label3)

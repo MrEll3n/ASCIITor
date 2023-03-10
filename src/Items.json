@@ -6,14 +6,32 @@
             "desc" : "The Iron Sword looks like the Wooden Sword but a dark grey color.",
             "lvl" : 1,
             "dmg" : 2,
-            "weight" : 1.1
+            "weight" : 2.1,
+            "classes" : ["Warrior"],
+            "wear" : "hand",
+            "stackable" : null,
+            "str" : 2,
+            "sta" : 0,
+            "dex" : 0,
+            "int" : 0,
+            "luc" : 0,
+            "defense" : null
         },
         {
             "name" : "Iron Axe",
             "desc" : "Like all Axes, an Iron Axe is most useful for cutting trees and other wood objects. But for cutting heads is good aswell!",
             "lvl" : 2,
             "dmg" : 4,
-            "weight" : 1.2
+            "weight" : 1.8,
+            "classes" : ["Warrior"],
+            "wear" : "hand",
+            "stackable" : false,
+            "str" : 0,
+            "sta" : 0,
+            "dex" : 0,
+            "int" : 0,
+            "luc" : 0,
+            "defense" : null
         }
     ],
 
@@ -25,31 +43,59 @@
             "lvl" : 1,
             "defense" : 2,
             "weight" : 1.4,
-            "type" : "Head"
+            "classes" : ["Warrior"],
+            "wear" : "head",
+            "stackable" : false,
+            "str" : 0,
+            "sta" : 0,
+            "dex" : 0,
+            "int" : 0,
+            "luc" : 0
         },
         {
             "name" : "Iron Chestplate",
             "desc" : "Many fashion designers were inspired by this model. Really good with Iron Leggins.",
             "lvl" : 1,
             "defense" : 4,
-            "weight" : 5.0,
-            "type" : "Chest"
+            "weight" : 5,
+            "classes" : ["Warrior"],
+            "wear" : "chest",
+            "stackable" : false,
+            "str" : 0,
+            "sta" : 0,
+            "dex" : 0,
+            "int" : 0,
+            "luc" : 0
         },
         {
             "name" : "Iron Leggins",
             "desc" : "Not very kind to your washing machine.",
             "lvl" : 1,
             "defense" : 3,
-            "weight" : 4.3,
-            "type" : "Legs"
+            "weight" : 3.2,
+            "classes" : ["Warrior"],
+            "wear" : "legs",
+            "stackable" : false,
+            "str" : 0,
+            "sta" : 0,
+            "dex" : 0,
+            "int" : 0,
+            "luc" : 0
         },
         {
             "name" : "Iron Boots",
             "desc" : "Orthopedists use these shoes as a last resort for flat feet.",
             "lvl" : 1,
             "defense" : 1,
-            "weight" : 1.8,
-            "type" : "Feet"
+            "weight" : 4,
+            "classes" : ["Warrior"],
+            "wear" : "feet",
+            "stackable" : false,
+            "str" : 0,
+            "sta" : 0,
+            "dex" : 0,
+            "int" : 0,
+            "luc" : 0
         }
     ],
     "food":
@@ -58,7 +104,8 @@
             "name" : "Beef Jerky",
             "desc" : "Beef Jerky is created with lean cuts of beef cut into strips and dried to preserve the flavor in a convenient, hand-held snack.",
             "reg" : 10,
-            "weight" : 0.1
+            "weight" : 0.1,
+            "stackable" : true
         }
     ]
 }

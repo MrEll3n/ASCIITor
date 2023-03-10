@@ -8,6 +8,7 @@ import time
 
 from curses import wrapper
 from curses.textpad import Textbox, rectangle
+import curses.panel
 from perlin_noise import PerlinNoise
 
 from player import Player
@@ -15,7 +16,9 @@ from hud import Window, Menu
 from camera import Camera
 from items import Weapon, Armor, Food
 from race import Race
-from tile import Tile
+from role import Role
+
+
 
 
 def main(stdscr):
@@ -28,9 +31,8 @@ def main(stdscr):
 
     #player_name = ""
     #player_race = ""
-    #player_class = ""
 
-    def game(player_name, player_race, player_class):
+    def game(player_name, player_race, player_role, stats_sum):
         stdscr.clear()
         LOADING_LABEL = "Generating terrain..."
         stdscr.addstr(rows // 2, (cols // 2) - 9, LOADING_LABEL)
@@ -88,24 +90,27 @@ def main(stdscr):
                 elif map[i][j] > 0.5:
                     map[i][j] = [" ", "b"]  # @
 
+
         os.system("")
         for i in range(len(map)):
-            for j in range(len(map[i]) - 1):
-                match map[i][j][0]:
-                    case ".":
-                        game_pad.addstr(i, j, f"{map[i][j][0]}", curses.A_DIM)
-                    case ":":
-                        game_pad.addstr(i, j, f"{map[i][j][0]}")
-                    case "#":
-                        game_pad.addstr(i, j, f"{map[i][j][0]}", curses.A_PROTECT)
-                    case other:
-                        game_pad.addstr(i, j, f"{map[i][j][0]}")
+           for j in range(len(map[i]) - 1):
+               match map[i][j][0]:
+                   case ".":
+                       game_pad.addstr(i, j, f"{map[i][j][0]}", curses.A_DIM)
+                   case ":":
+                       game_pad.addstr(i, j, f"{map[i][j][0]}")
+                   case "#":
+                       game_pad.addstr(i, j, f"{map[i][j][0]}", curses.A_PROTECT)
+                   case _:
+                       game_pad.addstr(i, j, f"{map[i][j][0]}")
 
         # Item Generation
         with open('Items.json', 'r') as f:
             item_list = json.load(f)
 
         items_world = []
+        id_counter = 0
+
         for i in range(len(map)):
             for j in range(len(map[i]) - 1):
                 if map[i][j][1] == "b":
@@ -118,8 +123,9 @@ def main(stdscr):
                                     weapon_arr = [item for item in item_list["weapons"][
                                         random.randrange(len(item_list["weapons"]))].values()]
                                     items_world.append(
-                                        Weapon(map, game_pad, i, j, weapon_arr[0], weapon_arr[1], weapon_arr[2],
-                                               weapon_arr[3], weapon_arr[4]))
+                                        Weapon(id_counter, map, game_pad, i, j, weapon_arr[0], weapon_arr[1], weapon_arr[2],
+                                               weapon_arr[3], weapon_arr[4], weapon_arr[5], weapon_arr[6], weapon_arr[7],
+                                               weapon_arr[8], weapon_arr[9], weapon_arr[10], weapon_arr[11], weapon_arr[12], weapon_arr[13]))
 
                                 # Armor creation
                                 case 1:
@@ -127,8 +133,9 @@ def main(stdscr):
                                     armor_arr = [item for item in
                                                  item_list["armor"][random.randrange(len(item_list["armor"]))].values()]
                                     items_world.append(
-                                        Armor(map, game_pad, i, j, armor_arr[0], armor_arr[1], armor_arr[2],
-                                              armor_arr[3], armor_arr[4], armor_arr[5]))
+                                        Armor(id_counter, map, game_pad, i, j, armor_arr[0], armor_arr[1], armor_arr[2],
+                                              armor_arr[3], armor_arr[4], armor_arr[5], armor_arr[6], armor_arr[7], armor_arr[8],
+                                              armor_arr[9], armor_arr[10], armor_arr[11], armor_arr[12]))
 
                                 # Food creation
                                 case 2:
@@ -136,23 +143,28 @@ def main(stdscr):
                                     food_arr = [item for item in
                                                 item_list["food"][random.randrange(len(item_list["food"]))].values()]
                                     items_world.append(
-                                        Food(map, game_pad, i, j, food_arr[0], food_arr[1], food_arr[2], food_arr[3]))
+                                        Food(id_counter, map, game_pad, i, j, food_arr[0], food_arr[1], food_arr[2], food_arr[3],
+                                             food_arr[4]))
+                            id_counter += 1
+
+        stdscr.addstr(rows // 2 + 1, (cols // 2) - 9, "still debuging...")
+        stdscr.refresh()
 
         stdscr.nodelay(True)
 
         # player setup
         #player_name = "Player"
-        #player_class = "Warrior"  # Warrior, Hunter, Assassin
+        #player_role = "Warrior"  # Warrior, Hunter, Assassin
         player_lvl = 1
-        player_stamina = 20
-        player_intelligence = 1
-        player_strength = 5
-        player_dexterity = 1
-        player_defense = 5
-        player_luck = 5
+        #player_stamina = 20
+        #player_intelligence = 1
+        #player_strength = 5
+        #player_dexterity = 1
+        #player_defense = 5
+        #player_luck = 5
         player_carry = 20
 
-        p = Player(GAME_X // 2, GAME_Y // 2, player_name, player_race, player_class, player_lvl, player_stamina, player_intelligence, player_strength, player_dexterity, player_defense, player_luck, player_carry, game_pad, map)
+        p = Player(GAME_X // 2, GAME_Y // 2, player_name, player_race, player_role, player_lvl, stats_sum[3], stats_sum[1], stats_sum[0], stats_sum[2], stats_sum[4], stats_sum[5], player_carry, game_pad, map)
 
         # inventory setup
         inv = Window("inv", 1, 162, 25, 46, "Inventory")
@@ -181,6 +193,24 @@ def main(stdscr):
                 if index == inv.highlight:
                     return inv.ABC[index - 1]
 
+        def equip(item):
+            infomenu.print_info(f"You successfully equiped {p.inv_lst[inv.highlight - 1][0].name}")
+            item.equip_item(p)
+
+        def unequip(item):
+            infomenu.print_info(f"You successfully unequiped {p.inv_lst[inv.highlight - 1][0].name}")
+            item.unequip_item()
+
+        def print_equip_infomenu():
+            infomenu.clear_window()
+            infomenu.delete_info()
+            infomenu.print_info(f"[Up / Down] - Select | [z] - Confirm | [c] - Cancel", False)
+            for _ in range(11):
+                infomenu.print_info(f"", False)
+            infomenu.print_info(
+                f"Choose to equip: {return_item_letter()}) {p.inv_lst[inv.highlight - 1][0].name}",
+                False)
+
         def print_description_infomenu():
             infomenu.clear_window()
             infomenu.delete_info()
@@ -188,7 +218,7 @@ def main(stdscr):
             for _ in range(11):
                 infomenu.print_info(f"", False)
             infomenu.print_info(
-                f"Choose for description: {return_item_letter()}) {p.inv_lst[inv.highlight - 1][0].name}",
+                f"Choose to describe: {return_item_letter()}) {p.inv_lst[inv.highlight - 1][0].name}",
                 False)
 
         def print_deletion_infomenu():
@@ -212,9 +242,9 @@ def main(stdscr):
         def print_deletion_infomenu_quantity():
             infomenu.clear_window()
             infomenu.delete_info()
-            infomenu.print_info(f"[Up / Down] - Increment / Decrement | [z] - Confirm | [c] - Cancel", False)
+            infomenu.print_info("[Up / Down] - Increment / Decrement | [z] - Confirm | [c] - Cancel", False)
             for _ in range(11):
-                infomenu.print_info(f"", False)
+                infomenu.print_info("", False)
             infomenu.print_info(
                 f"Quantity of {return_item_letter()}) {p.inv_lst[inv.highlight - 1][0].name}: {inv.quantity_index}x",
                 False)
@@ -335,15 +365,17 @@ def main(stdscr):
                                 0].__class__.__name__:  # getting class name of the object
                                 case "Armor":
                                     infomenu.print_info(f'„{p.inv_lst[inv.highlight - 1][0].desc}“')
-                                    infomenu.print_info(f'Def: {p.inv_lst[inv.highlight - 1][0].defense}')
+                                    infomenu.print_info(f'DEF: {p.inv_lst[inv.highlight - 1][0].defense}')
+                                    infomenu.print_info(f'Dedicated for: {p.inv_lst[inv.highlight - 1][0].classes}')
                                     infomenu.print_info(
-                                        f'{p.inv_lst[inv.highlight - 1][0].name} ({p.inv_lst[inv.highlight - 1][0].lvl})')
+                                        f'{p.inv_lst[inv.highlight - 1][0].name} [{p.inv_lst[inv.highlight-1][0].id}] ({p.inv_lst[inv.highlight - 1][0].lvl})')
                                     infomenu.print_info(
                                         f'----------------------------------------------------------------------')
                                     inv.print_inv(p)
                                 case "Weapon":
                                     infomenu.print_info(f'„{p.inv_lst[inv.highlight - 1][0].desc}“')
                                     infomenu.print_info(f'Dmg: {p.inv_lst[inv.highlight - 1][0].dmg}')
+                                    infomenu.print_info(f'Dedicated for: {p.inv_lst[inv.highlight - 1][0].classes}')
                                     infomenu.print_info(
                                         f'{p.inv_lst[inv.highlight - 1][0].name} ({p.inv_lst[inv.highlight - 1][0].lvl})')
                                     infomenu.print_info(
@@ -356,6 +388,8 @@ def main(stdscr):
                                     infomenu.print_info(
                                         f'----------------------------------------------------------------------')
                                     inv.print_inv(p)
+                                
+                            inv.print_inv(p)
 
                         case "c":
                             describing = False
@@ -414,6 +448,152 @@ def main(stdscr):
                             infomenu.restore_info()
                             infomenu.clear_buffer()
                             break
+
+                except:
+                    pass
+
+        def equip_item():
+            item_equip = True
+
+            inv.highlight = 1
+
+            infomenu.fill_buffer()
+
+            print_equip_infomenu()
+
+            inv.print_inv(p, item_equip)
+            while item_equip:
+                try:
+
+                    key = stdscr.getkey()
+
+                    match key:
+                        case "KEY_UP" | "KEY_LEFT":
+                            if inv.highlight <= 1:
+                                inv.highlight = len(p.inv_lst)
+                            else:
+                                inv.highlight -= 1
+                            inv.print_inv(p, item_equip)
+                            print_equip_infomenu()
+
+                        case "KEY_DOWN" | "KEY_RIGHT":
+                            if inv.highlight >= len(p.inv_lst):
+                                inv.highlight = 1
+                            else:
+                                inv.highlight += 1
+                            inv.print_inv(p, item_equip)
+                            print_equip_infomenu()
+
+                        case "z":
+                            item_equip = False
+                            item = p.inv_lst[inv.highlight - 1][0]
+
+                            infomenu.clear_window()
+                            infomenu.restore_info()
+                            infomenu.clear_buffer()
+
+                            if not item.is_equiped: #  if not equiped
+                                if item.is_item_in_wear(p): #  is in p.wear_lst
+                                    for list_item in p.wear_lst:
+                                        if list_item.wear == item.wear:
+                                            list_item.unequip_item()
+                                            p.unwear_item(list_item)                                    
+
+                                match item.equip_item(p):
+                                    case "class":
+                                        infomenu.print_info(f"Item isn't suited for you!")
+                                    case "lvl":
+                                        infomenu.print_info(f"You can't equip item with higher lvl than you!")
+                                    case True:
+                                        p.wear_item(item)
+                                        infomenu.print_info(f"You successfully equiped {p.inv_lst[inv.highlight - 1][0].name}")
+                                        p.calculate_stats()
+
+                            else:  # if True
+                                unequip(item)
+                                p.unwear_item(item)
+                                infomenu.print_info(f"You successfully unequiped {p.inv_lst[inv.highlight - 1][0].name}")
+                                p.calculate_stats()
+
+                            inv.print_inv(p)
+                            stats.print_stats(p)
+                            break
+
+                        case "c":
+                            item_equip = False
+                            inv.print_inv(p)
+                            infomenu.clear_window()
+                            infomenu.restore_info()
+                            infomenu.clear_buffer()
+                            break
+
+                except:
+                    pass
+
+        def panel_menu():
+            global game_menu_bool
+            global in_game_bool
+            global main_loop
+            global char_naming
+            global char_race
+            global char_role
+            global char_confirm
+
+            #stdscr.erase()
+            #game_pad.erase()
+
+            panel_menu = Menu(10, 21, hrows-5, hcols-10)
+            panel_menu.win.border()
+            panel_menu.print_menu_adv()
+
+            panel_child = curses.panel.new_panel(panel_menu.win)
+            panel_child.top()
+
+            panel_menu.win.refresh()
+
+            game_menu_bool = True
+            while game_menu_bool:
+                try:
+                    key = stdscr.getkey()
+                    match key:
+                        case "c":
+                            game_menu_bool = False
+                            game_pad.refresh()
+                            break
+
+                        case "z":
+                            match panel_menu.highlight:
+                                case 1:
+                                    pass # TODO: add game saving
+
+                                case 2:
+                                    pass # TODO: add Guide
+
+                                case 3:
+                                    game_menu_bool = False
+                                    in_game_bool = False
+                                    main_loop = False
+                                    char_naming = False
+                                    char_race = False
+                                    char_role = False
+                                    char_confirm = False
+                                    break
+
+                        case "KEY_UP":
+                            if panel_menu.highlight <= 1:
+                                panel_menu.highlight = 3
+                            else:
+                                panel_menu.highlight -= 1
+                            panel_menu.print_menu_adv()
+                            panel_menu.win.refresh()
+
+                        case "KEY_DOWN":
+                            if panel_menu.highlight >= 3:
+                                panel_menu.highlight = 1
+                            else:
+                                panel_menu.highlight += 1
+                            panel_menu.print_menu_adv()
+                            panel_menu.win.refresh()
 
                 except:
                     pass
@@ -509,14 +689,23 @@ def main(stdscr):
                             item_deletion()
                         else:
                             infomenu.print_info(f"You have no items to delete!")
+                    
+                    case "e":
+                        if len(p.inv_lst) > 0:
+                            
+                            equip_item()
+
+                        else:
+                            infomenu.print_info(f"You have no items to equip!")
+                    
+                    case "r":
+                        infomenu.print_info(p.wear_lst)
 
                     #  ---------------------------- SPECIAL -----------------------------------------------------
 
                     case "q":
-                        in_game_bool = False
-                        main_loop = False
-                        break
-
+                        panel_menu()
+                        
                     case "o":
                         infomenu.print_info(len(infomenu.info_array))
 
@@ -528,15 +717,101 @@ def main(stdscr):
 
             game_pad.refresh(CAM_Y, CAM_X, 1, 1, CAM_HEIGHT, CAM_WIDTH)
 
-    def character_role_scene(race_select, stats_menu, player_name, player_race):
-        #stdscr.clear()
+    
+    def character_creation_confirm():
+        global stats_sum
+        
+        stdscr.erase()
+        
+        #Setting up label
+        label = "Is this you?"
+        stdscr.addstr(hrows - 16, hcols - (len(label) // 2), label)
+        stdscr.refresh()
+
+        #Menu setting
+        conf_win = Window("menu_stats", hrows-13, hcols-22, 14, 44, f"{player_name}")
+        conf_win.win.border()
+
+        #Stats
+        conf_win.win.addstr(1, 2, f"Name: {player_name}")
+        conf_win.win.addstr(2, 2, f"Race: {player_race}")
+        conf_win.win.addstr(3, 2, f"Class: {player_role}")
+
+        conf_win.win.addstr(1, 25, "Race")
+        conf_win.win.addstr(1, 30, "Role")
+        conf_win.win.addstr(1, 35, "Base")
+        conf_win.print_stats_label(2, 22)
+        conf_win.print_race_stats(2, 27, race_highlight, race_values)
+        conf_win.print_role_stats(2, 32, role_highlight, role_values)
+        
+        
+        stats_sum = conf_win.stats_sum(race_values, role_values, race_highlight, role_highlight)
+        conf_win.print_summer_stats(2, 37, stats_sum)
+
+        conf_win.win.refresh()
+        #conf_win.win.addstr(f"Name: {}")
+
+
+        char_confirm = True
+        while char_confirm:
+            try:
+                key = stdscr.getkey()
+
+                match key:
+                    case "z":
+                        game(player_name, player_race, player_role, stats_sum)
+
+                    case "c":
+                        character_race_scene()
+                        stdscr.erase()
+                        stdscr.refresh()
+                        char_confirm = False
+                
+                #stats_menu.print_stats_label("STR", "INT", "DEX", "STA", "DEF", "LUC",)
+            except:
+                pass
+    
+    
+    def character_role_scene(stats_menu):
+        
+        global role_highlight
+        global player_role
+        global role_values
+        
+        # Load from Roles.json
+        with open('roles.json', 'r') as f:
+            roles_json = json.load(f)
+
+        # creating lists for races
+        roles_instances = []
+        roles_names = []
+
+        # filling lists with race data
+        for item in roles_json['roles']:
+            roles_instances.append(Role(item['name'], item['stamina'], item['strength'], item['dexterity'], item['intelligence'], item['defense'], item['luck']))
+            roles_names.append(item['name'])
+
+        # Setting up label
         label = "What is your profession?"
         stdscr.addstr(hrows - 16, hcols - (len(label) // 2), label)
         stdscr.refresh()
 
-        role_select = Menu(7, 10, hrows-6, hcols-10-5)
+        # Menu setting
+        role_select = Menu(7, 11, hrows-6, hcols-10-5)
         role_select.win.border()
+        #stats_menu = Window("menu_stats", hrows-13, hcols+4, 14, 22, "Character stats")
+        #stats_menu.win.border
+
+        # Filling the global role_highlight variable
+        role_highlight = role_select.highlight
+
+        # adding labels into menu
+        role_select.add_menu_label(*roles_names)
+
+        # printing select on the screen
+        role_select.print_menu(1, 1, 0, 1)
         role_select.win.refresh()
+        stats_menu.print_role_stats(2, 10, role_highlight, roles_instances)
 
         char_role = True
         while char_role:
@@ -545,19 +820,56 @@ def main(stdscr):
 
                 match key:
                     case "z":
-                        pass
+                        
+                        role_highlight = role_select.highlight
+                        
+                        player_role = roles_names[role_highlight]
+                        
+                        role_values = roles_instances
+                        character_creation_confirm()
+
+                        #game(player_name, player_race, player_role)
+
+                    case "c":
+                        role_select.win.clear()
+                        role_select.win.refresh()
+                        del role_select
+                        stats_menu.del_stats_values(2, 10)
+                        stdscr.refresh()
+                        char_role = False
                     case "KEY_UP":
-                        pass
+                        if role_select.highlight <= 0:
+                            role_select.highlight = len(role_select.menu_arr)-1
+                        else:
+                            role_select.highlight -= 1
+                        role_select.print_menu(1, 1, 0, 1)
+                        role_select.win.refresh()
+                        stats_menu.print_role_stats(2, 10, role_select.highlight, roles_instances)
 
                     case "KEY_DOWN":
-                        pass
+                        if role_select.highlight >= len(role_select.menu_arr)-1:
+                            role_select.highlight = 0
+                        else:
+                            role_select.highlight += 1
+                        role_select.print_menu(1, 1, 0, 1)
+                        role_select.win.refresh()
+                        stats_menu.print_role_stats(2, 10, role_select.highlight, roles_instances)
+                
+                #stats_menu.print_stats_label("STR", "INT", "DEX", "STA", "DEF", "LUC",)
+
+
+
 
             except:
                 pass
 
         #game(player_name, player_race, "Warrior")
 
-    def character_race_scene(player_name):
+    def character_race_scene():
+        global race_highlight
+        global player_race
+        global race_values
+
         # Clear window
         stdscr.erase()
 
@@ -574,16 +886,16 @@ def main(stdscr):
             races_instances.append(Race(item['name'], item['stamina'], item['strength'], item['dexterity'], item['intelligence'], item['defense'], item['luck']))
             races_names.append(item['name'])
 
-        # Create character panels and making their borders
-        label = "What race are you?"
-        stdscr.addstr(hrows - 16, hcols - (len(label) // 2), label)
         stdscr.refresh()
 
         # Window creation for race select
-        race_select = Menu(7, 10, hrows-13, hcols-10-5)
+        race_select = Menu(7, 11, hrows-13, hcols-10-5)
         race_select.win.border()
-        stats_menu = Window("menu_stats", hrows-13, hcols+5, 14, 22, "Character stats")
+        stats_menu = Window("menu_stats", hrows-13, hcols+4, 14, 22, "Character stats")
         stats_menu.win.border()
+
+        # Filling the global race_highlight variable
+        race_highlight = race_select.highlight 
 
         # adding races to select
         race_select.add_menu_label(*races_names)
@@ -592,19 +904,36 @@ def main(stdscr):
         race_select.print_menu(1, 1, 0, 1)
         race_select.win.refresh()
         stats_menu.clear_window()
-        stats_menu.print_race_stats(race_select, races_instances)
+        stats_menu.print_race_stats(2, 7, race_highlight, races_instances)
+        stats_menu.print_stats_label(2, 2)
 
 
 
         char_race = True
         while char_race:
             try:
+                stdscr.move(hrows - 16, 0)
+                stdscr.clrtoeol()
+                
+                # Create character panels and making their borders
+                label = "What race are you?"
+                stdscr.addstr(hrows - 16, hcols - (len(label) // 2), label)
+                stdscr.refresh()
+                
                 key = stdscr.getkey()
 
                 match key:
                     case "z":
-                        player_race = races_names[race_select.highlight]
-                        character_role_scene(race_select, stats_menu, player_name, player_race)
+                        
+                        race_highlight = race_select.highlight
+                        player_race = races_names[race_highlight]
+                        race_values = races_instances
+
+                        character_role_scene(stats_menu)
+                        continue
+                    
+                    case "c":
+                        character_name_scene()
 
                     case "KEY_UP":
                         if race_select.highlight <= 0:
@@ -613,7 +942,8 @@ def main(stdscr):
                             race_select.highlight -= 1
                         race_select.print_menu(1, 1, 0, 1)
                         race_select.win.refresh()
-                        stats_menu.print_race_stats(race_select, races_instances)
+                        stats_menu.print_race_stats(2, 7, race_select.highlight, races_instances)
+                        stats_menu.print_stats_label(2, 2)
 
                     case "KEY_DOWN":
                         if race_select.highlight >= len(race_select.menu_arr)-1:
@@ -622,15 +952,18 @@ def main(stdscr):
                             race_select.highlight += 1
                         race_select.print_menu(1, 1, 0, 1)
                         race_select.win.refresh()
-                        stats_menu.print_race_stats(race_select, races_instances)
-
+                        stats_menu.print_race_stats(2, 7, race_select.highlight, races_instances)
+                        stats_menu.print_stats_label(2, 2)
             except:
-                pass
-
-
+                pass     
+            
+            
 
 
     def character_name_scene():
+        
+        global player_name
+
         # Clear window
         stdscr.erase()
         stdscr.refresh()
@@ -643,10 +976,6 @@ def main(stdscr):
         name_prompt.win.erase()
 
         query = curses.textpad.Textbox(name_prompt.win)
-        # character_win = Window("char", hrows-10, hcols-40, 20, 40, "Character")
-        # character_img_win = Window("char_img", hrows-10, hcols + 20, 20, 40, "")
-        # character_win.clear_window()
-        # character_img_win.clear_window()
 
         char_naming = True
         while char_naming:
@@ -662,7 +991,7 @@ def main(stdscr):
             except:
                 stdscr.addstr("neco je spatne")
 
-        character_race_scene(player_name)
+        character_race_scene()
 
 
 
@@ -752,12 +1081,12 @@ def main(stdscr):
                     select += 1
                     colorPick()
                     stdscr.refresh()
-            elif key == "z" and select == 0:
-                character_name_scene()
-
-            elif key == "z" and select == 2:
-                in_game_bool = False
-                main_loop = False
+            elif key == "z":
+                if select == 0:
+                    character_name_scene()
+                elif select == 2:
+                    in_game_bool = False
+                    main_loop = False
 
             elif key == "x":
                 main_loop = False

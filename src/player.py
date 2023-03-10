@@ -18,6 +18,15 @@ class Player:
         self.defense = defense
         self.luck = luck
 
+        self.item_stats = {
+                           "strength": 0,
+                           "stamina": 0,
+                           "dexterity": 0,
+                           "intelligence": 0,
+                           "luck": 0,
+                           "defense": 0
+                            }
+
         self.maxhp = self.stamina * 4 * (self.player_lvl+1)
         self.hp = self.maxhp
 
@@ -26,10 +35,42 @@ class Player:
         self.game_pad = game_pad
         self.map = map
         self.inv_lst = []
+        self.wear_lst = []
         self.inv_weight = 0.0
 
         self.floor = self.get_floor(self.map, 0, 0, 1)
         self.draw_player(self.map, 0, 0)
+
+    def calculate_stats(self):
+        self.item_stats = {
+                           "strength": 0,
+                           "stamina": 0,
+                           "dexterity": 0,
+                           "intelligence": 0,
+                           "luck": 0,
+                           "defense": 0
+                            }
+
+        equipped_items = [item[0] for item in self.inv_lst if item[0].is_equiped]
+
+        for item in equipped_items:
+            self.item_stats["strength"] += item.strength
+            self.item_stats["stamina"] += item.stamina
+            self.item_stats["dexterity"] += item.dexterity
+            self.item_stats["intelligence"] += item.intelligence
+            self.item_stats["luck"] += item.luck
+            if item.defense:
+                self.item_stats["defense"] += item.defense
+
+    def wear_item(self, item):
+        self.wear_lst.append(item)
+
+    def unwear_item(self, item):
+        index = self.wear_lst.index(item)
+        self.wear_lst.pop(index)
+
+    def use(self, item):
+        pass
 
     def get_floor(self, map_arr, offset_x, offset_y, remember_bool):
         if remember_bool == 1:
@@ -139,7 +180,7 @@ class Player:
 
     def add_inv_weight(self):  # Resets and calculates current weight of inventory
         self.inv_weight = 0
-        for item in self.inv_lst:
+        for item in self.inv_lst:  # Calculates weight from inventory
             self.inv_weight += item[0].weight * item[1]
 
     def pickup_item(self, map_arr, items_world, offset_x, offset_y):
@@ -151,7 +192,7 @@ class Player:
             if picked_item.x == self.x and picked_item.y == self.y:
                 if not (picked_item.weight + self.inv_weight) < self.carry:
                     return "overcarried"
-                if self.is_item_in_inventory(picked_item):
+                if self.is_item_in_inventory(picked_item) and picked_item.stackable:
                     self.add_to_quantity(picked_item)
 
                 else:

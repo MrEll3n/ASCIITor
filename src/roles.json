@@ -1,5 +1,5 @@
 {
-  "races": [
+  "roles": [
     {
       "name" : "Warrior",
       "stamina" : 2,

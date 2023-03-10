@@ -1,7 +1,3 @@
-import curses
-from curses.textpad import Textbox, rectangle
-
-
 class Role:
     def __init__(self, name, stamina, strength, dexterity, intelligence, defense, luck):
         self.name = name

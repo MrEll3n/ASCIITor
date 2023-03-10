@@ -1,7 +1,7 @@
 import json
 import random
+import curses
 import os
-
 
 
 class Item:
@@ -23,9 +23,48 @@ class Item:
         else:
             self.game_pad.addstr(self.y + offset_y, self.x + offset_x, f"{self.floor}")
 
+    def equip_item(self, p):
+        if not (p.player_class in self.classes):
+            return "class"
+
+        if not p.player_lvl >= self.lvl:
+            return "lvl"
+
+        self.is_equiped = True
+        return True
+
+    def unequip_item(self):
+        if not self.is_equiped:
+            return False
+
+        self.is_equiped = False
+        return True
+
+    def is_item_in_wear(self, p):
+        if len(p.wear_lst) == 0:
+            return False
+
+        for item in p.wear_lst:
+            if item.wear == self.wear:
+                return True
+        else:
+            return False
+
 
 class Weapon(Item):
-    def __init__(self, map_arr, game_pad, x, y, name, desc, lvl, dmg, weight):
+    def __init__(self, item_id, map_arr, game_pad, x, y, name, desc,
+                 lvl, dmg, weight, classes, wear, stackable,
+                 strength, stamina, dexterity, intelligence, luck, defense):
+
+        self.strength = strength
+        self.stamina = stamina
+        self.dexterity = dexterity
+        self.intelligence = intelligence
+        self.luck = luck
+
+        self.defense = defense
+
+        self.id = item_id
         self.x = x
         self.y = y
         self.name = name
@@ -36,21 +75,27 @@ class Weapon(Item):
         self.char = "("
         self.map = map_arr
         self.game_pad = game_pad
+        self.classes = classes
+        self.is_equiped = False
+        self.wear = wear
+        self.stackable = stackable
 
         self.floor = self.get_floor(self.map, 0, 0, 1)
         self.draw_item(self.map, 0, 0)
 
-        #print(f"Weapon: {self.name}\n"
-        #      f"desc: {self.desc}\n"
-        #      f"lvl: {self.lvl}\n"
-        #      f"dmg: {self.dmg}\n"
-        #      f"character: {self.char}\n"
-        #      f"pos: {self.x}, {self.y}\n")
-        #print("---------------------------\n")
-
 
 class Armor(Item):
-    def __init__(self, map_arr, game_pad, x, y, name, desc, lvl, defense, weight, type):
+    def __init__(self, item_id, map_arr, game_pad, x, y, name, desc,
+                 lvl, defense, weight, classes, wear, stackable,
+                 strength, stamina, dexterity, intelligence, luck):
+
+        self.strength = strength
+        self.stamina = stamina
+        self.dexterity = dexterity
+        self.intelligence = intelligence
+        self.luck = luck
+
+        self.id = item_id
         self.x = x
         self.y = y
         self.name = name
@@ -59,24 +104,20 @@ class Armor(Item):
         self.defense = defense
         self.weight = weight
         self.char = "T"
-        self.type = type
         self.map = map_arr
         self.game_pad = game_pad
+        self.classes = classes
+        self.is_equiped = False
+        self.wear = wear
+        self.stackable = stackable
 
         self.floor = self.get_floor(self.map, 0, 0, 1)
         self.draw_item(self.map, 0, 0)
 
-        #print(f"Armor: {self.name}\n"
-        #      f"desc: {self.desc}\n"
-        #      f"lvl: {self.lvl}\n"
-        #      f"defense: {self.defense}\n"
-        #      f"character: {self.char}\n"
-        #      f"pos: {self.x}, {self.y}\n")
-        #print("---------------------------\n")
-
 
 class Food(Item):
-    def __init__(self, map_arr, game_pad, x, y, name, desc, reg, weight):
+    def __init__(self, item_id, map_arr, game_pad, x, y, name, desc, reg, weight, stackable):
+        self.id = item_id
         self.x = x
         self.y = y
         self.name = name
@@ -86,19 +127,14 @@ class Food(Item):
         self.char = "F"
         self.map = map_arr
         self.game_pad = game_pad
+        self.stackable = stackable
 
         self.floor = self.get_floor(self.map, 0, 0, 1)
         self.draw_item(self.map, 0, 0)
 
-        #print(f"Food: {self.name}\n"
-        #      f"desc: {self.desc}\n"
-        #      f"regen: {self.reg}\n"
-        #      f"character: {self.char}\n"
-        #      f"pos: {self.x}, {self.y}\n")
-        #print("---------------------------\n")
+# Debugging -------------------------------------------------------------------
 
 
-# Debugging
 if __name__ == "__main__":
     os.system("cls")
     with open('Items.json', 'r') as f:
@@ -133,5 +169,5 @@ if __name__ == "__main__":
                     items_world.append(Food(i, 0, food_arr[0], food_arr[1], food_arr[2]))
                 # items_world.append(items.Weapon())
 
-    #for object in items_world:
-    #    print(f"{object.name} - {object.char}")
+    # for object in items_world:
+    #     print(f"{object.name} - {object.char}")
