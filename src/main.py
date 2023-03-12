@@ -200,6 +200,22 @@ def main(stdscr):
         def unequip(item):
             infomenu.print_info(f"You successfully unequiped {p.inv_lst[inv.highlight - 1][0].name}")
             item.unequip_item()
+        
+        def use(food):
+            if p.hp != p.maxhp:
+                if food[1] > 1:
+                    food[1] -= 1
+                    
+                    infomenu.print_info(f"You have healed {food[0].eat_food(p)} HP.")
+
+                elif food[1] == 1:
+                    infomenu.print_info(f"You have healed {food[0].eat_food(p)} HP.")
+                    index = p.inv_lst.index(food)
+                    del p.inv_lst[index]
+
+            else:
+                infomenu.print_info(f"You can't eat right now, you're in good condition!")
+
 
         def print_equip_infomenu():
             infomenu.clear_window()
@@ -208,7 +224,7 @@ def main(stdscr):
             for _ in range(11):
                 infomenu.print_info(f"", False)
             infomenu.print_info(
-                f"Choose to equip: {return_item_letter()}) {p.inv_lst[inv.highlight - 1][0].name}",
+                f"Choose to equip/use: {return_item_letter()}) {p.inv_lst[inv.highlight - 1][0].name}",
                 False)
 
         def print_description_infomenu():
@@ -487,34 +503,54 @@ def main(stdscr):
                         case "z":
                             item_equip = False
                             item = p.inv_lst[inv.highlight - 1][0]
+                            food = p.inv_lst[inv.highlight - 1]
 
                             infomenu.clear_window()
                             infomenu.restore_info()
                             infomenu.clear_buffer()
 
-                            if not item.is_equiped: #  if not equiped
-                                if item.is_item_in_wear(p): #  is in p.wear_lst
-                                    for list_item in p.wear_lst:
-                                        if list_item.wear == item.wear:
-                                            list_item.unequip_item()
-                                            p.unwear_item(list_item)                                    
+                            if item.__class__.__name__ == "Weapon" or item.__class__.__name__ == "Armor":
+                                infomenu.print_info(f"a1")
+                                if not item.is_equiped: #  if not equiped
+                                    infomenu.print_info(f"a2")
+                                    if item.is_item_in_wear(p): #  is in p.wear_lst
+                                        infomenu.print_info(f"a3")
+                                        for list_item in p.wear_lst:
+                                            if list_item.wear == item.wear:
+                                                infomenu.print_info(f"a4")
+                                                list_item.unequip_item()
+                                                p.unwear_item(list_item)                                    
 
-                                match item.equip_item(p):
-                                    case "class":
-                                        infomenu.print_info(f"Item isn't suited for you!")
-                                    case "lvl":
-                                        infomenu.print_info(f"You can't equip item with higher lvl than you!")
-                                    case True:
-                                        p.wear_item(item)
-                                        infomenu.print_info(f"You successfully equiped {p.inv_lst[inv.highlight - 1][0].name}")
-                                        p.calculate_stats()
+                                    match item.equip_item(p):
+                                        case "class":
+                                            infomenu.print_info(f"Item isn't suited for you!")
+                                        case "lvl":
+                                            infomenu.print_info(f"You can't equip item with higher lvl than you!")
+                                        case True:
+                                            infomenu.print_info(f"a5.1")
+                                            p.wear_item(item)
+                                            infomenu.print_info(f"a5.2")
+                                            infomenu.print_info(f"You successfully equiped {p.inv_lst[inv.highlight - 1][0].name}")
+                                            infomenu.print_info(f"a5.3")
+                                            p.calculate_stats()
+                                            infomenu.print_info(f"a5.4")
+                                            inv.print_inv(p)
+                                            infomenu.print_info(f"a5.5")
 
-                            else:  # if True
-                                unequip(item)
-                                p.unwear_item(item)
-                                infomenu.print_info(f"You successfully unequiped {p.inv_lst[inv.highlight - 1][0].name}")
-                                p.calculate_stats()
+                                else:  # if True
+                                    infomenu.print_info(f"b1")
+                                    unequip(item)
+                                    p.unwear_item(item)
+                                    #infomenu.print_info(f"You successfully unequiped {p.inv_lst[inv.highlight - 1][0].name}")
+                                    p.calculate_stats()
+                                    #inv.print_inv(p)
+                            else:
+                                infomenu.print_info(f"c1")
+                                infomenu.print_info(f"{food}")
+                                use(food)
 
+
+                            infomenu.print_info(f"end")
                             inv.print_inv(p)
                             stats.print_stats(p)
                             break
@@ -699,7 +735,8 @@ def main(stdscr):
                             infomenu.print_info(f"You have no items to equip!")
                     
                     case "r":
-                        infomenu.print_info(p.wear_lst)
+                        p.hp -= 1
+                        stats.print_stats(p)
 
                     #  ---------------------------- SPECIAL -----------------------------------------------------
 

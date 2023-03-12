@@ -49,7 +49,17 @@ class Item:
                 return True
         else:
             return False
+    
+    def eat_food(self, p):
+        p.hp += self.reg
+        diff = p.maxhp - p.hp
+        if diff < 0:
+            p.hp = p.maxhp
+            return self.reg + diff
+        else:
+            return self.reg
 
+    
 
 class Weapon(Item):
     def __init__(self, item_id, map_arr, game_pad, x, y, name, desc,
@@ -128,6 +138,7 @@ class Food(Item):
         self.map = map_arr
         self.game_pad = game_pad
         self.stackable = stackable
+        self.is_equiped = None
 
         self.floor = self.get_floor(self.map, 0, 0, 1)
         self.draw_item(self.map, 0, 0)

@@ -69,9 +69,6 @@ class Player:
         index = self.wear_lst.index(item)
         self.wear_lst.pop(index)
 
-    def use(self, item):
-        pass
-
     def get_floor(self, map_arr, offset_x, offset_y, remember_bool):
         if remember_bool == 1:
             self.floor = str(map_arr[self.y + offset_y][self.x + offset_x][0])
@@ -196,7 +193,7 @@ class Player:
                     self.add_to_quantity(picked_item)
 
                 else:
-                    self.inv_lst.insert(0, [picked_item, 1, "n"])
+                    self.inv_lst.insert(0, [picked_item, 1])  # TODO: "n"
 
                 self.floor = [picked_item.floor][0]
                 map_arr[self.y][self.x][1] = "b"
