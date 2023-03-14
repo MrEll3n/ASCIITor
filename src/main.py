@@ -1067,8 +1067,6 @@ def main(stdscr):
             try:
                 query.edit()
                 gather = query.gather()
-
-                gather
                 if gather :
                     player_name = gather
                     #char_naming = False
