@@ -64,6 +64,10 @@ class Window:
 
         self.clear_window()
 
+    def redraw(self):
+        self.win.redrawwin()
+        self.win.refresh()
+    
     def delete(self):
         self.win.erase()
         del self
@@ -86,9 +90,9 @@ class Window:
         self.win.erase()
         # self.win.border()
         if self.win_type == "info":
-            self.win.border(0, 0, 0, 0, 0, 9516, 0, 0)
+            self.win.border(0, 0, 0, 0, 0, 0, 0, 0) #  9516
         elif self.win_type == "stats":
-            self.win.border(0, 0, 0, 0, 0, 0, 9524, 0)
+            self.win.border(0, 0, 0, 0, 0, 0, 0, 0) #  9524
         elif self.win_type == "menu":
             self.win.border(0, 0, 0, 0, 0, 0, 0, 0)
         else:
@@ -111,7 +115,7 @@ class Window:
         # self.win.clear()
         self.clear_window()
         # self.update_stats(p)
-        self.win.addstr(2, 2, f"{p.name} [{p.player_lvl}] - {p.player_race} - {p.player_class}")
+        self.win.addstr(2, 2, f"{p.name} [{p.player_lvl}] - {p.player_race} {p.player_class}")
         self.win.addstr(4, 2, f"HP: {p.hp} / {p.maxhp}")
         self.win.addstr(6, 2, f"STR: {p.strength+p.item_stats['strength']}")
         self.win.addstr(7, 2, f"DEX: {p.dexterity+p.item_stats['dexterity']}")
@@ -122,7 +126,7 @@ class Window:
         self.win.refresh()
 
     def string_slice(self, string):
-        str_range = 70  # range of slicing
+        str_range = self.width-2  # range of slicing
         result = []
 
         if len(string) <= str_range:
@@ -154,7 +158,7 @@ class Window:
             else:
                 self.win.addstr(index + 1, 1, f"{item}")
 
-        self.win.border(0, 0, 0, 0, 0, 9516, 0, 0)
+        self.win.border(0, 0, 0, 0, 0, 0, 0, 0) #  9516
         self.win.refresh()
 
     def print_inv(self, p, while_true=False):
@@ -290,6 +294,10 @@ class Menu:
 
         # logging.debug(f"Menu was created.")
 
+    def redraw(self):
+        self.win.redrawwin()
+        self.win.refresh()
+    
     def add_menu_label(self, *argv):
         for arg in argv:
             self.menu_arr.append(arg)

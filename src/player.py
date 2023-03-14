@@ -142,7 +142,7 @@ class Player:
             return True
 
     def move_down(self, map_arr, game_y):
-        if not (self.y < game_y and self.get_floor(map_arr, 0, 1, 0) != "#"):
+        if not (self.y < (game_y - 2) and self.get_floor(map_arr, 0, 1, 0) != "#"):
             return False
 
         self.draw_floor(map_arr, 0, 0)
