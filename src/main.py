@@ -13,10 +13,14 @@ from perlin_noise import PerlinNoise
 
 from player import Player
 from hud import Window, Menu
+import hud
 from camera import Camera
 from items import Weapon, Armor, Food
 from race import Race
 from role import Role
+from enemy import Enemy, create_enemy
+import fight
+
 
 game_menu_bool = False
 in_game_bool = False
@@ -34,6 +38,9 @@ def main(stdscr):
     global char_race
     global char_role
     global char_confirm
+    global in_fight
+    global rows, cols
+    
     rows, cols = stdscr.getmaxyx()
     hrows = (rows // 2)
     hcols = (cols // 2)
@@ -52,6 +59,7 @@ def main(stdscr):
         global char_race
         global char_role
         global char_confirm
+        global rows, cols
         
         stdscr.clear()
         LOADING_LABEL = "Generating terrain..."
@@ -155,7 +163,7 @@ def main(stdscr):
                                     items_world.append(
                                         Armor(id_counter, map, game_pad, i, j, armor_arr[0], armor_arr[1], armor_arr[2],
                                               armor_arr[3], armor_arr[4], armor_arr[5], armor_arr[6], armor_arr[7], armor_arr[8],
-                                              armor_arr[9], armor_arr[10], armor_arr[11], armor_arr[12]))
+                                              armor_arr[9], armor_arr[10], armor_arr[11], armor_arr[12], armor_arr[13]))
 
                                 # Food creation
                                 case 2:
@@ -216,6 +224,15 @@ def main(stdscr):
         description_bool = False
         item_deletion_bool = False
         quantity_bool = False
+
+        def redraw_hud():
+            stdscr.hline(0, 1, '-', cols-47) #  9472
+            stdscr.vline(1, 0, '|', rows-16)
+            stdscr.addstr(0, 0, '+')
+            stdscr.refresh
+            infomenu.redraw()
+            stats.redraw()
+            inv.redraw()
 
         def return_item_letter():
             for index, item in enumerate(p.inv_lst, start=1):
@@ -586,7 +603,7 @@ def main(stdscr):
                                 #inv.print_inv(p)
                         else:
                             # infomenu.print_info(f"c1")
-                            infomenu.print_info(f"{food}")
+                            # infomenu.print_info(f"{food}")
                             use(food)
 
 
@@ -617,17 +634,22 @@ def main(stdscr):
             global char_race
             global char_role
             global char_confirm
+            global hrows, hcols
+
 
             #stdscr.erase()
             #game_pad.erase()
 
-            panel_menu = Menu(10, 21, hrows-5, hcols-10)
+            panel_menu = Menu(10, 21, (rows//2)-5, (cols//2)-10)
             panel_menu.win.border()
             panel_menu.print_menu_adv()
+            panel_menu.highlight = 1
 
             panel_child = curses.panel.new_panel(panel_menu.win)
             panel_child.top()
 
+            panel_menu.win.refresh()
+            panel_menu.print_menu_adv()
             panel_menu.win.refresh()
 
             game_menu_bool = True
@@ -637,6 +659,7 @@ def main(stdscr):
                 match key:
                     case 99: #  c
                         game_menu_bool = False
+                        redraw_hud()
                         #game_pad.refresh()
 
                     case 122: #  z
@@ -680,7 +703,26 @@ def main(stdscr):
                         #game_pad.refresh()
                         # panel_menu.win.redraw()
 
+        def game_over_fce():
+            global in_game_bool
+            global char_naming
+            global char_race
+            global char_role
+            global char_confirm
+            global game_over
 
+            game_over = True
+            while game_over:
+                hud.game_over(stdscr, p, rows, cols)
+
+                key = stdscr.getch()
+                if key != -1:
+                    in_game_bool = False
+                    char_naming = False
+                    char_race = False
+                    char_role = False
+                    char_confirm = False
+                    game_over = False
 
         # game loop variables
         # in_game_bool = True
@@ -688,6 +730,10 @@ def main(stdscr):
         # item_deletion = False
 
         while in_game_bool:
+            if p.hp <= 0:
+               game_over_fce()
+            
+            
             key = stdscr.getch()
 
             match key:
@@ -790,19 +836,41 @@ def main(stdscr):
                 case 113: #  q
                     panel_menu()
                     
-                case 111: #  o
-                    infomenu.print_info(len(infomenu.info_array))
+                # case 111: #  o
+                    # infomenu.print_info(len(infomenu.info_array))
+
+                case 102: #  f
+                    enemy_stats = create_enemy(p.entity_lvl, True)
+                    e = Enemy(enemy_stats['name'], enemy_stats['class'], enemy_stats['lvl'],
+                            enemy_stats['dmg'], enemy_stats['sta'], enemy_stats['int'],
+                            enemy_stats['str'], enemy_stats['dex'], enemy_stats['def'],
+                            enemy_stats['luc'], game_pad, map)
+
+                    result = fight.fight(stdscr, rows, cols, p, e)
+
+                    if not result:  # When GameOver                      
+                        game_over_fce()
+
+                    else:  # When Won
+                        stdscr.erase()
+                        stdscr.refresh()
+                        stats.print_stats(p)
+                        redraw_hud()
+                    
+                    del e
                 
                 case curses.KEY_RESIZE:
+                    rows, cols = stdscr.getmaxyx()
+                    hrows = (rows // 2)
+                    hcols = (cols // 2)
+                    curses.resize_term(rows, cols)
+                    
+                    redraw_hud()
 
-                    infomenu.redraw()
-                    stats.redraw()
-                    inv.redraw()
 
-
-                #case _:
+                case _:
                 #    infomenu.print_info(f"{key}")
-
+                    pass
 
             game_pad.refresh(CAM_Y, CAM_X, 1, 1, CAM_HEIGHT, CAM_WIDTH)
                     
@@ -1041,9 +1109,6 @@ def main(stdscr):
                     stats_menu.print_race_stats(2, 7, race_select.highlight, races_instances)
                     stats_menu.print_stats_label(2, 2)
 
-        
-
-
     def character_name_scene():
         global char_naming
         global player_name
@@ -1068,7 +1133,7 @@ def main(stdscr):
                 query.edit()
                 gather = query.gather()
                 if gather :
-                    player_name = gather
+                    player_name = gather.strip()
                     #char_naming = False
                     #game(player_name, "Goblin", "Warrior")
                     char_naming = False
@@ -1077,9 +1142,6 @@ def main(stdscr):
                 stdscr.addstr("neco je spatne")
 
         character_race_scene()
-
-
-
 
     def print_logo():
         f = open("logo.txt", "r")

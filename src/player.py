@@ -7,9 +7,9 @@ class Player:
         self.x = x
         self.y = y
         self.name = name
-        self.player_class = player_class
-        self.player_lvl = player_lvl
-        self.player_race = player_race
+        self.entity_class = player_class
+        self.entity_lvl = player_lvl
+        self.entity_race = player_race
 
         self.stamina = stamina
         self.strength = strength
@@ -27,8 +27,10 @@ class Player:
                            "defense": 0
                             }
 
-        self.maxhp = self.stamina * 4 * (self.player_lvl+1)
+        self.maxhp = self.stamina * 4 * (self.entity_lvl+1)
         self.hp = self.maxhp
+
+        self.dmg = self.strength//3
 
         self.carry = carry
         self.floor = ""
@@ -38,8 +40,17 @@ class Player:
         self.wear_lst = []
         self.inv_weight = 0.0
 
+        self.sum_strength = self.strength+self.item_stats['strength']
+        self.sum_dexterity = self.dexterity+self.item_stats['dexterity']
+        self.sum_intelligence = self.intelligence+self.item_stats['intelligence']
+        self.sum_stamina = self.stamina+self.item_stats['stamina']
+        self.sum_defense = self.defense+self.item_stats['defense']
+        self.sum_luck = self.luck+self.item_stats['luck']
+
+
         self.floor = self.get_floor(self.map, 0, 0, 1)
         self.draw_player(self.map, 0, 0)
+
 
     def calculate_stats(self):
         self.item_stats = {
@@ -48,7 +59,8 @@ class Player:
                            "dexterity": 0,
                            "intelligence": 0,
                            "luck": 0,
-                           "defense": 0
+                           "defense": 0,
+                           "dmg": self.strength//3
                             }
 
         equipped_items = [item[0] for item in self.inv_lst if item[0].is_equiped]
@@ -61,6 +73,17 @@ class Player:
             self.item_stats["luck"] += item.luck
             if item.defense:
                 self.item_stats["defense"] += item.defense
+            
+            if item.dmg:
+                self.item_stats["dmg"] += item.dmg
+        
+        self.sum_strength = self.strength+self.item_stats['strength']
+        self.sum_dexterity = self.dexterity+self.item_stats['dexterity']
+        self.sum_intelligence = self.intelligence+self.item_stats['intelligence']
+        self.sum_stamina = self.stamina+self.item_stats['stamina']
+        self.sum_defense = self.defense+self.item_stats['defense']
+        self.sum_luck = self.luck+self.item_stats['luck']
+        self.dmg = self.item_stats['dmg']
 
     def wear_item(self, item):
         self.wear_lst.append(item)

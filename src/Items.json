@@ -9,7 +9,7 @@
             "weight" : 2.1,
             "classes" : ["Warrior"],
             "wear" : "hand",
-            "stackable" : null,
+            "stackable" : false,
             "str" : 2,
             "sta" : 0,
             "dex" : 0,
@@ -50,7 +50,8 @@
             "sta" : 0,
             "dex" : 0,
             "int" : 0,
-            "luc" : 0
+            "luc" : 0,
+            "dmg" : null
         },
         {
             "name" : "Iron Chestplate",
@@ -65,7 +66,8 @@
             "sta" : 0,
             "dex" : 0,
             "int" : 0,
-            "luc" : 0
+            "luc" : 0,
+            "dmg" : null
         },
         {
             "name" : "Iron Leggins",
@@ -80,7 +82,8 @@
             "sta" : 0,
             "dex" : 0,
             "int" : 0,
-            "luc" : 0
+            "luc" : 0,
+            "dmg" : null
         },
         {
             "name" : "Iron Boots",
@@ -95,7 +98,8 @@
             "sta" : 0,
             "dex" : 0,
             "int" : 0,
-            "luc" : 0
+            "luc" : 0,
+            "dmg" : null
         }
     ],
     "food":

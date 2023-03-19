@@ -41,7 +41,7 @@ class Window:
             self.dexterity = p.dexterity
             self.defense = p.defense
             self.luck = p.luck
-            self.player_lvl = p.player_lvl
+            self.player_lvl = p.entity_lvl
 
         if self.win_type == "info":
             self.info_array = []
@@ -58,11 +58,30 @@ class Window:
 
         if self.win_type == "menu_stats":
             pass
+        
+        if self.win_type == "fight":
+            self.health_bar = 0
 
         self.win = curses.newwin(self.height, self.width, self.y, self.x)
         self.max_y_x = self.win.getmaxyx()
 
         self.clear_window()
+
+    def draw_exp_bar(self):
+        result = self.hp/self.maxhp
+
+        outcome = ''.ljust(math.floor(result*(self.width-6)), '*')  # calculating of EXP bars via percentile
+        filling = ''.ljust((self.width-6)-len(outcome), ".") # calculating of filling for EXP
+
+        return f"{outcome}{filling}"  # constant length bar
+
+    def draw_hp_bar(self, entity):
+        result = entity.hp/entity.maxhp
+
+        outcome = ''.ljust(math.floor(result*(self.width-6)), '*')  # calculating of HP bars via percentile
+        filling = ''.ljust((self.width-6)-len(outcome), ".") # calculating of filling for HP
+
+        return f"{outcome}{filling}"  # constant length bar
 
     def redraw(self):
         self.win.redrawwin()
@@ -84,7 +103,7 @@ class Window:
         self.dexterity = p.dexterity
         self.defense = p.defense
         self.luck = p.luck
-        self.player_lvl = p.player_lvl
+        self.player_lvl = p.entity_lvl
 
     def clear_window(self):
         self.win.erase()
@@ -109,24 +128,23 @@ class Window:
     def draw_border(self):
         self.win.erase()
         self.win.border()
-        self.win.refresh()
 
     def print_stats(self, p):
         # self.win.clear()
         self.clear_window()
         # self.update_stats(p)
-        self.win.addstr(2, 2, f"{p.name} [{p.player_lvl}] - {p.player_race} {p.player_class}")
+        self.win.addstr(2, 2, f"{p.name} [{p.entity_lvl}] - {p.entity_race} {p.entity_class}")
         self.win.addstr(4, 2, f"HP: {p.hp} / {p.maxhp}")
-        self.win.addstr(6, 2, f"STR: {p.strength+p.item_stats['strength']}")
-        self.win.addstr(7, 2, f"DEX: {p.dexterity+p.item_stats['dexterity']}")
-        self.win.addstr(8, 2, f"INT: {p.intelligence+p.item_stats['intelligence']}")
-        self.win.addstr(6, 12, f"STA: {p.stamina+p.item_stats['stamina']}")
-        self.win.addstr(7, 12, f"DEF: {p.defense+p.item_stats['defense']}")
-        self.win.addstr(8, 12, f"LUC: {p.luck+p.item_stats['luck']}")
+        self.win.addstr(6, 2, f"STR: {p.sum_strength}")
+        self.win.addstr(7, 2, f"DEX: {p.sum_dexterity}")
+        self.win.addstr(8, 2, f"INT: {p.sum_intelligence}")
+        self.win.addstr(6, 12, f"STA: {p.sum_stamina}")
+        self.win.addstr(7, 12, f"DEF: {p.sum_defense}")
+        self.win.addstr(8, 12, f"LUC: {p.sum_luck}")
         self.win.refresh()
 
     def string_slice(self, string):
-        str_range = self.width-2  # range of slicing
+        str_range = self.width-5  # range of slicing
         result = []
 
         if len(string) <= str_range:
@@ -327,3 +345,25 @@ class Menu:
         highlight(1, 2, label1)
         highlight(2, 4, label2)
         highlight(3, 7, label3)
+
+        self.win.refresh()
+
+def game_over(stdscr, p, rows, cols):   
+    hrows = rows // 2
+    hcols = cols // 2
+    label1 = "You've died!"
+    label2 = f"{p.name} - {p.entity_lvl} lvl"
+    label3 = "Back to Menu..."
+
+
+    stdscr.clear()
+    
+    with open("gameover.txt", "r") as f:
+        for i in range(23):
+            stdscr.addstr(i+2, hcols - 42, f.readline())
+        f.close()
+    
+    stdscr.addstr(hrows - 9, (hcols-len(label1)//2), label1)
+    stdscr.addstr(hrows - 7, (hcols-len(label2)//2), label2)
+    stdscr.addstr(hrows + 17, hcols + 45, label3)
+    

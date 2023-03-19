@@ -24,10 +24,10 @@ class Item:
             self.game_pad.addstr(self.y + offset_y, self.x + offset_x, f"{self.floor}")
 
     def equip_item(self, p):
-        if not (p.player_class in self.classes):
+        if not (p.entity_class in self.classes):
             return "class"
 
-        if not p.player_lvl >= self.lvl:
+        if not p.entity_lvl >= self.lvl:
             return "lvl"
 
         self.is_equiped = True
@@ -97,13 +97,15 @@ class Weapon(Item):
 class Armor(Item):
     def __init__(self, item_id, map_arr, game_pad, x, y, name, desc,
                  lvl, defense, weight, classes, wear, stackable,
-                 strength, stamina, dexterity, intelligence, luck):
+                 strength, stamina, dexterity, intelligence, luck, dmg):
 
         self.strength = strength
         self.stamina = stamina
         self.dexterity = dexterity
         self.intelligence = intelligence
         self.luck = luck
+
+        self.dmg = dmg
 
         self.id = item_id
         self.x = x
