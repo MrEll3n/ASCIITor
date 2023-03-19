@@ -30,7 +30,7 @@ class Player:
         self.maxhp = self.stamina * 4 * (self.entity_lvl+1)
         self.hp = self.maxhp
 
-        self.dmg = self.strength//3
+        self.dmg = self.strength//2
 
         self.carry = carry
         self.floor = ""
@@ -60,7 +60,7 @@ class Player:
                            "intelligence": 0,
                            "luck": 0,
                            "defense": 0,
-                           "dmg": self.strength//3
+                           "dmg": self.strength//2
                             }
 
         equipped_items = [item[0] for item in self.inv_lst if item[0].is_equiped]

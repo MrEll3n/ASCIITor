@@ -123,8 +123,8 @@ def fight(stdscr, rows, cols, p, e):
     def take_dmg_animation(win, critical_hit):
         # entity = entity.win
         if critical_hit:
-            stdscr.attron(curses.A_REVERSE)
-            stdscr.refresh()
+            win.attron(curses.A_REVERSE)
+            win.refresh()
         move_animation(win.win, 5, win.x, 0.05)
         # if critical_hit:
         #     stdscr.attron(curses.A_REVERSE)
@@ -135,8 +135,8 @@ def fight(stdscr, rows, cols, p, e):
         #     stdscr.refresh()
         move_animation(win.win, 4, win.x, 0.1)
         if critical_hit:
-            stdscr.attron(curses.A_REVERSE)
-            stdscr.refresh()
+            win.attron(curses.A_REVERSE)
+            win.refresh()
 
         
     
@@ -214,8 +214,6 @@ def fight(stdscr, rows, cols, p, e):
             player_attack_animation()
             
             deal_dmg(p, e)
-            stdscr.attron(curses.A_REVERSE)
-            # stdscr.refresh()
             take_dmg_animation(enemy_win, critical_hit_bool)
             player_attack_recall_animation()
             
