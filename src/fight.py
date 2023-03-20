@@ -19,41 +19,46 @@ def fight(stdscr, rows, cols, p, e):
     p_y = 4
     e_y = 4
 
-    player_win = Window("fight", p_y, 0, rows-8, hcols-20, "")
+    player_win = Window("fight", p_y, 12, hrows-4, hcols-30, "")
     player_win.clear_window()
 
     #player_win.win.hline(player_win.height//2, 1, "-", player_win.width-2)
     player_win.win.refresh()
 
-    enemy_win = Window("fight", e_y, hcols+20, rows-8, hcols-20, "")
+    enemy_win = Window("fight", e_y, hcols+18, hrows-4, hcols-30, "")
     enemy_win.clear_window()
 
     #enemy_win.win.hline(enemy_win.height//2 , 1, "-", player_win.width-2)
     enemy_win.win.refresh()
 
-    player = player_win.win
-    enemy = enemy_win.win
+    # player = player_win.win
+    # enemy = enemy_win.win
 
     def draw_hud(win, entity):
         hheight = win.height//2
         hwidth = win.width//2
 
-        # Middle card
-        win.win.addstr(hheight + 2, hwidth - (len(entity.name)//2) - 2, f"< {entity.name} >")
-        win.win.move(hheight + 3, hwidth + 12)
+        # Info
+        win.win.addstr(2, hwidth - (len(entity.name)//2) - 2, f"< {entity.name} >")
+        win.win.move(3, hwidth + 12)
         win.win.clrtoeol()
         
-        win.win.addstr(hheight + 3, hwidth + 12, f"{entity.hp}/{entity.maxhp}")
-        win.win.addstr(hheight + 4, 2, f"|{win.draw_hp_bar(entity)}|")
+        win.win.addstr(3, hwidth + 12, f"{entity.hp}/{entity.maxhp}")
+        win.win.addstr(4, 2, f"|{win.draw_hp_bar(entity)}|")
 
-        # Bottom card
-        win.win.addstr(hheight + 8, hwidth-8, f"STR: {entity.sum_strength}")
-        win.win.addstr(hheight + 10, hwidth-8, f"DEX: {entity.sum_dexterity}")
-        win.win.addstr(hheight + 12, hwidth-8, f"INT: {entity.sum_intelligence}")
+        win.win.hline((enemy_win.height//2)-1 , 1, "-", player_win.width-2)
 
-        win.win.addstr(hheight + 8, (hwidth+8)-7, f"STA: {entity.sum_stamina}")
-        win.win.addstr(hheight + 10, (hwidth+8)-7, f"DEF: {entity.sum_defense}")
-        win.win.addstr(hheight + 12, (hwidth+8)-7, f"LUK: {entity.sum_luck}")
+        # Stats
+        entity_class_label = entity.entity_class
+        win.win.addstr(7, hwidth - (len(entity_class_label)//2), f"{entity_class_label}")
+        
+        win.win.addstr(9, hwidth-8, f"STR: {entity.sum_strength}")
+        win.win.addstr(11, hwidth-8, f"DEX: {entity.sum_dexterity}")
+        win.win.addstr(13, hwidth-8, f"INT: {entity.sum_intelligence}")
+
+        win.win.addstr(9, (hwidth+8)-7, f"STA: {entity.sum_stamina}")
+        win.win.addstr(11, (hwidth+8)-7, f"DEF: {entity.sum_defense}")
+        win.win.addstr(13, (hwidth+8)-7, f"LUK: {entity.sum_luck}")
 
         win.win.border()
         win.win.refresh()
@@ -68,13 +73,16 @@ def fight(stdscr, rows, cols, p, e):
         enemy_win.win.refresh()
 
     def move_animation(win, y, x, delay):
-        win.mvwin(y, x)
-
+        win.current_x = x
+        win.current_y = y 
+        
+        win.win.mvwin(y, x)
+        
         stdscr.erase()
         stdscr.refresh()
         redraw_battle()
 
-        win.refresh()
+        win.win.refresh()
         time.sleep(delay)
 
     # def attack_animation(win, y, x, delay):
@@ -91,64 +99,77 @@ def fight(stdscr, rows, cols, p, e):
     def player_attack_animation(dmg=False): # player = player_win.win
         time.sleep(0.5)
 
-        move_animation(player, p_y, 7, 0.05)
-        move_animation(player, p_y, 35, 0.05)
-        move_animation(player, p_y, 34, 0.1)
-        
+        move_animation(player_win, p_y, 7+10, 0.05)
+        move_animation(player_win, p_y, 35+10, 0.05)
+        move_animation(player_win, p_y, 34+10, 0.1)
+
+        # move_animation(player_win, p_y, player_win.current_x+8, 0.05)
+        # move_animation(player_win, p_y, player_win.current_x+28, 0.05)
+        # move_animation(player_win, p_y, player_win.current_x-4, 0.1)
+
 
     def player_attack_recall_animation():
         
-        move_animation(player, p_y, 10, 0.1)
-        move_animation(player, p_y, 6, 0.1)
-        move_animation(player, p_y, 2, 0.1)
-        move_animation(player, p_y, 0, 0.1)
+        move_animation(player_win, p_y, 10+10, 0.1)
+        move_animation(player_win, p_y, 6+10, 0.1)
+        move_animation(player_win, p_y, player_win.x, 0.1)
+        # move_animation(player_win.win, p_y, player_win.x, 0.1)
+
+        # move_animation(player_win, p_y, player_win.current_x-10, 0.1)
+        # move_animation(player_win, p_y, player_win.current_x-8, 0.1)
+        # move_animation(player_win, p_y, player_win.x, 0.1)
 
     def enemy_attack_animation(dmg=False):
         # enemy = enemy_win.win
         
         time.sleep(0.5)
 
-        move_animation(enemy, e_y, enemy_win.x-7, 0.05)
-        move_animation(enemy, e_y, enemy_win.x-35, 0.1)
-        move_animation(enemy, e_y, enemy_win.x-34, 0.1)
+        move_animation(enemy_win, e_y, enemy_win.x-7, 0.05)
+        move_animation(enemy_win, e_y, enemy_win.x-35, 0.05)
+        move_animation(enemy_win, e_y, enemy_win.x-33, 0.1)
         
 
     def enemy_attack_recall_animation():
 
-        move_animation(enemy, e_y, enemy_win.x-10, 0.1)
-        move_animation(enemy, e_y, enemy_win.x-6, 0.1)
-        move_animation(enemy, e_y, enemy_win.x-2, 0.1)
-        move_animation(enemy, e_y, enemy_win.x-0, 0.1)
+        move_animation(enemy_win, e_y, enemy_win.x-10, 0.1)
+        move_animation(enemy_win, e_y, enemy_win.x-6, 0.1)
+        move_animation(enemy_win, e_y, enemy_win.x, 0.1)
+        # move_animation(enemy, e_y, enemy_win.x-0, 0.1)
 
-    def take_dmg_animation(win, critical_hit):
+    def take_dmg_animation(win, critical_hit=False):
         # entity = entity.win
-        if critical_hit:
-            win.attron(curses.A_REVERSE)
-            win.refresh()
-        move_animation(win.win, 5, win.x, 0.05)
+
+        # if critical_hit:
+        #     win.attron(curses.A_REVERSE)
+        #     win.refresh()
+        move_animation(win, win.current_y+1, win.current_x, 0.05)
         # if critical_hit:
         #     stdscr.attron(curses.A_REVERSE)
         #     stdscr.refresh()
-        move_animation(win.win, 3, win.x, 0.1)
+        move_animation(win, win.current_y-3, win.current_x, 0.1)
         # if critical_hit:
         #     stdscr.attron(curses.A_REVERSE)
         #     stdscr.refresh()
-        move_animation(win.win, 4, win.x, 0.1)
-        if critical_hit:
-            win.attron(curses.A_REVERSE)
-            win.refresh()
+        move_animation(win, win.current_y+2, win.current_x, 0.1)
+        # if critical_hit:
+        #     win.attron(curses.A_REVERSE)
+        #     win.refresh()
+    
+    def evade_animation(win):
+        move_animation(win, win.y, win.x+2, 0.05)
+        move_animation(win, win.y, win.x, 0.1)
 
         
     
     def dmg_crit_animation(win1, win2):
         # entity = entity.win
         
-        move_animation(win1.win, 6, win1.x, 0.05)
-        move_animation(win2.win, 6, win2.x, 0.05)
-        move_animation(win1.win, 2, win1.x, 0.1)
-        move_animation(win2.win, 6, win2.x, 0.05)
-        move_animation(win1.win, 4, win1.x, 0.1)
-        move_animation(win2.win, 6, win2.x, 0.05)
+        move_animation(win1, 6, win1.x, 0.05)
+        move_animation(win2, 6, win2.x, 0.05)
+        move_animation(win1, 2, win1.x, 0.1)
+        move_animation(win2, 6, win2.x, 0.05)
+        move_animation(win1, 4, win1.x, 0.1)
+        move_animation(win2, 6, win2.x, 0.05)
     
     def calc_def():
         defense = ((p.sum_defense) // (e.entity_lvl))
@@ -159,6 +180,34 @@ def fight(stdscr, rows, cols, p, e):
         crit = ((p.sum_luck * 5) // (e.entity_lvl*2))
 
         return math.ceil(crit)
+
+    def negate_dmg(attacker_win, attacker, defender):
+        if attacker.entity_class == 'Mage':
+            return False
+        
+        if defender.entity_class == 'Mage':
+            return False
+            
+        if defender.entity_class == 'Scout':
+            if random.randrange(1, 100) <= 50:
+                evade_animation(enemy_win)
+                
+                return True
+            else:
+                return False
+        
+        elif defender.entity_class == 'Warrior':
+            if random.randrange(1, 100) <= 25:
+                attacker.hp -= math.floor(attacker.hp*0.15)
+                # player_attack_recall_animation()
+                evade_animation(enemy_win)
+                take_dmg_animation(attacker_win, False)
+                time.sleep(0.5)
+
+                return True
+            else:
+                return False
+
 
     def deal_dmg(attacker, defender):
         global critical_hit_bool
@@ -191,14 +240,10 @@ def fight(stdscr, rows, cols, p, e):
         defender.hp -= dmg
         
     
-    def negate_dmg(attacker, defender):
-        match attacker.entity_class:
-            case 'Warrior':
-                negate_stat = defender.sum_strength
-            case 'Mage':
-                negate_stat = defender.sum_intelligence
-            case 'Scout':
-                negate_stat = defender.sum_dexterity
+   
+        
+        
+        
 
     # setup
     draw_hud(player_win, p)
@@ -210,22 +255,28 @@ def fight(stdscr, rows, cols, p, e):
 
     while in_fight_bool:
         
-        if player_turn_bool:
+        if player_turn_bool:  # Player
             player_attack_animation()
             
-            deal_dmg(p, e)
-            take_dmg_animation(enemy_win, critical_hit_bool)
-            player_attack_recall_animation()
+            if not negate_dmg(player_win, p, e):
+                deal_dmg(p, e)
+                take_dmg_animation(enemy_win, critical_hit_bool)
+                player_attack_recall_animation()
+            else:
+                player_attack_recall_animation()            
             
             critical_hit_bool = False
             player_turn_bool = False
 
-        elif not player_turn_bool:
+        elif not player_turn_bool:  # Enemy
             enemy_attack_animation()
             
-            deal_dmg(e, p)
-            take_dmg_animation(player_win, critical_hit_bool)
-            enemy_attack_recall_animation()
+            if not negate_dmg(enemy_win, e, p):
+                deal_dmg(e, p)
+                take_dmg_animation(player_win, critical_hit_bool)
+                enemy_attack_recall_animation()
+            else:
+                enemy_attack_recall_animation()
             
             critical_hit_bool = False
             player_turn_bool = True

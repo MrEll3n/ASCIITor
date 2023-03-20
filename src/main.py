@@ -68,8 +68,8 @@ def main(stdscr):
 
         CAM_WIDTH = cols-47 #161
         CAM_HEIGHT = rows-16#35
-        GAME_X = 600 + 1
-        GAME_Y = 600 + 1
+        GAME_X = 100 + 1
+        GAME_Y = 100 + 1
         CAM_X = GAME_X // 2 - CAM_WIDTH // 2
         CAM_Y = GAME_Y // 2 - CAM_HEIGHT // 2
 

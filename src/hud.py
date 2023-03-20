@@ -61,6 +61,8 @@ class Window:
         
         if self.win_type == "fight":
             self.health_bar = 0
+            self.current_x = self.x
+            self.current_y = self.y
 
         self.win = curses.newwin(self.height, self.width, self.y, self.x)
         self.max_y_x = self.win.getmaxyx()
