@@ -156,11 +156,15 @@ def fight(stdscr, rows, cols, p, e):
         #     win.refresh()
     
     def evade_animation(win):
-        move_animation(win, win.y, win.x+2, 0.05)
-        move_animation(win, win.y, win.x, 0.1)
-
+        if win is enemy_win:
+            move_animation(win, win.current_y, win.current_x+3, 0.05)
+            move_animation(win, win.current_y, win.current_x-3, 0.1)
         
-    
+        elif win is player_win:
+            move_animation(win, win.current_y, win.current_x-3, 0.05)
+            move_animation(win, win.current_y, win.current_x+3, 0.1)
+
+
     def dmg_crit_animation(win1, win2):
         # entity = entity.win
         
@@ -171,8 +175,16 @@ def fight(stdscr, rows, cols, p, e):
         move_animation(win1, 4, win1.x, 0.1)
         move_animation(win2, 6, win2.x, 0.05)
     
-    def calc_def():
+    def calc_def(attacker):
         defense = ((p.sum_defense) // (e.entity_lvl))
+
+        if attacker.entity_class == "Scout":
+            if defense >= 25:
+                defense = 25
+        
+        elif attacker.entity_class == "Scout":
+            if defense >= 50:
+                defense = 50
 
         return math.floor(defense)
 
@@ -181,7 +193,7 @@ def fight(stdscr, rows, cols, p, e):
 
         return math.ceil(crit)
 
-    def negate_dmg(attacker_win, attacker, defender):
+    def negate_dmg(attacker_win, defender_win, attacker, defender):
         if attacker.entity_class == 'Mage':
             return False
         
@@ -190,7 +202,8 @@ def fight(stdscr, rows, cols, p, e):
             
         if defender.entity_class == 'Scout':
             if random.randrange(1, 100) <= 50:
-                evade_animation(enemy_win)
+                evade_animation(defender_win)
+                time.sleep(0.5)
                 
                 return True
             else:
@@ -200,7 +213,7 @@ def fight(stdscr, rows, cols, p, e):
             if random.randrange(1, 100) <= 25:
                 attacker.hp -= math.floor(attacker.hp*0.15)
                 # player_attack_recall_animation()
-                evade_animation(enemy_win)
+                # evade_animation(defender_win)
                 take_dmg_animation(attacker_win, False)
                 time.sleep(0.5)
 
@@ -235,7 +248,7 @@ def fight(stdscr, rows, cols, p, e):
             critical_hit_bool = True
 
         if attacker.entity_class == 'Warrior' or attacker.entity_class == 'Scout':
-            dmg = dmg*(1-(calc_def()//100))
+            dmg = dmg*(1-(calc_def(attacker)//100))
         
         defender.hp -= dmg
         
@@ -258,7 +271,7 @@ def fight(stdscr, rows, cols, p, e):
         if player_turn_bool:  # Player
             player_attack_animation()
             
-            if not negate_dmg(player_win, p, e):
+            if not negate_dmg(player_win, enemy_win, p, e):
                 deal_dmg(p, e)
                 take_dmg_animation(enemy_win, critical_hit_bool)
                 player_attack_recall_animation()
@@ -271,7 +284,7 @@ def fight(stdscr, rows, cols, p, e):
         elif not player_turn_bool:  # Enemy
             enemy_attack_animation()
             
-            if not negate_dmg(enemy_win, e, p):
+            if not negate_dmg(enemy_win, player_win, e, p):
                 deal_dmg(e, p)
                 take_dmg_animation(player_win, critical_hit_bool)
                 enemy_attack_recall_animation()

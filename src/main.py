@@ -711,9 +711,13 @@ def main(stdscr):
             global char_confirm
             global game_over
 
+
+
+            hud.game_over(stdscr, p, rows, cols)
+
             game_over = True
             while game_over:
-                hud.game_over(stdscr, p, rows, cols)
+                
 
                 key = stdscr.getch()
                 if key != -1:
