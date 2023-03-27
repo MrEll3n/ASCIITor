@@ -365,7 +365,7 @@ def game_over(stdscr, p, rows, cols):
             stdscr.addstr(i+2, hcols - 42, f.readline())
         f.close()
     
-    stdscr.addstr(10, (hcols-len(label1)//2), label1)
-    stdscr.addstr(13, (hcols-len(label2)//2), label2)
-    stdscr.addstr(rows - 2, hcols + 55, label3)
+    stdscr.addstr(hrows - 9, (hcols-len(label1)//2), label1)
+    stdscr.addstr(hrows - 7, (hcols-len(label2)//2), label2)
+    stdscr.addstr(hrows + 17, hcols + 45, label3)
     
