@@ -165,15 +165,11 @@ def fight(stdscr, rows, cols, p, e):
         #     win.refresh()
     
     def evade_animation(win):
-        if win is enemy_win:
-            move_animation(win, win.current_y, win.current_x+3, 0.05)
-            move_animation(win, win.current_y, win.current_x-3, 0.1)
+        move_animation(win, win.y, win.x+2, 0.05)
+        move_animation(win, win.y, win.x, 0.1)
+
         
-        elif win is player_win:
-            move_animation(win, win.current_y, win.current_x-3, 0.05)
-            move_animation(win, win.current_y, win.current_x+3, 0.1)
-
-
+    
     def dmg_crit_animation(win1, win2):
         # entity = entity.win
         
@@ -184,16 +180,8 @@ def fight(stdscr, rows, cols, p, e):
         move_animation(win1, 4, win1.x, 0.1)
         move_animation(win2, 6, win2.x, 0.05)
     
-    def calc_def(attacker):
+    def calc_def():
         defense = ((p.sum_defense) // (e.entity_lvl))
-
-        if attacker.entity_class == "Scout":
-            if defense >= 25:
-                defense = 25
-        
-        elif attacker.entity_class == "Scout":
-            if defense >= 50:
-                defense = 50
 
         return math.floor(defense)
 
@@ -202,7 +190,7 @@ def fight(stdscr, rows, cols, p, e):
 
         return math.ceil(crit)
 
-    def negate_dmg(attacker_win, defender_win, attacker, defender):
+    def negate_dmg(attacker_win, attacker, defender):
         if attacker.entity_class == 'Mage':
             return False
         
@@ -228,7 +216,7 @@ def fight(stdscr, rows, cols, p, e):
                 block_dmg = math.floor(attacker.hp*0.15)
                 attacker.hp -= block_dmg
                 # player_attack_recall_animation()
-                # evade_animation(defender_win)
+                evade_animation(enemy_win)
                 take_dmg_animation(attacker_win, False)
                 if defender is p:
                     log_win.print_info(f"You blocked an attack and dealt {block_dmg} damage to {attacker.name}.")
@@ -272,7 +260,7 @@ def fight(stdscr, rows, cols, p, e):
 
         # Reducing dmg by percent for Warrior and Scout class 
         if attacker.entity_class == 'Warrior' or attacker.entity_class == 'Scout':
-            dmg = dmg*(1-(calc_def(attacker)//100))
+            dmg = dmg*(1-(calc_def()//100))
         
         # Decreasing HP by DMG
         defender.hp -= dmg
