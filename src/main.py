@@ -68,8 +68,8 @@ def main(stdscr):
 
         CAM_WIDTH = cols-47 #161
         CAM_HEIGHT = rows-16#35
-        GAME_X = 100 + 1
-        GAME_Y = 100 + 1
+        GAME_X = 600 + 1
+        GAME_Y = 600 + 1
         CAM_X = GAME_X // 2 - CAM_WIDTH // 2
         CAM_Y = GAME_Y // 2 - CAM_HEIGHT // 2
 
@@ -79,7 +79,7 @@ def main(stdscr):
 
         noise = PerlinNoise(octaves=OCTAVE, seed=random.randrange(0, 100000000))  # random.randrange(0, 100000)
 
-        map = [[noise([i / (GAME_X * 0.2), j / (GAME_Y * 1.7)]) for j in range(GAME_X)] for i in range(GAME_Y)]
+        #map = [[noise([i / (GAME_X * 0.2), j / (GAME_Y * 1.7)]) for j in range(GAME_X)] for i in range(GAME_Y)]
 
         # curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_YELLOW)
         # BLUE_AND_YELLOW = curses.color_pair(1)
@@ -89,7 +89,7 @@ def main(stdscr):
         stdscr.refresh()
         curses.curs_set(False)
 
-        map = [[noise([i / GAME_X, j / GAME_Y]) for j in range(GAME_X)] for i in range(GAME_Y)]
+        map = [[noise([(i / GAME_X), (j / GAME_Y)*0.8]) for j in range(GAME_X)] for i in range(GAME_Y)]
 
         for i in range(len(map)):
             for j in range(len(map[i])):

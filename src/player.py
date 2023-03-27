@@ -9,6 +9,7 @@ class Player:
         self.name = name
         self.entity_class = player_class
         self.entity_lvl = player_lvl
+        self.entity_exp = 0
         self.entity_race = player_race
 
         self.stamina = stamina

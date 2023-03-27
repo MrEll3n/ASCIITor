@@ -31,6 +31,9 @@ def fight(stdscr, rows, cols, p, e):
     #enemy_win.win.hline(enemy_win.height//2 , 1, "-", player_win.width-2)
     enemy_win.win.refresh()
 
+    log_win = Window("info", hrows+1, hcols-(cols-20)//2, hrows-1, cols-20, "")
+    log_win.win.refresh()
+
     # player = player_win.win
     # enemy = enemy_win.win
 
@@ -40,10 +43,14 @@ def fight(stdscr, rows, cols, p, e):
 
         # Info
         win.win.addstr(2, hwidth - (len(entity.name)//2) - 2, f"< {entity.name} >")
-        win.win.move(3, hwidth + 12)
-        win.win.clrtoeol()
         
-        win.win.addstr(3, hwidth + 12, f"{entity.hp}/{entity.maxhp}")
+        label_hp = str(entity.hp)
+        label_max_hp = str(entity.maxhp)
+        
+        win.win.move(3, hwidth + 12 - len(label_hp) - len(label_max_hp) - 4)
+        win.win.clrtoeol()
+
+        win.win.addstr(3, win.width - len(label_hp) - len(label_max_hp) - 4, f"{entity.hp}/{entity.maxhp}")
         win.win.addstr(4, 2, f"|{win.draw_hp_bar(entity)}|")
 
         win.win.hline((enemy_win.height//2)-1 , 1, "-", player_win.width-2)
@@ -69,8 +76,10 @@ def fight(stdscr, rows, cols, p, e):
         draw_hud(player_win, p)
         enemy_win.win.redrawwin()
         draw_hud(enemy_win, e)
+        log_win.win.redrawwin()
         player_win.win.refresh()
         enemy_win.win.refresh()
+        log_win.win.refresh()
 
     def move_animation(win, y, x, delay):
         win.current_x = x
@@ -203,7 +212,12 @@ def fight(stdscr, rows, cols, p, e):
         if defender.entity_class == 'Scout':
             if random.randrange(1, 100) <= 50:
                 evade_animation(defender_win)
+                if defender is p:
+                    log_win.print_info(f"You evaded an attack.")
+                else:
+                    log_win.print_info(f"{defender.name} evaded an attack.")
                 time.sleep(0.5)
+
                 
                 return True
             else:
@@ -211,10 +225,15 @@ def fight(stdscr, rows, cols, p, e):
         
         elif defender.entity_class == 'Warrior':
             if random.randrange(1, 100) <= 25:
-                attacker.hp -= math.floor(attacker.hp*0.15)
+                block_dmg = math.floor(attacker.hp*0.15)
+                attacker.hp -= block_dmg
                 # player_attack_recall_animation()
                 # evade_animation(defender_win)
                 take_dmg_animation(attacker_win, False)
+                if defender is p:
+                    log_win.print_info(f"You blocked an attack and dealt {block_dmg} damage to {attacker.name}.")
+                else:
+                    log_win.print_info(f"{defender.name} blocked an attack and dealt you {block_dmg} damage.")
                 time.sleep(0.5)
 
                 return True
@@ -222,9 +241,10 @@ def fight(stdscr, rows, cols, p, e):
                 return False
 
 
-    def deal_dmg(attacker, defender):
-        global critical_hit_bool
-
+    def deal_dmg(attacker, defender, critical_hit_bool):
+        # global critical_hit_bool
+        
+        # Setting main attribute
         match attacker.entity_class:
             case 'Warrior':
                 atk_stat = attacker.sum_strength
@@ -238,24 +258,36 @@ def fight(stdscr, rows, cols, p, e):
 
         atk_stat_final = atk_stat - def_stat
         
+        # Checking, if calculated attack stat is lower than 0, if so, set it to 1
         if (atk_stat_final) <= 0:
             atk_stat_final = 1
-        
-        dmg = random.randrange(math.floor(0.7*attacker.dmg) * (1 + (atk_stat_final // 10)), math.floor(1.3*attacker.dmg) * (1 + (atk_stat_final // 10)))
 
-        if random.randint(1, 100) <= calc_crit():  # Calculating critical hit => (double damage)
+        # Formula for calculating DMG
+        dmg = random.randrange(math.floor(0.7*attacker.dmg) * (1 + (atk_stat_final // 10)), math.floor(1.3+attacker.dmg) * (1 + (atk_stat_final // 10)))
+
+        # Calculating critical hit by percent => (double damage)
+        if random.randint(1, 100) <= calc_crit():  
             dmg = dmg * 2
             critical_hit_bool = True
 
+        # Reducing dmg by percent for Warrior and Scout class 
         if attacker.entity_class == 'Warrior' or attacker.entity_class == 'Scout':
             dmg = dmg*(1-(calc_def(attacker)//100))
         
+        # Decreasing HP by DMG
         defender.hp -= dmg
         
-    
-   
-        
-        
+        # Printing out logic for DMG
+        if attacker is p:
+            if critical_hit_bool:
+                log_win.print_info(f"You dealt critical hit of {dmg} damage!")
+            else:
+                log_win.print_info(f"You dealt {dmg} of damage!")
+        else:
+            if critical_hit_bool:
+                log_win.print_info(f"{attacker.name} dealt you a critical hit of {dmg} damage!")
+            else:
+                log_win.print_info(f"{attacker.name} dealt you {dmg} of damage!")
         
 
     # setup
@@ -272,7 +304,7 @@ def fight(stdscr, rows, cols, p, e):
             player_attack_animation()
             
             if not negate_dmg(player_win, enemy_win, p, e):
-                deal_dmg(p, e)
+                deal_dmg(p, e, critical_hit_bool)
                 take_dmg_animation(enemy_win, critical_hit_bool)
                 player_attack_recall_animation()
             else:
@@ -285,7 +317,7 @@ def fight(stdscr, rows, cols, p, e):
             enemy_attack_animation()
             
             if not negate_dmg(enemy_win, player_win, e, p):
-                deal_dmg(e, p)
+                deal_dmg(e, p, critical_hit_bool)
                 take_dmg_animation(player_win, critical_hit_bool)
                 enemy_attack_recall_animation()
             else:
@@ -305,5 +337,5 @@ def fight(stdscr, rows, cols, p, e):
         time.sleep(0.7)
 
        
-
+    time.sleep(30)
     return won

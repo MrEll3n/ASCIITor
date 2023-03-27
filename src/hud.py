@@ -69,8 +69,8 @@ class Window:
 
         self.clear_window()
 
-    def draw_exp_bar(self):
-        result = self.hp/self.maxhp
+    def draw_exp_bar(self, player):
+        result = player.entity_exp
 
         outcome = ''.ljust(math.floor(result*(self.width-6)), '*')  # calculating of EXP bars via percentile
         filling = ''.ljust((self.width-6)-len(outcome), ".") # calculating of filling for EXP
@@ -143,6 +143,7 @@ class Window:
         self.win.addstr(6, 12, f"STA: {p.sum_stamina}")
         self.win.addstr(7, 12, f"DEF: {p.sum_defense}")
         self.win.addstr(8, 12, f"LUC: {p.sum_luck}")
+        self.win.addstr(10, 2, f"|{self.draw_exp_bar(p)}|")
         self.win.refresh()
 
     def string_slice(self, string):
@@ -367,5 +368,5 @@ def game_over(stdscr, p, rows, cols):
     
     stdscr.addstr(10, (hcols-len(label1)//2), label1)
     stdscr.addstr(13, (hcols-len(label2)//2), label2)
-    stdscr.addstr(rows - 2, hcols + 55, label3)
+    stdscr.addstr(rows - 2, hcols + 55 - len(label3), label3)
     
