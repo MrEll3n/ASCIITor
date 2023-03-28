@@ -1136,10 +1136,11 @@ def main(stdscr):
             try:
                 query.edit()
                 gather = query.gather()
-                if gather :
-                    player_name = gather.strip()
-                    #char_naming = False
-                    #game(player_name, "Goblin", "Warrior")
+                alphanumeric_chars = [char for char in gather if char.isalnum()]
+                reform_gather = ''.join(alphanumeric_chars)
+                
+                if reform_gather:
+                    player_name = reform_gather.strip("123456789")
                     char_naming = False
 
             except:
