@@ -337,5 +337,5 @@ def fight(stdscr, rows, cols, p, e):
         time.sleep(0.7)
 
        
-    time.sleep(30)
+    time.sleep(2)
     return won
